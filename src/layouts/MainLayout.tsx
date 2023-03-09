@@ -1,8 +1,8 @@
 import { Navbar } from '@/components/ui';
 
-type Props = {
+interface Props {
 	children: JSX.Element | JSX.Element[];
-};
+}
 
 export const MainLayout = ({ children }: Props) => {
 	return (
@@ -13,7 +13,7 @@ export const MainLayout = ({ children }: Props) => {
 
 			<main
 				style={{
-					margin: '80px auto',
+					margin: '40px auto',
 					maxWidth: '1440px',
 					padding: '0px 30px',
 				}}
