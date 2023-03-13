@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import { animeRumbleApi } from '@/api';
-import { QuizContext } from '@/context/quiz';
+import { QuizContext } from '@/context';
 import {
 	QuizQuestionPoints,
 	QuizQuestionTimeLimit,

@@ -6,7 +6,7 @@ import Fade from '@mui/material/Fade';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { animeRumbleApi } from '@/api';
-import { QuizContext } from '@/context/quiz';
+import { QuizContext } from '@/context';
 
 interface Props {
 	variant: 'true' | 'false';

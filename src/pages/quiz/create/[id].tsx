@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 import { GetServerSideProps } from 'next';
 
 import WrapperQuizPage from '@/components/quiz/WrapperQuizPage';
-import { QuizProvider } from '@/context/quiz';
+import { QuizProvider } from '@/context';
 import { db } from '@/db';
+import { QuestionDB } from '@/db/models';
 import QuizModel from '@/db/models/Quiz';
 import { IQuiz } from '@/interfaces';
 
@@ -31,7 +32,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	}
 	await db.connect();
 	const quiz = await QuizModel.findById(id);
-	await db.disconnect();
 
 	if (!quiz) {
 		return {
@@ -41,6 +41,13 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 			},
 		};
 	}
+	if (quiz.questions.length === 0) {
+		quiz.questions.push({
+			question: '',
+		} as QuestionDB);
+		await quiz.save();
+	}
+	await db.disconnect();
 	const quizObj = quiz.toJSON<IQuiz>({
 		flattenMaps: false,
 	});

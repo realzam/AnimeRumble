@@ -6,7 +6,7 @@ import { Stack } from '@mui/system';
 import SortableQuizzesList from './SortableQuizzesList';
 
 import { animeRumbleApi } from '@/api';
-import { QuizContext } from '@/context/quiz';
+import { QuizContext } from '@/context';
 import { IQuizQuestion } from '@/interfaces';
 
 const QuestionsPreviewList = (): JSX.Element => {

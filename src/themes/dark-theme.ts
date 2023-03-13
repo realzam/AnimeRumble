@@ -1,5 +1,18 @@
-import { createTheme } from '@mui/material';
+import { Components, createTheme, Theme } from '@mui/material';
 import { red } from '@mui/material/colors';
+import { merge } from 'lodash';
+
+import { baseComponentsTheme } from './base-theme';
+
+const componetsDarkTheme: Components<Omit<Theme, 'components'>> = {
+	MuiAppBar: {
+		styleOverrides: {
+			root: {
+				backgroundColor: '#181818',
+			},
+		},
+	},
+};
 
 export const darkTheme = createTheme({
 	palette: {
@@ -12,16 +25,5 @@ export const darkTheme = createTheme({
 		},
 	},
 
-	components: {
-		MuiAppBar: {
-			defaultProps: {
-				elevation: 0,
-			},
-			styleOverrides: {
-				root: {
-					backgroundColor: '#4a148c',
-				},
-			},
-		},
-	},
+	components: merge(baseComponentsTheme, componetsDarkTheme),
 });

@@ -6,7 +6,10 @@ type QuizActionType =
 	| { type: 'Quiz.AddQuestion'; payload: IQuizQuestion }
 	| { type: 'Quiz.UpdateQuestion'; payload: IQuizQuestion }
 	| { type: 'Quiz.UpdateQuestions'; payload: IQuizQuestion[] }
-	| { type: 'Quiz.SetIndex'; payload: number };
+	| { type: 'Quiz.SetIndex'; payload: number }
+	| { type: 'Quiz.SetShowDialogDelete'; payload: boolean }
+	| { type: 'Quiz.SetIsDragging'; payload: boolean };
+
 export const quizReducer = (
 	state: QuizState,
 	action: QuizActionType,
@@ -24,8 +27,6 @@ export const quizReducer = (
 				index = state.index;
 			}
 			index = Math.min(action.payload.length - 1, Math.max(0, index));
-			console.log('Quiz.UpdateQuestions', action.payload.length, index);
-
 			return {
 				...state,
 				quiz: { ...state.quiz, questions: [...action.payload] },
@@ -33,8 +34,11 @@ export const quizReducer = (
 			};
 
 		case 'Quiz.AddQuestion':
-			questions.push(action.payload);
-			return { ...state, index: state.quiz.questions.length - 1 };
+			return {
+				...state,
+				quiz: { ...state.quiz, questions: [...questions, action.payload] },
+				index: questions.length,
+			};
 
 		case 'Quiz.SetIndex':
 			if (
@@ -44,6 +48,10 @@ export const quizReducer = (
 				return { ...state, index: action.payload };
 			}
 			return state;
+		case 'Quiz.SetShowDialogDelete':
+			return { ...state, showDialogDelete: action.payload };
+		case 'Quiz.SetIsDragging':
+			return { ...state, isDragging: action.payload };
 		default:
 			return state;
 	}

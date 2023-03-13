@@ -58,7 +58,8 @@ export class QuestionDB {
 		this.type = props.type || this.type;
 		this.time = props.time || this.time;
 		this.points = props.points || this.points;
-		this.question = props.question || this.question;
+		this.question =
+			props.question === undefined ? this.question : props.question;
 		if (props.correctAnswerQuiz) {
 			const [index, value] = props.correctAnswerQuiz;
 			this.correctAnswersQuiz[index] = value;
@@ -68,7 +69,9 @@ export class QuestionDB {
 			this.answers[index] = value;
 		}
 		this.correctAnswerTrueFalse =
-			props.correctAnswerTrueFalse || this.correctAnswerTrueFalse;
+			props.correctAnswerTrueFalse === undefined
+				? this.correctAnswerTrueFalse
+				: props.correctAnswerTrueFalse;
 		this.img = props.img || this.img;
 	}
 	clone() {
@@ -86,12 +89,12 @@ export class QuestionDB {
 }
 
 /*
-    type: QuizQuestionType;
-    time: QuizQuestionTimeLimit;
-    points: QuizQuestionPoints;
-    question: string;
-    correctAnswersQuiz: boolean[];
-    correctAnswerTrueFalse?: boolean;
-    answers: string[];
-    img?: string;
+	type: QuizQuestionType;
+	time: QuizQuestionTimeLimit;
+	points: QuizQuestionPoints;
+	question: string;
+	correctAnswersQuiz: boolean[];
+	correctAnswerTrueFalse?: boolean;
+	answers: string[];
+	img?: string;
 */

@@ -24,10 +24,10 @@ import { Container } from '@mui/system';
 import QuestionPreviewItem from './QuestionPreviewItem';
 
 import { animeRumbleApi } from '@/api';
-import { QuizContext } from '@/context/quiz';
+import { QuizContext } from '@/context';
 
 const SortableQuizzesList = (): JSX.Element => {
-	const { quiz, updateQuestions } = useContext(QuizContext);
+	const { quiz, updateQuestions, setIsDragging } = useContext(QuizContext);
 	const { questions } = quiz;
 
 	const sensors = useSensors(
@@ -37,17 +37,17 @@ const SortableQuizzesList = (): JSX.Element => {
 		}),
 	);
 
-	function handleDragEnd(event: DragEndEvent) {
+	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
-
-		console.log(event);
-
 		if (over) {
 			if (active.id !== over.id) {
 				const oldIndex = questions.findIndex(q => q.id === active.id);
 				const newIndex = questions.findIndex(q => q.id === over.id);
 				const newOrderquestions = arrayMove(questions, oldIndex, newIndex);
 				updateQuestions(newOrderquestions);
+				setTimeout(() => {
+					setIsDragging(false);
+				}, 100);
 				animeRumbleApi.put(`/quiz/sort-questions`, {
 					quizID: quiz.id,
 					from: oldIndex,
@@ -55,13 +55,16 @@ const SortableQuizzesList = (): JSX.Element => {
 				});
 			}
 		}
-	}
+	};
 	return (
 		<Container>
 			<DndContext
 				sensors={sensors}
 				collisionDetection={closestCenter}
 				onDragEnd={handleDragEnd}
+				onDragStart={() => {
+					setIsDragging(true);
+				}}
 				modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
 			>
 				<SortableContext

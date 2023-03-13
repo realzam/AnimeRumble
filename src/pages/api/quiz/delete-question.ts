@@ -52,6 +52,11 @@ async function deleteQuestion(req: NextApiRequest, res: NextApiResponse<Data>) {
 			.status(400)
 			.json({ message: 'El parametro quizID no es valido' });
 	}
+	if (quiz.questions.length === 1) {
+		return res
+			.status(400)
+			.json({ message: 'No es posible eliminar la unica pregunta de un quiz' });
+	}
 	quiz.deleteQuestion(questionID);
 	await quiz.save();
 	await db.disconnect();

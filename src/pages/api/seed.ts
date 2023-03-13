@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { db } from '@/db';
-import { QuizModel } from '@/db/models';
+import { db, seedDatabase } from '@/db';
+import { QuizModel, UserModel } from '@/db/models';
 
 interface Data {
 	message: string;
@@ -16,6 +16,8 @@ export default async function handler(
 	}
 	await db.connect();
 	await QuizModel.deleteMany();
+	await UserModel.deleteMany();
+	await UserModel.insertMany(seedDatabase.initialData.users);
 	await db.disconnect();
 	res.status(200).json({ message: 'Proceso realizado correctamente' });
 }

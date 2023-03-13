@@ -7,14 +7,33 @@ import { IQuiz, IQuizQuestion } from '@/interfaces';
 export interface QuizState {
 	quiz: IQuiz;
 	index: number;
+	showDialogDelete: boolean;
+	isDragging: boolean;
+}
+
+interface InitialState {
+	quiz: IQuiz;
+	index: number;
 }
 
 interface Props {
 	children: JSX.Element | JSX.Element[];
-	initialState: QuizState;
+	initialState: InitialState;
 }
 export const QuizProvider = ({ children, initialState }: Props) => {
-	const [state, dispatch] = useReducer(quizReducer, initialState);
+	const [state, dispatch] = useReducer(quizReducer, {
+		...initialState,
+		showDialogDelete: false,
+		isDragging: false,
+	});
+
+	const setShowDialogDelete = (value: boolean) => {
+		dispatch({ type: 'Quiz.SetShowDialogDelete', payload: value });
+	};
+
+	const setIsDragging = (value: boolean) => {
+		dispatch({ type: 'Quiz.SetIsDragging', payload: value });
+	};
 
 	const setIndex = (index: number) => {
 		dispatch({ type: 'Quiz.SetIndex', payload: index });
@@ -43,6 +62,8 @@ export const QuizProvider = ({ children, initialState }: Props) => {
 				updateQuestion,
 				updateQuestions,
 				setIndex,
+				setIsDragging,
+				setShowDialogDelete,
 				question: getQuestion(),
 			}}
 		>

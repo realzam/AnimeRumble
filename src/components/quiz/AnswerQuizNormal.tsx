@@ -1,18 +1,47 @@
 import { useContext, useEffect } from 'react';
 
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import { Card, CardMedia, InputBase, Radio, Tooltip } from '@mui/material';
+import {
+	Card,
+	CardMedia,
+	InputBase,
+	Radio,
+	styled,
+	Tooltip,
+	tooltipClasses,
+	TooltipProps,
+} from '@mui/material';
 import Fade from '@mui/material/Fade';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { animeRumbleApi } from '@/api';
-import { QuizContext } from '@/context/quiz';
+import { QuizContext } from '@/context';
 
 interface Props {
 	placeholder?: string;
 	index: 0 | 1 | 2 | 3;
 	variant?: 'red' | 'blue' | 'green' | 'yellow';
 }
+
+const WarningTooltip = styled(({ className, ...props }: TooltipProps) => (
+	<Tooltip
+		{...props}
+		classes={{ popper: className }}
+		disableFocusListener
+		disableHoverListener
+		disableTouchListener
+		arrow
+	/>
+))(({ theme }) => ({
+	[`& .${tooltipClasses.tooltip}`]: {
+		backgroundColor: theme.palette.warning.main,
+		color: theme.palette.warning.contrastText,
+		fontSize: 14,
+		'& .MuiTooltip-arrow': {
+			color: theme.palette.warning.main,
+		},
+	},
+}));
 
 const AnswerQuizNormal = ({
 	variant = 'red',
@@ -80,80 +109,98 @@ const AnswerQuizNormal = ({
 			break;
 	}
 	return (
-		<Card
-			sx={{
-				display: 'flex',
-				padding: '5px',
-				background: answerValue.length > 0 ? color : '#111111',
-				flexDirection: 'row',
-				alignItems: 'center',
-				transition: 'all 0.25s ease',
-			}}
+		<WarningTooltip
+			open={
+				(variant == 'red' || variant == 'blue') &&
+				answerValue.trim().length == 0
+			}
+			title='Es necesario agregar una respuesta'
 		>
 			<Card
-				elevation={0}
 				sx={{
-					width: 40,
-					height: 100,
-					borderRight: `${color} 3px solid`,
-					backgroundColor: color,
+					display: 'flex',
+					padding: '5px',
+					background: answerValue.length > 0 ? color : '#111111',
+					flexDirection: 'row',
+					alignItems: 'center',
+					transition: 'all 0.25s ease',
 				}}
 			>
-				<CardMedia component='svg'>{figure}</CardMedia>
-			</Card>
-
-			<InputBase
-				// autoFocus
-				fullWidth
-				multiline
-				maxRows={4}
-				placeholder={placeholder}
-				sx={{ ml: 1, flex: 1, fontSize: 20 }}
-				value={answerValue}
-				onChange={e => {
-					const newAnswer = e.target.value.trimStart();
-					const answers = question.answers;
-					answers[index] = newAnswer;
-					updateQuestion({ ...question, answers: [...answers] });
-					debounced(newAnswer);
-				}}
-			/>
-
-			{answerValue.length > 0 && (
-				<Tooltip
-					title='Respuesta Correcta'
-					arrow
-					TransitionComponent={Fade}
-					TransitionProps={{ timeout: 600 }}
+				<Card
+					elevation={0}
+					sx={{
+						width: 40,
+						height: 100,
+						borderRight: `${color} 3px solid`,
+						backgroundColor: color,
+					}}
 				>
-					<Radio
-						checkedIcon={<CheckCircleOutlineOutlinedIcon />}
-						name='radio-buttons'
-						checked={correctAnswerQuizValue}
-						onClick={async () => {
-							const newCorrectAnswerQuiz = !correctAnswerQuizValue;
-							const correctAnswersQuiz = question.correctAnswersQuiz;
-							correctAnswersQuiz[index] = newCorrectAnswerQuiz;
-							updateQuestion({
-								...question,
-								correctAnswersQuiz: [...correctAnswersQuiz],
-							});
+					<CardMedia component='svg'>{figure}</CardMedia>
+				</Card>
 
-							debouncedCorrect(newCorrectAnswerQuiz);
-						}}
-						sx={{
-							color: '#E1E1E1E1',
-							'& .MuiSvgIcon-root': {
-								fontSize: 45,
-							},
-							'&.Mui-checked': {
+				<InputBase
+					// autoFocus
+					fullWidth
+					multiline
+					maxRows={4}
+					placeholder={placeholder}
+					sx={{ ml: 1, flex: 1, fontSize: 20 }}
+					value={answerValue}
+					onChange={e => {
+						const newAnswer = e.target.value.trimStart();
+						const answers = question.answers;
+						const correctAnswersQuiz = question.correctAnswersQuiz;
+						answers[index] = newAnswer;
+						if (newAnswer.length === 0) {
+							correctAnswersQuiz[index] = false;
+							debouncedCorrect(false);
+							debouncedCorrect.flush();
+						}
+						updateQuestion({
+							...question,
+							answers: [...answers],
+							correctAnswersQuiz: [...correctAnswersQuiz],
+						});
+						debounced(newAnswer);
+					}}
+				/>
+
+				{answerValue.length > 0 && (
+					<Tooltip
+						title='Respuesta Correcta'
+						arrow
+						TransitionComponent={Fade}
+						TransitionProps={{ timeout: 600 }}
+					>
+						<Radio
+							checkedIcon={<CheckCircleOutlineOutlinedIcon />}
+							name='radio-buttons'
+							checked={correctAnswerQuizValue}
+							onClick={async () => {
+								const newCorrectAnswerQuiz = !correctAnswerQuizValue;
+								const correctAnswersQuiz = question.correctAnswersQuiz;
+								correctAnswersQuiz[index] = newCorrectAnswerQuiz;
+								updateQuestion({
+									...question,
+									correctAnswersQuiz: [...correctAnswersQuiz],
+								});
+
+								debouncedCorrect(newCorrectAnswerQuiz);
+							}}
+							sx={{
 								color: '#E1E1E1E1',
-							},
-						}}
-					/>
-				</Tooltip>
-			)}
-		</Card>
+								'& .MuiSvgIcon-root': {
+									fontSize: 45,
+								},
+								'&.Mui-checked': {
+									color: '#E1E1E1E1',
+								},
+							}}
+						/>
+					</Tooltip>
+				)}
+			</Card>
+		</WarningTooltip>
 	);
 };
 

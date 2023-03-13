@@ -90,6 +90,8 @@ async function updateQuestion(req: NextApiRequest, res: NextApiResponse<Data>) {
 		quizID: string;
 		questionID: string;
 	} & QuizQuestionQuery;
+	console.log('updateQuestion', { query });
+
 	await db.connect();
 	const quiz = await QuizModel.findById(quizID);
 	if (!quiz) {

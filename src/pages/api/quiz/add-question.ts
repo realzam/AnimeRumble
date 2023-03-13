@@ -45,7 +45,7 @@ async function addQuestion(req: NextApiRequest, res: NextApiResponse<Data>) {
 			.json({ message: 'El parametro quizID no es valido' });
 	}
 	quiz.questions.push({
-		question: 'new question',
+		question: '',
 	} as QuestionDB);
 	await quiz.save();
 	const newQuestion = quiz.questions[quiz.questions.length - 1];

@@ -3,24 +3,37 @@ import NextLink from 'next/link';
 import { MenuOutlined } from '@mui/icons-material';
 import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 
+import ThemeSwitcher from './ThemeSwitcher';
+
 const Navbar = (): JSX.Element => {
 	return (
-		<AppBar position='sticky' elevation={0}>
+		<AppBar>
 			<Toolbar>
 				<IconButton size='large' edge='start'>
 					<MenuOutlined />
 				</IconButton>
 
-				<Link href='/' component={NextLink}>
-					<Typography variant='h6' color='white'>
-						CookieMaster
-					</Typography>
+				<Link
+					href='/'
+					component={NextLink}
+					display='flex'
+					alignItems='end'
+					justifyContent='center'
+				>
+					<Typography variant='h6'>A |</Typography>
+					<Typography sx={{ ml: 0.5 }}>Rumble</Typography>
 				</Link>
 				<div style={{ flex: 1 }} />
-				<Link href='/quiz/create' underline='none' component={NextLink}>
-					<Typography variant='h6' color='white'>
-						Quiz
-					</Typography>
+				<ThemeSwitcher />
+
+				<Link
+					href='/auth/login'
+					component={NextLink}
+					display='flex'
+					alignItems='end'
+					justifyContent='center'
+				>
+					<Typography variant='h6'>Loign</Typography>
 				</Link>
 			</Toolbar>
 		</AppBar>
