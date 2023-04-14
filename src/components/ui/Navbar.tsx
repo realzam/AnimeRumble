@@ -33,7 +33,7 @@ const Navbar = (): JSX.Element => {
 					alignItems='end'
 					justifyContent='center'
 				>
-					<Typography variant='h6'>Loign</Typography>
+					<Typography variant='h6'>Login</Typography>
 				</Link>
 			</Toolbar>
 		</AppBar>

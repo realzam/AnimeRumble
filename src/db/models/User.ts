@@ -10,6 +10,7 @@ import type { IUserRoles } from '@/interfaces/user';
 
 @modelOptions({
 	schemaOptions: {
+		collection: 'users',
 		timestamps: true,
 		toJSON: {
 			flattenMaps: false,

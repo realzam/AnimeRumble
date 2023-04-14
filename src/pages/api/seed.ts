@@ -18,6 +18,7 @@ export default async function handler(
 	await QuizModel.deleteMany();
 	await UserModel.deleteMany();
 	await UserModel.insertMany(seedDatabase.initialData.users);
+	await QuizModel.insertMany(seedDatabase.initialData.quizzes);
 	await db.disconnect();
 	res.status(200).json({ message: 'Proceso realizado correctamente' });
 }

@@ -6,3 +6,17 @@ namespace NodeJS {
 		JWT_SECRET_SEED: string;
 	}
 }
+
+declare global {
+	declare module '@mui/material/Paper' {
+		interface PaperPropsVariantOverrides {
+			darken: true;
+		}
+	}
+	declare module '@mui/material/styles' {
+		interface TypeBackground {
+			darker: string;
+			appBar: string;
+		}
+	}
+}

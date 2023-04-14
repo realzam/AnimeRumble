@@ -2,7 +2,7 @@ import { useContext, useMemo, useState } from 'react';
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Badge, Card } from '@mui/material';
+import { Badge, Card, useTheme } from '@mui/material';
 
 import QuestionPreviewItemActions from './QuestionPreviewItemActions';
 import QuestionPreviewItemInfo from './QuestionPreviewItemInfo';
@@ -14,6 +14,7 @@ interface Props {
 	index: number;
 }
 const QuestionPreviewItem = ({ index }: Props): JSX.Element => {
+	const theme = useTheme();
 	const { quiz, index: currentQuestion } = useContext(QuizContext);
 	const question = quiz.questions[index];
 
@@ -52,6 +53,7 @@ const QuestionPreviewItem = ({ index }: Props): JSX.Element => {
 			{...attributes}
 		>
 			<Card
+				variant='darken'
 				onMouseEnter={() => {
 					setIsHover(true);
 				}}
@@ -59,11 +61,11 @@ const QuestionPreviewItem = ({ index }: Props): JSX.Element => {
 					setIsHover(false);
 				}}
 				sx={{
-					boxSizing: 'border-box',
-					background: '#111111',
 					marginY: 2,
 					display: 'flex',
-					border: isSelected ? '1px solid #AAA' : '1px solid transparent',
+					border: '1px solid',
+					borderColor: isSelected ? theme.palette.primary.dark : 'transparent',
+					// backgroundColor: isSelected ? '#7840232e' : undefined,
 				}}
 			>
 				<QuestionPreviewItemInfo index={index} />

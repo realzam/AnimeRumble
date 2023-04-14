@@ -12,31 +12,21 @@ type Data =
 	| IQuiz;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-	const { quizID, from, to } = req.body as {
+	const { quizID } = req.body as {
 		quizID: string;
-		from: number;
-		to: number;
 	};
-
 	await db.connect();
-	const quiz = await QuizModel.findById(quizID);
+	const quiz = await QuizModel.findByIdAndDelete(quizID);
 	if (!quiz) {
 		return res
 			.status(400)
-			.json({ message: 'El parametro quizID no es valido' });
+			.json({ message: 'No existe el quiz con el ID:' + quizID });
 	}
-	quiz.moveQuestion(from, to);
-	await quiz.save();
 	await db.disconnect();
-	return res.status(200).json(quiz);
+	return res.status(200).json(quiz.toJSON({ flattenMaps: false }));
 };
 
 export default methodMiddleware(
-	validateMiddleware(
-		handler,
-		check('quizID').isMongoId(),
-		check('from').isInt(),
-		check('to').isInt(),
-	),
+	validateMiddleware(handler, check('quizID').isMongoId()),
 	'PUT',
 );

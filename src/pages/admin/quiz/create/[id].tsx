@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	if (!mongoose.isValidObjectId(id)) {
 		return {
 			redirect: {
-				destination: '/quiz/create',
+				destination: '/admin/quiz/create',
 				permanent: false,
 			},
 		};
@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	if (!quiz) {
 		return {
 			redirect: {
-				destination: '/quiz/create',
+				destination: '/admin/quiz/create',
 				permanent: false,
 			},
 		};

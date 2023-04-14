@@ -31,7 +31,13 @@ interface FormData {
 
 const LoginPage = () => {
 	const router = useRouter();
-	const destination = useMemo(() => router.query.p?.toString() || '/', []);
+	const destination = useMemo(() => {
+		if (router.query.p === undefined) {
+			return '/';
+		}
+		return router.query.p.toString();
+	}, [router.query.p]);
+
 	const { loginUser } = useContext(AuthContext);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showError, setShowError] = useState(false);
@@ -55,7 +61,6 @@ const LoginPage = () => {
 			}, 3000);
 			return;
 		}
-
 		router.replace(destination);
 	};
 
@@ -72,8 +77,9 @@ const LoginPage = () => {
 			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
 				<Box
 					sx={{
-						height: '100vh',
-						width: '100vw',
+						// height: '100%',
+						// width: '100%',
+						// backgroundColor: 'red',
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
@@ -164,7 +170,7 @@ const LoginPage = () => {
 									Olvidaste tu contraseña?
 								</Link>
 							</Typography>
-							<Button fullWidth variant='contained' type='submit'>
+							<Button fullWidth type='submit'>
 								Iniciar sesión
 							</Button>
 							<Divider
@@ -175,7 +181,7 @@ const LoginPage = () => {
 							<Stack>
 								{/* <Typography>¿No tienes una cuenta?</Typography> */}
 
-								<Typography textAlign='end' color='white'>
+								<Typography textAlign='end'>
 									¿No tienes una cuenta?
 									<Link
 										href={`/auth/register?p=${destination}`}

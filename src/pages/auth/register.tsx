@@ -38,7 +38,10 @@ interface FormData {
 
 const RegisterPage = () => {
 	const router = useRouter();
-	const destination = useMemo(() => router.query.p?.toString() || '/', []);
+	const destination = useMemo(
+		() => router.query.p?.toString() || '/',
+		[router.query.p],
+	);
 	const { registerUser } = useContext(AuthContext);
 
 	const [showPassword, setShowPassword] = useState(false);
@@ -89,8 +92,8 @@ const RegisterPage = () => {
 			>
 				<Box
 					sx={{
-						height: '100vh',
-						width: '100vw',
+						// height: '100vh',
+						// width: '100vw',
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
@@ -142,8 +145,8 @@ const RegisterPage = () => {
 								{...register('name', {
 									required: 'Este campo es requerido',
 								})}
-								error={!!errors.email}
-								helperText={errors.email?.message}
+								error={!!errors.name}
+								helperText={errors.name?.message}
 							/>
 							<TextField
 								label='Correo electrónico'
@@ -201,6 +204,7 @@ const RegisterPage = () => {
 								required
 								autoComplete='off'
 								label='Confirmar contraseña'
+								placeholder='Confirmar contraseña'
 								variant='outlined'
 								type={showCPassword ? 'text' : 'password'}
 								InputProps={{

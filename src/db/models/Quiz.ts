@@ -5,6 +5,7 @@ import { QuestionDB } from './Question';
 import type { QuizQuestionQuery, QuizStatus } from '@/interfaces';
 @modelOptions({
 	schemaOptions: {
+		collection: 'quizzes',
 		toJSON: {
 			flattenMaps: false,
 			virtuals: true,
@@ -29,7 +30,7 @@ export class QuizDB {
 
 	@prop({
 		type: String,
-		enum: ['draf', 'created', 'in-progress', 'finished'],
+		enum: ['draf', 'in-progress', 'finished'],
 		default: 'draf',
 		required: true,
 	})
@@ -37,6 +38,9 @@ export class QuizDB {
 
 	@prop({ type: () => [QuestionDB] })
 	questions: QuestionDB[];
+
+	@prop({ type: String, trim: true })
+	img?: string;
 
 	moveQuestion(from: number, to: number) {
 		this.questions.splice(
@@ -49,7 +53,7 @@ export class QuizDB {
 
 	deleteQuestion(questionID: string) {
 		const index = this.questions.findIndex(q => q.id === questionID);
-		if (index !== -1) {
+		if (this.questions.length > 1 && index !== -1) {
 			this.questions.splice(index, 1);
 		}
 		return this.questions;
@@ -72,6 +76,17 @@ export class QuizDB {
 		}
 		this.questions[index].setProps(question);
 		return true;
+	}
+
+	clone() {
+		const clone = new QuizDB();
+		clone.title = this.title + ' - copia';
+		clone.description = this.description;
+		clone.createdAt = this.createdAt;
+		clone.status = this.status;
+		clone.questions = this.questions.map(q => q.clone());
+		clone.img = this.img;
+		return clone;
 	}
 }
 

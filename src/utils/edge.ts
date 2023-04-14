@@ -9,6 +9,8 @@ export const isValidTokenJose = async <T>(token: string) => {
 		const res = await jwtVerify(token, secret);
 		return res.payload as T;
 	} catch (error) {
+		console.log('isValidTokenJose');
+		console.error(error);
 		return undefined;
 	}
 };

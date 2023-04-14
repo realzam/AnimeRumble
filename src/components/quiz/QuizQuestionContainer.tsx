@@ -77,7 +77,7 @@ const QuizQuestionContainer = (): JSX.Element => {
 						open={!isValidQuestion}
 						placement='bottom'
 					>
-						<Paper sx={{ background: '#111111' }}>
+						<Paper variant='darken'>
 							<InputBase
 								autoFocus
 								fullWidth
@@ -110,12 +110,12 @@ const QuizQuestionContainer = (): JSX.Element => {
 						}}
 					>
 						<Paper
+							variant='darken'
 							sx={{
-								background: '#111111',
 								height: '300px',
 								width: '400px',
 							}}
-						></Paper>
+						/>
 					</Box>
 					{question.type === 'Quiz' ? (
 						<WarningTooltip

@@ -68,12 +68,13 @@ const AnswerQuizTrueFalse = ({ variant }: Props): JSX.Element => {
 					height: 100,
 					borderRight: `${color} 3px solid`,
 					backgroundColor: color,
+					boxShadow: 'none',
 				}}
 			>
 				<CardMedia component='svg'>{figure}</CardMedia>
 			</Card>
 
-			<Typography variant='h6' sx={{ ml: 1, flex: 1 }}>
+			<Typography variant='h6' sx={{ ml: 1, flex: 1, color: 'white' }}>
 				{variant == 'true' ? 'Verdadero' : 'Falso'}
 			</Typography>
 

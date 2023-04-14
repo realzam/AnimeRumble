@@ -17,7 +17,6 @@ const QuestionsPreviewList = (): JSX.Element => {
 			<Stack>
 				<SortableQuizzesList />
 				<Button
-					variant='contained'
 					onClick={async () => {
 						const { data } = await animeRumbleApi.post<IQuizQuestion>(
 							'/quiz/add-question',

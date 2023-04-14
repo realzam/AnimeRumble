@@ -8,22 +8,25 @@ export default function CreatePage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-	const newQuiz = new QuizModel({
-		description: '',
-		createdAt: Date.now(),
-		questions: [{}],
-	});
 	try {
+		console.log('Quiz-create');
+
+		const newQuiz = new QuizModel({
+			description: '',
+			createdAt: Date.now(),
+			questions: [{}],
+		});
 		await db.connect();
 		const quiz = await newQuiz.save();
 		await db.disconnect();
 		return {
 			redirect: {
-				destination: `/quiz/create/${quiz.id}`,
+				destination: `/admin/quiz/create/${quiz.id}`,
 				permanent: false,
 			},
 		};
 	} catch (error) {
+		console.error('Quiz-create', error);
 		await db.disconnect();
 	}
 

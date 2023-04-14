@@ -1,47 +1,78 @@
 import { Components, createTheme, Theme } from '@mui/material/styles';
-import { merge } from 'lodash';
+import { deepmerge } from '@mui/utils';
 
 import { baseComponentsTheme } from './base-theme';
+
+export const lightThemePalette = createTheme({
+	palette: {
+		mode: 'light',
+		primary: {
+			main: '#2B66EF',
+		},
+		secondary: {
+			main: '#D354D3',
+		},
+		error: {
+			main: '#E70000',
+		},
+		warning: {
+			main: '#E5D296',
+		},
+		success: {
+			main: '#19BD69',
+		},
+		background: {
+			paper: '#FFF',
+			darker: '#f4f4f4',
+			appBar: '#FFF',
+			default: '#F9F9F9',
+		},
+	},
+});
 
 const lightComponents: Components<Omit<Theme, 'components'>> = {
 	MuiAppBar: {
 		styleOverrides: {
 			root: {
-				backgroundColor: 'white',
+				backgroundColor: '#FFF',
+				boxShadow: '0px 2px 8px 0px rgba(0,0,0,0.13)',
 			},
 		},
 	},
-
-	MuiButton: {
-		styleOverrides: {
-			root: {
-				':hover': {
-					backgroundColor: 'rgba(0,0,0,0.05)',
+	MuiPaper: {
+		variants: [
+			{
+				props: { variant: 'darken' },
+				style: {
+					backgroundColor: lightThemePalette.palette.background.darker,
 				},
 			},
+		],
+	},
+
+	MuiButton: {
+		defaultProps: {
+			variant: 'contained',
+			color: 'primary',
 		},
 	},
 	MuiCard: {
 		styleOverrides: {
 			root: {
-				boxShadow: '0px 5px 5px rgba(0,0,0,0.05)',
+				boxShadow: '0px 2px 8px 0px rgba(0,0,0,0.13)',
 			},
+		},
+	},
+	MuiTypography: {
+		defaultProps: {
+			color: 'common.black',
 		},
 	},
 };
 
-export const lightTheme = createTheme({
-	palette: {
-		mode: 'light',
-		primary: {
-			main: '#1E1E1E',
-		},
-		secondary: {
-			main: '#3A64D8',
-		},
-		info: {
-			main: '#fff',
-		},
-	},
-	components: merge(baseComponentsTheme, lightComponents),
-});
+export const lightTheme = createTheme(
+	deepmerge(baseComponentsTheme(lightThemePalette), {
+		palette: lightThemePalette.palette,
+		components: lightComponents,
+	}),
+);

@@ -117,10 +117,11 @@ const AnswerQuizNormal = ({
 			title='Es necesario agregar una respuesta'
 		>
 			<Card
+				variant='darken'
 				sx={{
 					display: 'flex',
 					padding: '5px',
-					background: answerValue.length > 0 ? color : '#111111',
+					background: answerValue.length > 0 ? color : undefined,
 					flexDirection: 'row',
 					alignItems: 'center',
 					transition: 'all 0.25s ease',
@@ -133,6 +134,7 @@ const AnswerQuizNormal = ({
 						height: 100,
 						borderRight: `${color} 3px solid`,
 						backgroundColor: color,
+						boxShadow: 'none',
 					}}
 				>
 					<CardMedia component='svg'>{figure}</CardMedia>
@@ -144,7 +146,12 @@ const AnswerQuizNormal = ({
 					multiline
 					maxRows={4}
 					placeholder={placeholder}
-					sx={{ ml: 1, flex: 1, fontSize: 20 }}
+					sx={{
+						ml: 1,
+						flex: 1,
+						fontSize: 20,
+						color: answerValue.length > 0 ? 'white' : undefined,
+					}}
 					value={answerValue}
 					onChange={e => {
 						const newAnswer = e.target.value.trimStart();

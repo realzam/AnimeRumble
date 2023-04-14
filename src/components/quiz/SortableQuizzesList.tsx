@@ -53,8 +53,11 @@ const SortableQuizzesList = (): JSX.Element => {
 					from: oldIndex,
 					to: newIndex,
 				});
+				return;
 			}
 		}
+
+		setIsDragging(false);
 	};
 	return (
 		<Container>
