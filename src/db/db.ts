@@ -1,37 +1,30 @@
 import mongoose from 'mongoose';
 
-/**
- * 0 = disconnected
- * 1 = connected
- * 2 = connecting
- * 3 = disconnecting
- */
-
-const mongoConnection = {
-	isConnected: 0,
-};
-
-export const connect = async () => {
-	if (mongoConnection.isConnected) {
+export async function connect(): Promise<void> {
+	if (mongoose.connection.readyState === 1) {
+		console.log('Already connected to database!');
 		return;
 	}
-	if (mongoose.connections.length > 0) {
-		mongoConnection.isConnected = mongoose.connections[0].readyState;
-		if (mongoConnection.isConnected === 1) {
-			return;
-		}
+
+	try {
+		const url = process.env.MONGO_URL;
+		await mongoose.connect(url);
+		console.log(`Connected to database`);
+	} catch (err) {
+		console.error('Failed to connect to database', err);
+	}
+}
+
+export async function disconnect(): Promise<void> {
+	if (mongoose.connection.readyState === 0) {
+		console.log('Not connected to database!');
+		return;
+	}
+
+	try {
 		await mongoose.disconnect();
+		console.log('Disconnected from database');
+	} catch (err) {
+		console.error('Failed to disconnect from database', err);
 	}
-	mongoose.set('strictQuery', true);
-	await mongoose.connect(process.env.MONGO_URL);
-	mongoConnection.isConnected = 1;
-};
-
-export const disconnect = async () => {
-	// if (process.env.NODE_ENV === 'development') return;
-	if (mongoConnection.isConnected === 0) {
-		return;
-	}
-	await mongoose.disconnect();
-	mongoConnection.isConnected = 0;
-};
+}

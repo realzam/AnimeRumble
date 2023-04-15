@@ -25,8 +25,13 @@ export default async function handler(
 }
 
 async function getQuizzes(req: NextApiRequest, res: NextApiResponse<Data>) {
-	await db.connect();
-	const quizzes = await QuizModel.find();
-	await db.disconnect();
-	return res.status(200).json(quizzes);
+	try {
+		await db.connect();
+		const quizzes = await QuizModel.find();
+		await db.disconnect();
+		return res.status(200).json(quizzes);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: 'SERVER ERROR :(' });
+	}
 }

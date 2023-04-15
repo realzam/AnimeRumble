@@ -21,6 +21,7 @@ import {
 	MenuItem,
 	ListItemIcon,
 	ListItemText,
+	Skeleton,
 } from '@mui/material';
 import useSWR, { Fetcher } from 'swr';
 
@@ -167,7 +168,11 @@ const QuizDashboard = (): JSX.Element => {
 				</Button>
 			</Stack>
 			{isLoading ? (
-				<div>loading...</div>
+				<Stack spacing={2}>
+					<Skeleton variant='rounded' height={130} />
+					<Skeleton variant='rounded' height={130} />
+					<Skeleton variant='rounded' height={130} />
+				</Stack>
 			) : error ? (
 				<div>failed to load</div>
 			) : (
