@@ -25,12 +25,12 @@ const WrapperQuizPage = (): JSX.Element => {
 	const handleClose = () => {
 		setShowDialogDelete(false);
 	};
-	// const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
-	// 	fetch(apiURL).then(res => res.json());
+	const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
+		fetch(apiURL).then(res => res.json());
 
-	// const { data } = useSWR('/api/quiz/' + quiz.id, fetcher, {
-	// 	refreshInterval: 5000,
-	// });
+	const { data, isLoading } = useSWR('/api/quiz/' + quiz.id, fetcher, {
+		refreshInterval: 5000,
+	});
 	// useEffect(() => {
 	// 	if (data) {
 	// 		console.log('data cambio');
@@ -43,7 +43,9 @@ const WrapperQuizPage = (): JSX.Element => {
 	// 	}
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// }, [data]);
-
+	if (isLoading) {
+		return <div>Loading</div>;
+	}
 	return (
 		<MainLayout>
 			<Grid container columnSpacing={3}>
