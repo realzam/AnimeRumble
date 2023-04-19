@@ -44,10 +44,10 @@ const WrapperQuizPage = (): JSX.Element => {
 	// 	}
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// }, [data]);
+	if (isLoading) {
+		return <div>Loading</div>;
+	}
 	return <div>hola</div>;
-	// 	if (isLoading) {
-	// 		return <div>Loading</div>;
-	// 	}
 	// 	return (
 	// 		<MainLayout>
 	// 			<Grid container columnSpacing={3}>
