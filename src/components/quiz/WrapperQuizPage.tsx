@@ -25,12 +25,12 @@ const WrapperQuizPage = (): JSX.Element => {
 	const handleClose = () => {
 		setShowDialogDelete(false);
 	};
-	const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
-		fetch(apiURL).then(res => res.json());
+	// const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
+	// 	fetch(apiURL).then(res => res.json());
 
-	const { data } = useSWR('/api/quiz/' + quiz.id, fetcher, {
-		refreshInterval: 5000,
-	});
+	// const { data } = useSWR('/api/quiz/' + quiz.id, fetcher, {
+	// 	refreshInterval: 5000,
+	// });
 	// useEffect(() => {
 	// 	if (data) {
 	// 		console.log('data cambio');
