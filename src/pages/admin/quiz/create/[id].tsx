@@ -16,7 +16,7 @@ export default function CreatePage({ quiz }: Props) {
 	return (
 		<QuizProvider initialState={{ index: 0, quiz }}>
 			<div>Hola</div>
-			{/* <WrapperQuizPage /> */}
+			<WrapperQuizPage />
 		</QuizProvider>
 	);
 }

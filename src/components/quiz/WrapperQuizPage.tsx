@@ -31,18 +31,18 @@ const WrapperQuizPage = (): JSX.Element => {
 	const { data } = useSWR('/api/quiz/' + quiz.id, fetcher, {
 		refreshInterval: 5000,
 	});
-	useEffect(() => {
-		if (data) {
-			console.log('data cambio');
-			console.log(data);
+	// useEffect(() => {
+	// 	if (data) {
+	// 		console.log('data cambio');
+	// 		console.log(data);
 
-			if (JSON.stringify(data) !== JSON.stringify(quiz)) {
-				console.log('Actuializando Quiz info');
-				updateQuiz(data);
-			}
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data]);
+	// 		if (JSON.stringify(data) !== JSON.stringify(quiz)) {
+	// 			console.log('Actuializando Quiz info');
+	// 			updateQuiz(data);
+	// 		}
+	// 	}
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [data]);
 
 	return (
 		<MainLayout>
