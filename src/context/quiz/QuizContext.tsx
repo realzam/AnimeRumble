@@ -8,6 +8,7 @@ interface ContextProps {
 	index: number;
 	showDialogDelete: boolean;
 	isDragging: boolean;
+	updateQuiz: (quiz: IQuiz) => void;
 	setIsDragging: (value: boolean) => void;
 	setShowDialogDelete: (value: boolean) => void;
 	setIndex: (index: number) => void;

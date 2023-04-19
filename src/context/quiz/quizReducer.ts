@@ -1,8 +1,9 @@
 import { QuizState } from '.';
 
-import { IQuizQuestion } from '@/interfaces';
+import { IQuiz, IQuizQuestion } from '@/interfaces';
 
 type QuizActionType =
+	| { type: 'Quiz.UpdateQuiz'; payload: IQuiz }
 	| { type: 'Quiz.AddQuestion'; payload: IQuizQuestion }
 	| { type: 'Quiz.UpdateQuestion'; payload: IQuizQuestion }
 	| { type: 'Quiz.UpdateQuestions'; payload: IQuizQuestion[] }
@@ -16,6 +17,15 @@ export const quizReducer = (
 ): QuizState => {
 	const { questions } = state.quiz;
 	switch (action.type) {
+		case 'Quiz.UpdateQuiz':
+			if (action.payload.questions.length - 1 < state.index) {
+				return {
+					...state,
+					quiz: { ...action.payload },
+					index: action.payload.questions.length - 1,
+				};
+			}
+			return { ...state, quiz: { ...action.payload } };
 		case 'Quiz.UpdateQuestion':
 			questions[state.index] = action.payload;
 			return { ...state };

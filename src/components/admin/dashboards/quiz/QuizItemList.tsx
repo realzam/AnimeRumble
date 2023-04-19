@@ -7,39 +7,54 @@ import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import {
-	Tabs,
-	Tab,
 	Card,
-	Box,
 	Stack,
-	Typography,
+	Box,
 	Chip,
-	Button,
-	IconButton,
+	Typography,
 	Tooltip,
+	IconButton,
 	Menu,
 	MenuItem,
 	ListItemIcon,
 	ListItemText,
-	Skeleton,
+	Button,
 } from '@mui/material';
-import useSWR, { Fetcher } from 'swr';
+
+import CloneDialog from './CloneDialog';
+import DeleteDialog from './DeleteDialog';
+import RenameDialog from './RenameDialog';
 
 import { IQuiz } from '@/interfaces';
-
-interface Props2 {
+interface Props {
 	quiz: IQuiz;
 }
-const QuizItemList = ({ quiz }: Props2): JSX.Element => {
+
+const QuizItemList = ({ quiz }: Props): JSX.Element => {
 	const router = useRouter();
+	const [showRenameDialog, setShowRenameDialog] = useState(false);
+	const [showCloneDialog, setShowCloneDialog] = useState(false);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+	const openMenu = Boolean(anchorEl);
+	const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
-	const handleClose = () => {
+	const handleMenuClose = () => {
 		setAnchorEl(null);
 	};
-	const open = Boolean(anchorEl);
+	const handleRenameClick = () => {
+		handleMenuClose();
+		setShowRenameDialog(true);
+	};
+	const handleCloneClick = () => {
+		handleMenuClose();
+		setShowCloneDialog(true);
+	};
+	const handleDeleteClick = () => {
+		handleMenuClose();
+		setShowDeleteDialog(true);
+	};
 
 	return (
 		<Card
@@ -47,6 +62,24 @@ const QuizItemList = ({ quiz }: Props2): JSX.Element => {
 				marginBottom: 2,
 			}}
 		>
+			<RenameDialog
+				quizID={quiz.id}
+				title={quiz.title}
+				show={showRenameDialog}
+				setShowDialog={setShowRenameDialog}
+			/>
+			<CloneDialog
+				quizID={quiz.id}
+				title={quiz.title}
+				show={showCloneDialog}
+				setShowDialog={setShowCloneDialog}
+			/>
+			<DeleteDialog
+				quizID={quiz.id}
+				title={quiz.title}
+				show={showDeleteDialog}
+				setShowDialog={setShowDeleteDialog}
+			/>
 			<Stack direction='row'>
 				<Box
 					sx={{
@@ -98,7 +131,7 @@ const QuizItemList = ({ quiz }: Props2): JSX.Element => {
 								</IconButton>
 							</Tooltip>
 							<Tooltip title='Más'>
-								<IconButton onClick={handleClick}>
+								<IconButton onClick={handleMenuClick}>
 									<MoreVertIcon />
 								</IconButton>
 							</Tooltip>
@@ -108,22 +141,22 @@ const QuizItemList = ({ quiz }: Props2): JSX.Element => {
 									'aria-labelledby': 'basic-button',
 								}}
 								anchorEl={anchorEl}
-								open={open}
-								onClose={handleClose}
+								open={openMenu}
+								onClose={handleMenuClose}
 							>
-								<MenuItem>
+								<MenuItem onClick={handleRenameClick}>
 									<ListItemIcon>
 										<TextFieldsIcon />
 									</ListItemIcon>
 									<ListItemText>Renombrar</ListItemText>
 								</MenuItem>
-								<MenuItem>
+								<MenuItem onClick={handleCloneClick}>
 									<ListItemIcon>
 										<ContentCopyIcon />
 									</ListItemIcon>
 									<ListItemText>Duplicar</ListItemText>
 								</MenuItem>
-								<MenuItem>
+								<MenuItem onClick={handleDeleteClick}>
 									<ListItemIcon>
 										<DeleteOutlineIcon />
 									</ListItemIcon>
@@ -142,44 +175,4 @@ const QuizItemList = ({ quiz }: Props2): JSX.Element => {
 	);
 };
 
-const QuizDashboard = (): JSX.Element => {
-	const router = useRouter();
-	const [tabIndex, setTabIndex] = useState(0);
-	const fetcher: Fetcher<IQuiz[]> = (apiURL: string) =>
-		fetch(apiURL).then(res => res.json());
-
-	const { data, error, isLoading } = useSWR('/api/quiz', fetcher);
-
-	return (
-		<>
-			<Stack direction='row' justifyContent='space-between' alignItems='center'>
-				<Tabs value={tabIndex} onChange={(e, index) => setTabIndex(index)}>
-					<Tab disableRipple label={'Borradores'} />
-					<Tab disableRipple label={'En progreso'} />
-					<Tab disableRipple label={'Finalizados'} />
-				</Tabs>
-				<Button
-					variant='contained'
-					onClick={() => {
-						router.push('/admin/quiz/create/');
-					}}
-				>
-					Crear Encuesta
-				</Button>
-			</Stack>
-			{isLoading ? (
-				<Stack spacing={2}>
-					<Skeleton variant='rounded' height={130} />
-					<Skeleton variant='rounded' height={130} />
-					<Skeleton variant='rounded' height={130} />
-				</Stack>
-			) : error ? (
-				<div>failed to load</div>
-			) : (
-				data?.map(quiz => <QuizItemList key={quiz.id} quiz={quiz} />)
-			)}
-		</>
-	);
-};
-
-export default QuizDashboard;
+export default QuizItemList;

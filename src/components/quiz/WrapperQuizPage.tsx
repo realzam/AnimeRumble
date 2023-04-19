@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import {
 	Dialog,
@@ -9,19 +9,40 @@ import {
 	Button,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import useSWR, { Fetcher } from 'swr';
 
 import QuestionsPreviewList from './QuestionsPreviewList';
 import QuizQuestionContainer from './QuizQuestionContainer';
 
 import { QuizContext } from '@/context';
+import { IQuiz } from '@/interfaces';
 import { MainLayout } from '@/layouts';
 
 const WrapperQuizPage = (): JSX.Element => {
-	const { showDialogDelete, setShowDialogDelete } = useContext(QuizContext);
+	const { showDialogDelete, setShowDialogDelete, updateQuiz, quiz } =
+		useContext(QuizContext);
 
 	const handleClose = () => {
 		setShowDialogDelete(false);
 	};
+	const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
+		fetch(apiURL).then(res => res.json());
+
+	const { data } = useSWR('/api/quiz/' + quiz.id, fetcher, {
+		refreshInterval: 5000,
+	});
+	useEffect(() => {
+		if (data) {
+			console.log('data cambio');
+			console.log(data);
+
+			if (JSON.stringify(data) !== JSON.stringify(quiz)) {
+				console.log('Actuializando Quiz info');
+				updateQuiz(data);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data]);
 
 	return (
 		<MainLayout>

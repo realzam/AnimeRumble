@@ -27,6 +27,10 @@ export const QuizProvider = ({ children, initialState }: Props) => {
 		isDragging: false,
 	});
 
+	const updateQuiz = (quiz: IQuiz) => {
+		dispatch({ type: 'Quiz.UpdateQuiz', payload: quiz });
+	};
+
 	const setShowDialogDelete = (value: boolean) => {
 		dispatch({ type: 'Quiz.SetShowDialogDelete', payload: value });
 	};
@@ -51,13 +55,20 @@ export const QuizProvider = ({ children, initialState }: Props) => {
 		dispatch({ type: 'Quiz.UpdateQuestion', payload: question });
 	};
 
-	const getQuestion = () => state.quiz.questions[state.index];
+	const getQuestion = () => {
+		const length = state.quiz.questions.length;
+		if (state.index > length - 1) {
+			return state.quiz.questions[length - 1];
+		}
+		return state.quiz.questions[state.index];
+	};
 
 	//setQuestionByIndex
 	return (
 		<QuizContext.Provider
 			value={{
 				...state,
+				updateQuiz,
 				addQuestion,
 				updateQuestion,
 				updateQuestions,

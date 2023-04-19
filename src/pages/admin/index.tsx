@@ -1,4 +1,4 @@
-import QuizDashboard from '@/components/admin/dashboards/QuizDashboard';
+import QuizDashboard from '@/components/admin/dashboards/quiz/QuizDashboard';
 import { AdminLayout } from '@/layouts';
 
 const DashboardPage = (): JSX.Element => {

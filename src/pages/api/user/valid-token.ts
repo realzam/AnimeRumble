@@ -29,13 +29,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 		await db.connect();
 		const user = await UserModel.findById(id);
 		await db.disconnect();
-		console.log('valid-token 2');
 		if (!user) {
 			return res.status(400).json({ message: 'No existe usuario' });
 		}
 		const userObj = user.toJSON<IUser>({ flattenMaps: false });
 		const { role, name, email } = userObj;
-		console.log('valid-token 3');
 		return res.status(200).json({
 			user: { role, name, email },
 			token: singToken({ email, id, role }),

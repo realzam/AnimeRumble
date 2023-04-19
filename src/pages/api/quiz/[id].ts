@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/db';
@@ -9,14 +10,24 @@ type Data =
 	| {
 			message: string;
 	  }
-	| IQuiz[];
+	| IQuiz;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	try {
+		const { id } = req.query;
+
+		if (!mongoose.isValidObjectId(id)) {
+			return res.status(400).json({ message: 'El ID no es valido' });
+		}
 		await db.connect();
-		const quizzes = await QuizModel.find();
+		const quiz = await QuizModel.findById(id);
 		await db.disconnect();
-		return res.status(200).json(quizzes);
+		if (!quiz) {
+			return res
+				.status(400)
+				.json({ message: 'No existe Quiz con el ID:' + id });
+		}
+		return res.status(200).json(quiz);
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({ message: 'SERVER ERROR :(' });

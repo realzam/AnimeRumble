@@ -8,20 +8,26 @@ interface Props {
 }
 
 export interface UIState {
+	dialogID: string;
 	prop: string;
 }
 
 const UI_INITIAL_STATE: UIState = {
 	prop: '',
+	dialogID: '',
 };
 
 export const UIProvider = ({ children, toggleColorMode }: Props) => {
-	const [state] = useReducer(uiReducer, UI_INITIAL_STATE);
+	const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
+	const setDialogID = (id: string) => {
+		dispatch({ type: 'UI.SetDialogID', payload: id });
+	};
 	return (
 		<UIContext.Provider
 			value={{
 				...state,
 				toggleColorMode,
+				setDialogID,
 			}}
 		>
 			{children}
