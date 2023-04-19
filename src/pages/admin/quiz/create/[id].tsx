@@ -15,14 +15,15 @@ interface Props {
 export default function CreatePage({ quiz }: Props) {
 	return (
 		<QuizProvider initialState={{ index: 0, quiz }}>
-			<WrapperQuizPage />
+			<div>Hola</div>
+			{/* <WrapperQuizPage /> */}
 		</QuizProvider>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+	console.time('create:id');
 	const { id } = params as { id: string };
-	console.log('create[id],1');
 	if (!mongoose.isValidObjectId(id)) {
 		return {
 			redirect: {
@@ -31,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 			},
 		};
 	}
-	console.log('create[id],2');
+	console.timeLog('create:id');
 	await db.connect();
 	const quiz = await QuizModel.findById(id);
 
@@ -43,19 +44,19 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 			},
 		};
 	}
-	console.log('create[id],3');
+	console.timeLog('create:id');
 	if (quiz.questions.length === 0) {
 		quiz.questions.push({
 			question: '',
 		} as QuestionDB);
 		await quiz.save();
 	}
-	console.log('create[id],4');
+	console.timeLog('create:id');
 	await db.disconnect();
 	const quizObj = quiz.toJSON<IQuiz>({
 		flattenMaps: false,
 	});
-	console.log('create[id],5');
+	console.timeEnd('create:id');
 	return {
 		props: {
 			quiz: quizObj,
