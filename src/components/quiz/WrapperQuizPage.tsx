@@ -31,7 +31,7 @@ const WrapperQuizPage = (): JSX.Element => {
 		fetch(apiURL).then(res => res.json());
 
 	const { data, isLoading } = useSWR('/api/quiz/' + quiz.id, fetcher, {
-		refreshInterval: 5000,
+		// refreshInterval: 5000,
 	});
 	useEffect(() => {
 		setTimeout(() => {
