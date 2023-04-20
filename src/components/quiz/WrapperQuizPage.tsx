@@ -36,7 +36,7 @@ const WrapperQuizPage = (): JSX.Element => {
 	useEffect(() => {
 		setTimeout(() => {
 			setShow(true);
-		}, 15 * 1000);
+		}, 1 * 1000);
 	}, []);
 	// useEffect(() => {
 	// 	if (data) {
@@ -55,10 +55,11 @@ const WrapperQuizPage = (): JSX.Element => {
 	}
 	return (
 		<MainLayout>
-			<Grid container columnSpacing={3}>
-				<Grid xs={3}>{/* <QuestionsPreviewList /> */}</Grid>
-				<Grid xs={9}>{/* <QuizQuestionContainer /> */}</Grid>
-			</Grid>
+			<div>Hola</div>
+			{/* <Grid container columnSpacing={3}>
+				<Grid xs={3}><QuestionsPreviewList /></Grid>
+				<Grid xs={9}><QuizQuestionContainer /></Grid>
+			</Grid> */}
 		</MainLayout>
 	);
 	// 	return (
