@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import {
 	Dialog,
@@ -19,6 +19,7 @@ import { IQuiz } from '@/interfaces';
 import { MainLayout } from '@/layouts';
 
 const WrapperQuizPage = (): JSX.Element => {
+	const [show, setShow] = useState(false);
 	const { showDialogDelete, setShowDialogDelete, updateQuiz, quiz } =
 		useContext(QuizContext);
 
@@ -32,6 +33,11 @@ const WrapperQuizPage = (): JSX.Element => {
 	const { data, isLoading } = useSWR('/api/quiz/' + quiz.id, fetcher, {
 		refreshInterval: 5000,
 	});
+	useEffect(() => {
+		setTimeout(() => {
+			setShow(true);
+		}, 15 * 1000);
+	}, []);
 	// useEffect(() => {
 	// 	if (data) {
 	// 		console.log('data cambio');
@@ -44,15 +50,13 @@ const WrapperQuizPage = (): JSX.Element => {
 	// 	}
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// }, [data]);
-	if (isLoading) {
+	if (!show) {
 		return <div>Loading</div>;
 	}
 	return (
 		<MainLayout>
 			<Grid container columnSpacing={3}>
-				<Grid xs={3}>
-					<QuestionsPreviewList />
-				</Grid>
+				<Grid xs={3}>{/* <QuestionsPreviewList /> */}</Grid>
 				<Grid xs={9}>{/* <QuizQuestionContainer /> */}</Grid>
 			</Grid>
 		</MainLayout>
