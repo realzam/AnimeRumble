@@ -47,7 +47,18 @@ const WrapperQuizPage = (): JSX.Element => {
 	if (isLoading) {
 		return <div>Loading</div>;
 	}
-	return <div>hola</div>;
+	return (
+		<MainLayout>
+			<Grid container columnSpacing={3}>
+				<Grid xs={3}>
+					<QuestionsPreviewList />
+				</Grid>
+				<Grid xs={9}>
+					<QuizQuestionContainer />
+				</Grid>
+			</Grid>
+		</MainLayout>
+	);
 	// 	return (
 	// 		<MainLayout>
 	// 			<Grid container columnSpacing={3}>
