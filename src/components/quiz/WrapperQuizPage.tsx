@@ -53,9 +53,7 @@ const WrapperQuizPage = (): JSX.Element => {
 				<Grid xs={3}>
 					<QuestionsPreviewList />
 				</Grid>
-				<Grid xs={9}>
-					<QuizQuestionContainer />
-				</Grid>
+				<Grid xs={9}>{/* <QuizQuestionContainer /> */}</Grid>
 			</Grid>
 		</MainLayout>
 	);
