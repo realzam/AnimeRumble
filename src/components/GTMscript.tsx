@@ -1,5 +1,23 @@
 import Script from 'next/script';
 
+export const GTMAnalytics = () => (
+	<>
+		<Script
+			async
+			src='https://www.googletagmanager.com/gtag/js?id=G-G0XDT9Y0MM'
+		/>
+		<Script id='google-tag-manager-analyctics' strategy='afterInteractive'>
+			{`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+        
+            gtag('config', 'G-G0XDT9Y0MM');
+            `}
+		</Script>
+	</>
+);
+
 export const GTMscript = () => (
 	<>
 		<Script id='google-tag-manager' strategy='afterInteractive'>
