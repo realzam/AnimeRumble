@@ -24,6 +24,7 @@
 		"@types/react-dom": "18.0.11",
 		"@types/validator": "^13.7.13",
 		"@use-gesture/react": "^10.2.24",
+		"@vercel/analytics": "^1.0.0",
 		"axios": "^1.3.4",
 		"bcryptjs": "^2.4.3",
 		"eslint": "8.38.0",

@@ -4,6 +4,7 @@ import Head from 'next/head';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
+import { Analytics } from '@vercel/analytics/react';
 import Cookies from 'js-cookie';
 
 import { AuthProvider, UIProvider } from '@/context';
@@ -52,6 +53,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 					</Head>
 
 					<Component {...pageProps} />
+					<Analytics />
 				</ThemeProvider>
 			</UIProvider>
 		</AuthProvider>
