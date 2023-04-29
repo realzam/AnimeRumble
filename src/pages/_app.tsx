@@ -46,13 +46,13 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 				<ThemeProvider theme={theme}>
 					<CssBaseline />
 					<Head>
-						<GTMAnalytics />
 						<title>Anime Rumble</title>
 						<meta
 							name='viewport'
 							content='width=device-width, initial-scale=1'
 						/>
 					</Head>
+					<GTMAnalytics />
 					<GTMscript />
 					<Component {...pageProps} />
 					<Analytics />
