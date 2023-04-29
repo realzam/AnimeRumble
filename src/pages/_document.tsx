@@ -13,9 +13,9 @@ export default function Document() {
 				/>
 			</Head>
 			<body>
-				<GTMnoscript />
 				<Main />
 				<NextScript />
+				<GTMnoscript />
 			</body>
 		</Html>
 	);

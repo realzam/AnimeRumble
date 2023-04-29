@@ -52,10 +52,9 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 							content='width=device-width, initial-scale=1'
 						/>
 					</Head>
-
+					<GTMscript />
 					<Component {...pageProps} />
 					<Analytics />
-					<GTMscript />
 				</ThemeProvider>
 			</UIProvider>
 		</AuthProvider>
