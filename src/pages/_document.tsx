@@ -1,11 +1,10 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
-import { GTMscript, GTMnoscript } from '@/components/GTMscript';
+import { GTMnoscript } from '@/components/GTMscript';
 
 export default function Document() {
 	return (
 		<Html lang='es'>
-			<GTMscript />
 			<Head>
 				<link rel='icon' href='/favicon.ico' />
 				<link

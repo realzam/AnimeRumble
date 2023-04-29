@@ -7,6 +7,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Analytics } from '@vercel/analytics/react';
 import Cookies from 'js-cookie';
 
+import { GTMscript } from '@/components/GTMscript';
 import { AuthProvider, UIProvider } from '@/context';
 import { IThemes } from '@/interfaces';
 import { darkTheme, lightTheme } from '@/themes';
@@ -54,6 +55,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 
 					<Component {...pageProps} />
 					<Analytics />
+					<GTMscript />
 				</ThemeProvider>
 			</UIProvider>
 		</AuthProvider>
