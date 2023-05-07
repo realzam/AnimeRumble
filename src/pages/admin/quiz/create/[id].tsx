@@ -24,8 +24,8 @@ export default function CreatePage({ fallback, quiz }: Props) {
 			<Typography>Hola Mundo</Typography>
 			<QuizProvider initialState={{ index: 0, quizInit: quiz }}>
 				<div>Hola</div>
-				<QuizQuestionContainer />
-				{/* <WrapperQuizPage /> */}
+				{/* <QuizQuestionContainer /> */}
+				<WrapperQuizPage />
 			</QuizProvider>
 		</SWRConfig>
 	);
