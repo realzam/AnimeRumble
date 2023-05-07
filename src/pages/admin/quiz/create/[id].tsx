@@ -1,6 +1,9 @@
+import { InputBase, Stack, Typography } from '@mui/material';
 import mongoose from 'mongoose';
 import { GetServerSideProps } from 'next';
+import useSWR, { Fetcher, SWRConfig } from 'swr';
 
+import QuizQuestionContainer from '@/components/quiz/QuizQuestionContainer';
 import WrapperQuizPage from '@/components/quiz/WrapperQuizPage';
 import { QuizProvider } from '@/context';
 import { db } from '@/db';
@@ -9,56 +12,62 @@ import QuizModel from '@/db/models/Quiz';
 import { IQuiz } from '@/interfaces';
 
 interface Props {
+	fallback: {
+		[key: string]: IQuiz;
+	};
 	quiz: IQuiz;
 }
 
-export default function CreatePage({ quiz }: Props) {
+export default function CreatePage({ fallback, quiz }: Props) {
 	return (
-		<QuizProvider initialState={{ index: 0, quiz }}>
-			<div>Hola</div>
-			<WrapperQuizPage />
-		</QuizProvider>
+		<SWRConfig value={{ fallback }}>
+			<Typography>Hola Mundo</Typography>
+			<QuizProvider initialState={{ index: 0, quizInit: quiz }}>
+				<div>Hola</div>
+				<QuizQuestionContainer />
+				{/* <WrapperQuizPage /> */}
+			</QuizProvider>
+		</SWRConfig>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-	console.time('create:id');
 	const { id } = params as { id: string };
 	if (!mongoose.isValidObjectId(id)) {
 		return {
 			redirect: {
-				destination: '/admin/quiz/create',
+				destination: '/admin',
 				permanent: false,
 			},
 		};
 	}
-	console.timeLog('create:id');
 	await db.connect();
 	const quiz = await QuizModel.findById(id);
 
 	if (!quiz) {
 		return {
 			redirect: {
-				destination: '/admin/quiz/create',
+				destination: '/admin',
 				permanent: false,
 			},
 		};
 	}
-	console.timeLog('create:id');
+
 	if (quiz.questions.length === 0) {
 		quiz.questions.push({
 			question: '',
 		} as QuestionDB);
 		await quiz.save();
 	}
-	console.timeLog('create:id');
 	await db.disconnect();
 	const quizObj = quiz.toJSON<IQuiz>({
 		flattenMaps: false,
 	});
-	console.timeEnd('create:id');
 	return {
 		props: {
+			fallback: {
+				[`/api/quiz/${id}`]: quizObj,
+			},
 			quiz: quizObj,
 		},
 	};

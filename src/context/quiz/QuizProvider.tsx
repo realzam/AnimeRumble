@@ -1,4 +1,6 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
+
+import useSWR, { Fetcher } from 'swr';
 
 import { QuizContext, quizReducer } from '.';
 
@@ -12,7 +14,7 @@ export interface QuizState {
 }
 
 interface InitialState {
-	quiz: IQuiz;
+	quizInit: IQuiz;
 	index: number;
 }
 
@@ -21,8 +23,17 @@ interface Props {
 	initialState: InitialState;
 }
 export const QuizProvider = ({ children, initialState }: Props) => {
+	const { quizInit } = initialState;
+	const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
+		fetch(apiURL).then(res => res.json());
+	// `data` will always be available as it's in `fallback`.
+	const { data: quiz } = useSWR(`/api/quiz/${quizInit.id}`, fetcher, {
+		refreshInterval: 1000 * 5,
+	});
+
 	const [state, dispatch] = useReducer(quizReducer, {
-		...initialState,
+		quiz: quiz ? quiz : quizInit,
+		index: 0,
 		showDialogDelete: false,
 		isDragging: false,
 	});
@@ -62,6 +73,13 @@ export const QuizProvider = ({ children, initialState }: Props) => {
 		}
 		return state.quiz.questions[state.index];
 	};
+	useEffect(() => {
+		if (quiz && JSON.stringify(state.quiz) != JSON.stringify(quiz)) {
+			console.log('update swr quiz');
+
+			dispatch({ type: 'Quiz.UpdateQuiz', payload: quiz });
+		}
+	}, [quiz]);
 
 	//setQuestionByIndex
 	return (
