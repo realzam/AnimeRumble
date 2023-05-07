@@ -25,7 +25,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          cd ~/home/opc/AnimeRumble
+          cd /home/opc/AnimeRumble
           git pull origin main
           git status
           yarn install --frozen-lockfile
