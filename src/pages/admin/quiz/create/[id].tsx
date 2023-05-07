@@ -1,11 +1,11 @@
-import { InputBase, Stack, Typography } from '@mui/material';
+import { useContext, useEffect } from 'react';
+
 import mongoose from 'mongoose';
 import { GetServerSideProps } from 'next';
-import useSWR, { Fetcher, SWRConfig } from 'swr';
+import { SWRConfig } from 'swr';
 
-import QuizQuestionContainer from '@/components/quiz/QuizQuestionContainer';
 import WrapperQuizPage from '@/components/quiz/WrapperQuizPage';
-import { QuizProvider } from '@/context';
+import { QuizContext } from '@/context';
 import { db } from '@/db';
 import { QuestionDB } from '@/db/models';
 import QuizModel from '@/db/models/Quiz';
@@ -15,18 +15,24 @@ interface Props {
 	fallback: {
 		[key: string]: IQuiz;
 	};
-	quiz: IQuiz;
+	id: string;
 }
 
-export default function CreatePage({ fallback, quiz }: Props) {
+export default function CreatePage({ fallback, id }: Props) {
+	const { quizID, setQuizID } = useContext(QuizContext);
+
+	useEffect(() => {
+		if (quizID === '') {
+			setQuizID(id);
+		}
+	}, [setQuizID, id, quizID]);
+
+	if (quizID === '') {
+		return <></>;
+	}
 	return (
 		<SWRConfig value={{ fallback }}>
-			<Typography>Hola Mundo</Typography>
-			<QuizProvider initialState={{ index: 0, quizInit: quiz }}>
-				<div>Hola</div>
-				{/* <QuizQuestionContainer /> */}
-				<WrapperQuizPage />
-			</QuizProvider>
+			<WrapperQuizPage />
 		</SWRConfig>
 	);
 }
@@ -68,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 			fallback: {
 				[`/api/quiz/${id}`]: quizObj,
 			},
-			quiz: quizObj,
+			id,
 		},
 	};
 };

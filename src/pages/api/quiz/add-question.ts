@@ -3,13 +3,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/db';
 import { QuestionDB, QuizModel } from '@/db/models';
-import { IQuizQuestion } from '@/interfaces';
+import { IQuiz } from '@/interfaces';
 import { methodMiddleware, validateMiddleware } from '@/middlewares';
 type Data =
 	| {
 			message: string;
 	  }
-	| IQuizQuestion;
+	| IQuiz;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	const { quizID } = req.body as {
@@ -25,10 +25,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	quiz.questions.push({
 		question: '',
 	} as QuestionDB);
-	await quiz.save();
-	const newQuestion = quiz.questions[quiz.questions.length - 1];
+	const quizSaved = await quiz.save();
 	await db.disconnect();
-	return res.status(200).json(newQuestion);
+	return res.status(200).json(quizSaved);
 };
 
 export default methodMiddleware(

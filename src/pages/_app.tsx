@@ -8,7 +8,7 @@ import { Analytics } from '@vercel/analytics/react';
 import Cookies from 'js-cookie';
 
 import { GTMAnalytics, GTMscript } from '@/components/GTMscript';
-import { AuthProvider, UIProvider } from '@/context';
+import { AuthProvider, QuizProvider, UIProvider } from '@/context';
 import { IThemes } from '@/interfaces';
 import { darkTheme, lightTheme } from '@/themes';
 import '../styles/globals.css';
@@ -43,20 +43,22 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 	return (
 		<AuthProvider>
 			<UIProvider toggleColorMode={toggleColorMode}>
-				<ThemeProvider theme={theme}>
-					<CssBaseline />
-					<Head>
-						<title>Anime Rumble</title>
-						<meta
-							name='viewport'
-							content='width=device-width, initial-scale=1'
-						/>
-					</Head>
-					<GTMAnalytics />
-					<GTMscript />
-					<Component {...pageProps} />
-					<Analytics />
-				</ThemeProvider>
+				<QuizProvider>
+					<ThemeProvider theme={theme}>
+						<CssBaseline />
+						<Head>
+							<title>Anime Rumble</title>
+							<meta
+								name='viewport'
+								content='width=device-width, initial-scale=1'
+							/>
+						</Head>
+						<GTMAnalytics />
+						<GTMscript />
+						<Component {...pageProps} />
+						<Analytics />
+					</ThemeProvider>
+				</QuizProvider>
 			</UIProvider>
 		</AuthProvider>
 	);

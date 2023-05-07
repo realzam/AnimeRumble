@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { QuizContext } from '@/context';
+import useQuiz from './useQuiz';
 
 const useValidQuestion = (questionID: string) => {
-	const { quiz } = useContext(QuizContext);
+	const { quiz } = useQuiz();
 	const [isValidQuizQuestion, setIsValidQuizQuestion] = useState(false);
 	const [isValidQuestion, setIsValidQuestion] = useState(false);
 	const [isValidAnswers, setIsValidAnswers] = useState(false);

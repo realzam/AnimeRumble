@@ -9,13 +9,15 @@ import QuestionPreviewItemInfo from './QuestionPreviewItemInfo';
 
 import { QuizContext } from '@/context';
 import { useValidQuestion } from '@/hooks';
+import useQuiz from '@/hooks/useQuiz';
 
 interface Props {
 	index: number;
 }
 const QuestionPreviewItem = ({ index }: Props): JSX.Element => {
 	const theme = useTheme();
-	const { quiz, index: currentQuestion } = useContext(QuizContext);
+	const { quiz } = useQuiz();
+	const { index: currentQuestion } = useContext(QuizContext);
 	const question = quiz.questions[index];
 
 	const isSelected = useMemo(
@@ -65,7 +67,6 @@ const QuestionPreviewItem = ({ index }: Props): JSX.Element => {
 					display: 'flex',
 					border: '1px solid',
 					borderColor: isSelected ? theme.palette.primary.dark : 'transparent',
-					// backgroundColor: isSelected ? '#7840232e' : undefined,
 				}}
 			>
 				<QuestionPreviewItemInfo index={index} />

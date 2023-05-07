@@ -1,20 +1,13 @@
 import { createContext } from 'react';
-
-import { IQuiz, IQuizQuestion } from '@/interfaces';
-
 interface ContextProps {
-	question: IQuizQuestion;
-	quiz: IQuiz;
+	quizID: string;
 	index: number;
 	showDialogDelete: boolean;
 	isDragging: boolean;
-	updateQuiz: (quiz: IQuiz) => void;
 	setIsDragging: (value: boolean) => void;
 	setShowDialogDelete: (value: boolean) => void;
 	setIndex: (index: number) => void;
-	addQuestion: (question: IQuizQuestion) => void;
-	updateQuestion: (question: IQuizQuestion) => void;
-	updateQuestions: (questions: IQuizQuestion[]) => void;
+	setQuizID: (id: string) => void;
 }
 
 export const QuizContext = createContext({} as ContextProps);

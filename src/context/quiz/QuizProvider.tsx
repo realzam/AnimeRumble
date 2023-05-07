@@ -1,45 +1,27 @@
-import { useEffect, useReducer } from 'react';
-
-import useSWR, { Fetcher } from 'swr';
+import { useReducer } from 'react';
 
 import { QuizContext, quizReducer } from '.';
 
-import { IQuiz, IQuizQuestion } from '@/interfaces';
-
 export interface QuizState {
-	quiz: IQuiz;
+	quizID: string;
 	index: number;
 	showDialogDelete: boolean;
 	isDragging: boolean;
 }
 
-interface InitialState {
-	quizInit: IQuiz;
-	index: number;
-}
-
 interface Props {
 	children: JSX.Element | JSX.Element[];
-	initialState: InitialState;
 }
-export const QuizProvider = ({ children, initialState }: Props) => {
-	const { quizInit } = initialState;
-	const fetcher: Fetcher<IQuiz> = (apiURL: string) =>
-		fetch(apiURL).then(res => res.json());
-	// `data` will always be available as it's in `fallback`.
-	const { data: quiz } = useSWR(`/api/quiz/${quizInit.id}`, fetcher, {
-		refreshInterval: 1000 * 5,
-	});
-
+export const QuizProvider = ({ children }: Props) => {
 	const [state, dispatch] = useReducer(quizReducer, {
-		quiz: quiz ? quiz : quizInit,
+		quizID: '',
 		index: 0,
 		showDialogDelete: false,
 		isDragging: false,
 	});
 
-	const updateQuiz = (quiz: IQuiz) => {
-		dispatch({ type: 'Quiz.UpdateQuiz', payload: quiz });
+	const setQuizID = (id: string) => {
+		dispatch({ type: 'Quiz.SetQuizID', payload: id });
 	};
 
 	const setShowDialogDelete = (value: boolean) => {
@@ -54,46 +36,14 @@ export const QuizProvider = ({ children, initialState }: Props) => {
 		dispatch({ type: 'Quiz.SetIndex', payload: index });
 	};
 
-	const addQuestion = (quiz: IQuizQuestion) => {
-		dispatch({ type: 'Quiz.AddQuestion', payload: quiz });
-	};
-
-	const updateQuestions = (questions: IQuizQuestion[]) => {
-		dispatch({ type: 'Quiz.UpdateQuestions', payload: questions });
-	};
-
-	const updateQuestion = (question: IQuizQuestion) => {
-		dispatch({ type: 'Quiz.UpdateQuestion', payload: question });
-	};
-
-	const getQuestion = () => {
-		const length = state.quiz.questions.length;
-		if (state.index > length - 1) {
-			return state.quiz.questions[length - 1];
-		}
-		return state.quiz.questions[state.index];
-	};
-	useEffect(() => {
-		if (quiz && JSON.stringify(state.quiz) != JSON.stringify(quiz)) {
-			console.log('update swr quiz');
-
-			dispatch({ type: 'Quiz.UpdateQuiz', payload: quiz });
-		}
-	}, [quiz]);
-
-	//setQuestionByIndex
 	return (
 		<QuizContext.Provider
 			value={{
 				...state,
-				updateQuiz,
-				addQuestion,
-				updateQuestion,
-				updateQuestions,
 				setIndex,
+				setQuizID,
 				setIsDragging,
 				setShowDialogDelete,
-				question: getQuestion(),
 			}}
 		>
 			{children}

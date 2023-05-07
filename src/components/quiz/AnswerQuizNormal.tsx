@@ -16,6 +16,8 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { animeRumbleApi } from '@/api';
 import { QuizContext } from '@/context';
+import useQuiz from '@/hooks/useQuiz';
+import { IQuizQuestion } from '@/interfaces';
 
 interface Props {
 	placeholder?: string;
@@ -48,7 +50,17 @@ const AnswerQuizNormal = ({
 	placeholder = 'Agregar Respuesta',
 	index,
 }: Props): JSX.Element => {
-	const { question, quiz, updateQuestion } = useContext(QuizContext);
+	const { quiz, mutate } = useQuiz();
+	const { index: questionIndex } = useContext(QuizContext);
+	const question = quiz.questions[questionIndex];
+
+	const updateQuestion = (payload: IQuizQuestion) => {
+		const newQuestionsArray = [...quiz.questions];
+		newQuestionsArray[questionIndex] = {
+			...payload,
+		};
+		mutate({ ...quiz, questions: [...newQuestionsArray] });
+	};
 
 	const answerValue = question.answers[index];
 	const correctAnswerQuizValue = question.correctAnswersQuiz[index];

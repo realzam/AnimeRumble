@@ -14,6 +14,8 @@ type Data =
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	try {
+		const delay = 2000;
+		await new Promise(r => setTimeout(r, delay));
 		const { id } = req.query;
 
 		if (!mongoose.isValidObjectId(id)) {

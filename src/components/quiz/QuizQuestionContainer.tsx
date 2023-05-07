@@ -22,6 +22,7 @@ import QuestionTypeTrueFalse from './QuestionTypeTrueFalse';
 import { animeRumbleApi } from '@/api';
 import { QuizContext } from '@/context';
 import { useValidQuestion } from '@/hooks';
+import useQuiz from '@/hooks/useQuiz';
 
 const WarningTooltip = styled(({ className, ...props }: TooltipProps) => (
 	<Tooltip
@@ -44,7 +45,9 @@ const WarningTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 const QuizQuestionContainer = (): JSX.Element => {
-	const { quiz, question, updateQuestion, index } = useContext(QuizContext);
+	const { quiz, mutate } = useQuiz();
+	const { index } = useContext(QuizContext);
+	const question = quiz.questions[index];
 	const {
 		isValidQuestion,
 		isValidCorrectAnswersQuiz,
@@ -85,7 +88,12 @@ const QuizQuestionContainer = (): JSX.Element => {
 								placeholder='Escribe tu pregunta'
 								onChange={e => {
 									const newQuestionValue = e.target.value;
-									updateQuestion({ ...question, question: newQuestionValue });
+									const newQuestionsArray = [...quiz.questions];
+									newQuestionsArray[index] = {
+										...question,
+										question: newQuestionValue,
+									};
+									mutate({ ...quiz, questions: [...newQuestionsArray] });
 									debounced(newQuestionValue);
 								}}
 								value={question.question}

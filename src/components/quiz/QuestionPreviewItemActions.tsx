@@ -9,7 +9,8 @@ import { Box, Stack } from '@mui/system';
 
 import { animeRumbleApi } from '@/api';
 import { QuizContext } from '@/context';
-import { IQuizQuestion } from '@/interfaces';
+import useQuiz from '@/hooks/useQuiz';
+import { IQuiz, IQuizQuestion } from '@/interfaces';
 
 interface Props {
 	index: number;
@@ -21,8 +22,13 @@ const QuestionPreviewItemActions = ({
 	isSelected,
 	isHover,
 }: Props): JSX.Element => {
-	const { setIndex, quiz, updateQuestions, setShowDialogDelete, isDragging } =
-		useContext(QuizContext);
+	const { quiz, mutate } = useQuiz();
+	const {
+		setIndex,
+		setShowDialogDelete,
+		isDragging,
+		index: stateIndex,
+	} = useContext(QuizContext);
 	const question = quiz.questions[index];
 
 	const { listeners } = useSortable({ id: question.id });
@@ -30,6 +36,14 @@ const QuestionPreviewItemActions = ({
 		() => ((isSelected || isHover) && !isDragging ? 'visible' : 'hidden'),
 		[isSelected, isHover, isDragging],
 	);
+	const updateQuestionIndex = (payload: IQuizQuestion[]) => {
+		const { id } = quiz.questions[stateIndex];
+		let index = payload.findIndex(q => q.id === id);
+		if (index === -1) {
+			index = stateIndex;
+		}
+		return Math.min(payload.length - 1, Math.max(0, index));
+	};
 
 	return (
 		<Stack direction='column'>
@@ -44,14 +58,14 @@ const QuestionPreviewItemActions = ({
 							minWidth: 0,
 						}}
 						onClick={async () => {
-							const { data } = await animeRumbleApi.put<IQuizQuestion[]>(
+							const { data } = await animeRumbleApi.put<IQuiz>(
 								`/quiz/copy-question`,
 								{
 									quizID: quiz.id,
 									questionID: question.id,
 								},
 							);
-							updateQuestions(data);
+							mutate({ ...data });
 							setIndex(index + 1);
 						}}
 					>
@@ -86,14 +100,15 @@ const QuestionPreviewItemActions = ({
 							if (quiz.questions.length == 1) {
 								setShowDialogDelete(true);
 							} else {
-								const { data } = await animeRumbleApi.put<IQuizQuestion[]>(
+								const { data } = await animeRumbleApi.put<IQuiz>(
 									`/quiz/delete-question`,
 									{
 										quizID: quiz.id,
 										questionID: question.id,
 									},
 								);
-								updateQuestions(data);
+								mutate({ ...data });
+								setIndex(updateQuestionIndex(data.questions));
 							}
 						}}
 					>

@@ -14,8 +14,8 @@ import {
 	restrictToWindowEdges,
 } from '@dnd-kit/modifiers';
 import {
-	arrayMove,
 	SortableContext,
+	arrayMove,
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
@@ -25,9 +25,11 @@ import QuestionPreviewItem from './QuestionPreviewItem';
 
 import { animeRumbleApi } from '@/api';
 import { QuizContext } from '@/context';
+import useQuiz from '@/hooks/useQuiz';
 
 const SortableQuizzesList = (): JSX.Element => {
-	const { quiz, updateQuestions, setIsDragging } = useContext(QuizContext);
+	const { quiz, mutate } = useQuiz();
+	const { setIsDragging } = useContext(QuizContext);
 	const { questions } = quiz;
 
 	const sensors = useSensors(
@@ -44,16 +46,12 @@ const SortableQuizzesList = (): JSX.Element => {
 				const oldIndex = questions.findIndex(q => q.id === active.id);
 				const newIndex = questions.findIndex(q => q.id === over.id);
 				const newOrderquestions = arrayMove(questions, oldIndex, newIndex);
-				updateQuestions(newOrderquestions);
-				setTimeout(() => {
-					setIsDragging(false);
-				}, 100);
+				mutate({ ...quiz, questions: newOrderquestions });
 				animeRumbleApi.put(`/quiz/sort-questions`, {
 					quizID: quiz.id,
 					from: oldIndex,
 					to: newIndex,
 				});
-				return;
 			}
 		}
 

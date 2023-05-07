@@ -1,16 +1,14 @@
-import { useContext } from 'react';
-
 import { Button, Card } from '@mui/material';
 import { Stack } from '@mui/system';
 
 import SortableQuizzesList from './SortableQuizzesList';
 
 import { animeRumbleApi } from '@/api';
-import { QuizContext } from '@/context';
-import { IQuizQuestion } from '@/interfaces';
+import useQuiz from '@/hooks/useQuiz';
+import { IQuiz } from '@/interfaces';
 
 const QuestionsPreviewList = (): JSX.Element => {
-	const { quiz, addQuestion } = useContext(QuizContext);
+	const { quiz, mutate } = useQuiz();
 
 	return (
 		<Card>
@@ -18,11 +16,13 @@ const QuestionsPreviewList = (): JSX.Element => {
 				<SortableQuizzesList />
 				<Button
 					onClick={async () => {
-						const { data } = await animeRumbleApi.post<IQuizQuestion>(
+						const { data } = await animeRumbleApi.post<IQuiz>(
 							'/quiz/add-question',
-							{ quizID: quiz.id },
+							{
+								quizID: quiz.id,
+							},
 						);
-						addQuestion(data);
+						mutate({ ...data });
 					}}
 					sx={{
 						m: 2,

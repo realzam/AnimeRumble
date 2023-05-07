@@ -3,13 +3,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/db';
 import { QuizModel } from '@/db/models';
-import { IQuizQuestion } from '@/interfaces';
+import { IQuiz } from '@/interfaces';
 import { methodMiddleware, validateMiddleware } from '@/middlewares';
 type Data =
 	| {
 			message: string;
 	  }
-	| IQuizQuestion[];
+	| IQuiz;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	const { quizID, questionID } = req.body as {
@@ -29,10 +29,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 			.json({ message: 'No es posible eliminar la unica pregunta de un quiz' });
 	}
 	quiz.deleteQuestion(questionID);
-	await quiz.save();
+	const quizSaved = await quiz.save();
 	await db.disconnect();
 
-	return res.status(200).json(quiz.questions);
+	return res.status(200).json(quizSaved);
 };
 
 export default methodMiddleware(

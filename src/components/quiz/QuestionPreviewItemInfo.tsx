@@ -6,12 +6,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { Box, Stack } from '@mui/system';
 
 import { QuizContext } from '@/context';
+import useQuiz from '@/hooks/useQuiz';
 
 interface Props {
 	index: number;
 }
 const QuestionPreviewItemInfo = ({ index }: Props): JSX.Element => {
-	const { setIndex, quiz } = useContext(QuizContext);
+	const { quiz } = useQuiz();
+	const { setIndex } = useContext(QuizContext);
 	const question = quiz.questions[index];
 
 	const isUndefinedCorrectAnswerTrueFalse =

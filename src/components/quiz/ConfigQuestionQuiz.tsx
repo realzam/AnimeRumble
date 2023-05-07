@@ -14,14 +14,27 @@ import {
 
 import { animeRumbleApi } from '@/api';
 import { QuizContext } from '@/context';
+import useQuiz from '@/hooks/useQuiz';
 import {
+	IQuizQuestion,
 	QuizQuestionPoints,
 	QuizQuestionTimeLimit,
 	QuizQuestionType,
 } from '@/interfaces';
 
 const ConfigQuestionQuiz = (): JSX.Element => {
-	const { updateQuestion, question, quiz } = useContext(QuizContext);
+	const { quiz, mutate } = useQuiz();
+	const { index } = useContext(QuizContext);
+	const question = quiz.questions[index];
+
+	const updateQuestion = (payload: IQuizQuestion) => {
+		const newQuestionsArray = [...quiz.questions];
+		newQuestionsArray[index] = {
+			...payload,
+		};
+		mutate({ ...quiz, questions: [...newQuestionsArray] });
+	};
+
 	return (
 		<Stack
 			spacing={5}
