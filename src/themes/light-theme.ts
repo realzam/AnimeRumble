@@ -25,7 +25,7 @@ export const lightThemePalette = createTheme({
 			paper: '#FFF',
 			darker: '#f4f4f4',
 			appBar: '#FFF',
-			default: '#F9F9F9',
+			default: '#F2F4F8',
 		},
 	},
 });

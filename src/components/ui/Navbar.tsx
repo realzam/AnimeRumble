@@ -20,7 +20,7 @@ const Navbar = (): JSX.Element => {
 					alignItems='end'
 					justifyContent='center'
 				>
-					<Typography variant='h6'>A |</Typography>
+					<Typography variant='h6'>Anime |</Typography>
 					<Typography sx={{ ml: 0.5 }}>Rumble</Typography>
 				</Link>
 				<div style={{ flex: 1 }} />
