@@ -1,0 +1,126 @@
+.quizResources {
+	--bg-color: #9360f7;
+	--bg-color-light: #c9affb;
+	--text-color-hover: #f9f9f9;
+}
+
+.loteriaResources {
+	--bg-color: #f3425f;
+	--bg-color-light: #f9a0af;
+	--text-color-hover: #f9f9f9;
+}
+
+.bingoResources {
+	--bg-color: #f7b928;
+	--bg-color-light: #fbdc93;
+	--text-color-hover: #f9f9f9;
+}
+
+.animeResources {
+	--bg-color: #1b74e4;
+	--bg-color-light: #8db9f1;
+	--text-color-hover: #f9f9f9;
+}
+
+.comentariosResources {
+	--bg-color: #45bd62;
+	--bg-color-light: #a2deb0;
+	--text-color-hover: #f9f9f9;
+}
+
+.avisosResources {
+	--bg-color: #ba299b;
+	--bg-color-light: #e58bd2;
+	--text-color-hover: #f9f9f9;
+}
+
+.container {
+	display: flex;
+	height: 290px;
+	transition: all 0.3s ease;
+}
+.container:hover {
+	transform: translateY(-5px) scale(1.05) translateZ(0);
+}
+
+.card {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	box-shadow: 0 14px 26px rgba(0, 0, 0, 0.04);
+	transition: all 0.3s ease-out;
+	text-decoration: none;
+}
+
+.container:hover .overlay {
+	transform: scale(6) translateZ(0);
+}
+
+.container:hover .circle {
+	border-color: var(--bg-color-light);
+	background: var(--bg-color);
+}
+
+.container:hover .circle:after {
+	background: var(--bg-color-light);
+}
+
+.container:hover h6 {
+	color: var(--text-color-hover);
+}
+
+.container:active {
+	transform: scale(1) translateZ(0);
+}
+
+.card h6 {
+	margin-top: 30px;
+	z-index: 1000;
+}
+
+.overlay {
+	transform-origin: center;
+	width: 118px;
+	position: absolute;
+	height: 118px;
+	border-radius: 50%;
+	background: var(--bg-color);
+	z-index: 0;
+	transition: transform 0.3s ease-out;
+}
+
+.circle {
+	box-sizing: content-box;
+	width: 131px;
+	height: 131px;
+	border-radius: 50%;
+	background: transparent;
+	border: 2px solid var(--bg-color);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease-out;
+}
+
+.circle:after {
+	content: '';
+	width: 118px;
+	height: 118px;
+	display: block;
+	position: absolute;
+	background: var(--bg-color);
+	border-radius: 50%;
+	top: 7px;
+	left: 7px;
+	transition: opacity 0.3s ease-out;
+}
+
+.circle svg {
+	z-index: 10000;
+	transform: translateZ(0);
+}
