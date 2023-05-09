@@ -1,12 +1,18 @@
+import Head from 'next/head';
+
 import { Navbar } from '@/components/ui';
 
 interface Props {
+	title: string;
 	children: JSX.Element | JSX.Element[];
 }
 
-export const MainLayout = ({ children }: Props) => {
+export const MainLayout = ({ children, title }: Props) => {
 	return (
 		<>
+			<Head>
+				<title>{title}</title>
+			</Head>
 			<nav>
 				<Navbar />
 			</nav>
