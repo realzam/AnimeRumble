@@ -73,7 +73,7 @@ const LoginPage = () => {
 	};
 
 	return (
-		<MainLayout>
+		<MainLayout title='Anime Rumble|Login'>
 			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
 				<Box
 					sx={{

@@ -14,9 +14,11 @@ import QuestionsPreviewList from './QuestionsPreviewList';
 import QuizQuestionContainer from './QuizQuestionContainer';
 
 import { QuizContext } from '@/context';
+import useQuiz from '@/hooks/useQuiz';
 import { MainLayout } from '@/layouts';
 
 const WrapperQuizPage = (): JSX.Element => {
+	const { quiz } = useQuiz();
 	const { showDialogDelete, setShowDialogDelete } = useContext(QuizContext);
 
 	const handleClose = () => {
@@ -24,7 +26,7 @@ const WrapperQuizPage = (): JSX.Element => {
 	};
 
 	return (
-		<MainLayout>
+		<MainLayout title={quiz.title}>
 			<Grid container columnSpacing={3}>
 				<Grid xs={3}>
 					<QuestionsPreviewList />

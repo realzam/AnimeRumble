@@ -84,7 +84,7 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<MainLayout>
+		<MainLayout title='Anime Rumble|Register'>
 			<form
 				onSubmit={handleSubmit(onRegisterUser)}
 				noValidate
