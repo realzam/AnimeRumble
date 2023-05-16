@@ -3,7 +3,6 @@ import NextLink from 'next/link';
 import { InboxOutlined, MailOutline } from '@mui/icons-material';
 import {
 	Box,
-	Card,
 	Divider,
 	Link,
 	List,
@@ -11,6 +10,7 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
+	Paper,
 	Stack,
 	Typography,
 } from '@mui/material';
@@ -25,7 +25,7 @@ interface Props {
 export const AdminLayout = ({ children, selected = 0 }: Props) => {
 	return (
 		<Stack direction='row'>
-			<Card
+			<Paper
 				sx={{
 					// position: 'fixed',
 					height: '100vh',
@@ -72,31 +72,7 @@ export const AdminLayout = ({ children, selected = 0 }: Props) => {
 						),
 					)}
 				</List>
-				<Divider />
-				<List>
-					{['All mail', 'Trash', 'Spam'].map((text, index) => (
-						<ListItem key={text} disablePadding>
-							<ListItemButton>
-								<ListItemIcon>
-									{index % 2 === 0 ? <InboxOutlined /> : <MailOutline />}
-								</ListItemIcon>
-								<ListItemText primary={text} />
-							</ListItemButton>
-						</ListItem>
-					))}
-				</List>
-				<Box
-					sx={{
-						flexGrow: 1,
-					}}
-				/>
-				<Box
-					sx={{
-						backgroundColor: 'primary.main',
-						height: '30px',
-					}}
-				/>
-			</Card>
+			</Paper>
 			<main
 				style={{
 					flexGrow: '1',

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -25,9 +26,9 @@ import CloneDialog from './CloneDialog';
 import DeleteDialog from './DeleteDialog';
 import RenameDialog from './RenameDialog';
 
-import { IQuiz } from '@/interfaces';
+import { IQuizBasic } from '@/interfaces';
 interface Props {
-	quiz: IQuiz;
+	quiz: IQuizBasic;
 }
 
 const QuizItemList = ({ quiz }: Props): JSX.Element => {
@@ -83,14 +84,18 @@ const QuizItemList = ({ quiz }: Props): JSX.Element => {
 			<Stack direction='row'>
 				<Box
 					sx={{
-						height: '130px',
-						width: '250px',
+						height: '140px',
+						width: '248px',
 						backgroundColor: 'black',
+						flexShrink: 0,
 						position: 'relative',
 					}}
 				>
+					<Image src={quiz.img} alt={quiz.title} fill />
 					<Chip
-						label={`${quiz.questions.length} preguntas`}
+						label={`${quiz.questionsNumber} ${
+							quiz.questionsNumber > 1 ? 'Preguntas' : 'Pregunta'
+						}`}
 						color='primary'
 						sx={{
 							position: 'absolute',

@@ -39,8 +39,8 @@ export class QuizDB {
 	@prop({ type: () => [QuestionDB] })
 	questions: QuestionDB[];
 
-	@prop({ type: String, trim: true })
-	img?: string;
+	@prop({ type: String, trim: true, default: '/placeholders/quiz_overlay.jpg' })
+	img: string;
 
 	moveQuestion(from: number, to: number) {
 		this.questions.splice(
@@ -87,6 +87,18 @@ export class QuizDB {
 		clone.questions = this.questions.map(q => q.clone());
 		clone.img = this.img;
 		return clone;
+	}
+
+	objectBasic() {
+		return {
+			id: this.id,
+			title: this.title,
+			description: this.description,
+			createdAt: this.createdAt,
+			img: this.img,
+			status: this.status,
+			questionsNumber: this.questions.length,
+		};
 	}
 }
 

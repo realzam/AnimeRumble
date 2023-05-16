@@ -149,6 +149,7 @@ export const baseComponentsTheme = ({ palette, breakpoints }: Theme) =>
 				styleOverrides: {
 					root: {
 						p: 2,
+						borderRadius: '8px',
 					},
 				},
 				defaultProps: {

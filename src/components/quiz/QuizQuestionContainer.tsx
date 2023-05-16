@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import {
 	Card,
@@ -45,6 +45,7 @@ const WarningTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 
 const QuizQuestionContainer = (): JSX.Element => {
+	const [touched, setTouched] = useState(false);
 	const { quiz, mutate } = useQuiz();
 	const { index } = useContext(QuizContext);
 	const question = quiz.questions[index];
@@ -75,10 +76,14 @@ const QuizQuestionContainer = (): JSX.Element => {
 				<Stack spacing={5}>
 					<ConfigQuestionQuiz />
 					<Divider />
+					{/* <UploadImage setFile={setFile} /> */}
 					<WarningTooltip
-						title='Es necesaria un pregunta'
-						open={!isValidQuestion}
+						title='Es necesaria una pregunta'
+						open={touched && !isValidQuestion}
 						placement='bottom'
+						sx={{
+							zIndex: 100,
+						}}
 					>
 						<Paper variant='darken'>
 							<InputBase
@@ -96,6 +101,7 @@ const QuizQuestionContainer = (): JSX.Element => {
 									mutate({ ...quiz, questions: [...newQuestionsArray] });
 									debounced(newQuestionValue);
 								}}
+								onBlur={() => setTouched(true)}
 								value={question.question}
 								sx={{
 									'.MuiInputBase-input ': {
@@ -130,6 +136,9 @@ const QuizQuestionContainer = (): JSX.Element => {
 							title='Selecciona al menos una respuesta correcta'
 							open={isValidAnswers && !isValidCorrectAnswersQuiz}
 							placement='top'
+							sx={{
+								zIndex: 100,
+							}}
 						>
 							<Box>
 								<QuestionTypeQuiz />
@@ -140,6 +149,9 @@ const QuizQuestionContainer = (): JSX.Element => {
 							title='Selecciona una respuesta correcta'
 							open={!isValidCorrectAnswersTrueFalse}
 							placement='top'
+							sx={{
+								zIndex: 100,
+							}}
 						>
 							<Box>
 								<QuestionTypeTrueFalse />

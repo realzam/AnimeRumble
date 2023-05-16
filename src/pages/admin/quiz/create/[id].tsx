@@ -22,12 +22,12 @@ export default function CreatePage({ fallback, id }: Props) {
 	const { quizID, setQuizID } = useContext(QuizContext);
 
 	useEffect(() => {
-		if (quizID === '') {
+		if (quizID !== id) {
 			setQuizID(id);
 		}
 	}, [setQuizID, id, quizID]);
 
-	if (quizID === '') {
+	if (quizID === '' || quizID !== id) {
 		return <></>;
 	}
 	return (
