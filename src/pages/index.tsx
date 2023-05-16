@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import { Box, Card, CardActionArea, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -26,6 +27,7 @@ export default function Home() {
 							title='Encuestas'
 							classColor={styles.quizResources}
 							icon={<QuizIcon />}
+							route='/encuestas'
 						/>
 						<GameCard
 							title='Lotería'
@@ -63,13 +65,20 @@ interface Props {
 	title: string;
 	icon: JSX.Element;
 	classColor: string;
+	route?: string;
 }
 
-const GameCard = ({ title, icon, classColor }: Props): JSX.Element => {
+const GameCard = ({ title, icon, classColor, route }: Props): JSX.Element => {
+	const router = useRouter();
 	return (
 		<Grid xs={2} sm={4} md={4}>
 			<Card className={`${classColor} ${styles.container}`}>
 				<CardActionArea
+					onClick={() => {
+						if (route) {
+							router.push(route);
+						}
+					}}
 					className={styles.card}
 					sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}
 				>

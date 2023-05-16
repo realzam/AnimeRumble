@@ -1,28 +1,49 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import type { NextRequest, NextFetchEvent } from 'next/server';
+
+import { createEdgeRouter } from 'next-connect';
 
 import { IJWTUser } from './interfaces';
 import { isValidTokenJose } from './utils/edge';
 
-export async function middleware(req: NextRequest) {
-	const pathname = req.nextUrl.pathname;
-	console.log(req.method, pathname);
-	if (pathname.startsWith('/api/quiz/') || pathname.startsWith('/admin')) {
-		const tokenCookie = req.cookies.get('token')?.value || '';
-		const token = await isValidTokenJose<IJWTUser>(tokenCookie);
-		if (!token) {
-			if (pathname.startsWith('/admin')) {
-				return NextResponse.redirect(
-					new URL('/auth/login?p=' + req.nextUrl.pathname, req.url),
-				);
-			}
-			return new NextResponse(
-				JSON.stringify({ message: 'authentication failed' }),
-				{ status: 401, headers: { 'content-type': 'application/json' } },
-			);
-		}
+const router = createEdgeRouter<NextRequest, NextFetchEvent>();
+
+router.use(async (request, event, next) => {
+	console.log(`${request.method} ${request.url}`);
+	return next();
+});
+
+const isAuthenticated = async (req: NextRequest) => {
+	const tokenCookie = req.cookies.get('token')?.value || '';
+	const token = await isValidTokenJose<IJWTUser>(tokenCookie);
+	return token !== undefined;
+};
+
+router.use('/admin', async req => {
+	if (!(await isAuthenticated(req))) {
+		return NextResponse.redirect(
+			new URL('/auth/login?p=' + req.nextUrl.pathname, req.url),
+		);
 	}
 	return NextResponse.next();
+});
+
+router.use('/api/quiz', async req => {
+	if (req.nextUrl.pathname !== '/api/quiz' && !(await isAuthenticated(req))) {
+		return new NextResponse(
+			JSON.stringify({ message: 'authentication failed' }),
+			{ status: 401, headers: { 'content-type': 'application/json' } },
+		);
+	}
+	return NextResponse.next();
+});
+
+router.all(() => {
+	return NextResponse.next();
+});
+
+export async function middleware(req: NextRequest, event: NextFetchEvent) {
+	return router.run(req, event);
 }
 
 export const config = {

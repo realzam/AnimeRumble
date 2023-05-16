@@ -11,12 +11,20 @@ export type QuizQuestionTimeLimit =
 	| '120';
 export type QuizQuestionPoints = 'Standar' | 'Double' | 'None';
 
-export interface IQuiz {
+interface IQuizCore {
 	id: string;
 	title: string;
 	description: string;
 	createdAt: number;
+	img: string;
 	status: QuizStatus;
+}
+
+export interface IQuizBasic extends IQuizCore {
+	questionsNumber: number;
+}
+
+export interface IQuiz extends IQuizCore {
 	questions: IQuizQuestion[];
 }
 

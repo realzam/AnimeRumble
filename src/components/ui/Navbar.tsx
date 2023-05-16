@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import NextLink from 'next/link';
 
 import { MenuOutlined } from '@mui/icons-material';
@@ -5,7 +6,10 @@ import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
 
 import ThemeSwitcher from './ThemeSwitcher';
 
+import { AuthContext } from '@/context';
+
 const Navbar = (): JSX.Element => {
+	const { isLoggedIn, user } = useContext(AuthContext);
 	return (
 		<AppBar>
 			<Toolbar>
@@ -25,16 +29,28 @@ const Navbar = (): JSX.Element => {
 				</Link>
 				<div style={{ flex: 1 }} />
 				<ThemeSwitcher />
-
-				<Link
-					href='/auth/login'
-					component={NextLink}
-					display='flex'
-					alignItems='end'
-					justifyContent='center'
-				>
-					<Typography variant='h6'>Login</Typography>
-				</Link>
+				{!isLoggedIn && (
+					<Link
+						href='/auth/login'
+						component={NextLink}
+						display='flex'
+						alignItems='end'
+						justifyContent='center'
+					>
+						<Typography variant='h6'>Login</Typography>
+					</Link>
+				)}
+				{isLoggedIn && user?.role == 'admin' && (
+					<Link
+						href='/admin'
+						component={NextLink}
+						display='flex'
+						alignItems='end'
+						justifyContent='center'
+					>
+						<Typography variant='h6'>Admin Panel</Typography>
+					</Link>
+				)}
 			</Toolbar>
 		</AppBar>
 	);
