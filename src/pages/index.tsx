@@ -39,7 +39,7 @@ export default function Home() {
 							classColor={styles.bingoResources}
 							icon={<QuizIcon />}
 						/>
-						<GameCard
+						{/* <GameCard
 							title='Anime Rumble'
 							classColor={styles.animeResources}
 							icon={<QuizIcon />}
@@ -53,7 +53,7 @@ export default function Home() {
 							title='Avisos'
 							classColor={styles.avisosResources}
 							icon={<QuizIcon />}
-						/>
+						/> */}
 					</Grid>
 				</Box>
 			</MainLayout>

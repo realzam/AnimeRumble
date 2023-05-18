@@ -7,6 +7,7 @@ export const baseComponentsTheme = ({ palette, breakpoints }: Theme) =>
 				styleOverrides: {
 					root: {
 						textDecoration: 'none',
+						transition: 'all 0.3s ease-in-out',
 					},
 				},
 				defaultProps: {
