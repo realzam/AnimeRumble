@@ -1,8 +1,14 @@
 import { useContext } from 'react';
 import NextLink from 'next/link';
 
-import { MenuOutlined } from '@mui/icons-material';
-import { AppBar, IconButton, Link, Toolbar, Typography } from '@mui/material';
+import {
+	AppBar,
+	Button,
+	Link,
+	Stack,
+	Toolbar,
+	Typography,
+} from '@mui/material';
 
 import ThemeSwitcher from './ThemeSwitcher';
 
@@ -13,10 +19,10 @@ const Navbar = (): JSX.Element => {
 	return (
 		<AppBar>
 			<Toolbar>
-				<IconButton size='large' edge='start'>
+				{/* <IconButton size='large' edge='start'>
 					<MenuOutlined />
-				</IconButton>
-
+				</IconButton> */}
+				<ThemeSwitcher />
 				<Link
 					href='/'
 					component={NextLink}
@@ -28,17 +34,29 @@ const Navbar = (): JSX.Element => {
 					<Typography sx={{ ml: 0.5 }}>Rumble</Typography>
 				</Link>
 				<div style={{ flex: 1 }} />
-				<ThemeSwitcher />
+
 				{!isLoggedIn && (
-					<Link
-						href='/auth/login'
-						component={NextLink}
-						display='flex'
-						alignItems='end'
-						justifyContent='center'
+					<Stack
+						direction='row'
+						alignItems='center'
+						// justifyContent='center'
+						spacing={1}
 					>
-						<Typography variant='h6'>Login</Typography>
-					</Link>
+						<Link href='/auth/register' component={NextLink}>
+							<Button
+								variant='outlined'
+								sx={{
+									fontSize: '16px',
+								}}
+							>
+								Registarse
+							</Button>
+						</Link>
+
+						<Link href='/auth/login' component={NextLink}>
+							<Typography variant='h6'>Ingresar</Typography>
+						</Link>
+					</Stack>
 				)}
 				{isLoggedIn && user?.role == 'admin' && (
 					<Link
