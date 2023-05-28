@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -26,6 +25,7 @@ import CloneDialog from './CloneDialog';
 import DeleteDialog from './DeleteDialog';
 import RenameDialog from './RenameDialog';
 
+import { Image } from '@/components/ui';
 import { IQuizBasic } from '@/interfaces';
 interface Props {
 	quiz: IQuizBasic;
@@ -91,7 +91,14 @@ const QuizItemList = ({ quiz }: Props): JSX.Element => {
 						position: 'relative',
 					}}
 				>
-					<Image src={quiz.img} alt={quiz.title} fill />
+					<Image
+						srcError='public/placeholders/quiz_overlay.jpg'
+						placeholder='blur'
+						blurDataURL='/placeholders/quiz_overlay.jpg'
+						src={quiz.img}
+						alt={quiz.title}
+						fill
+					/>
 					<Chip
 						label={`${quiz.questionsNumber} ${
 							quiz.questionsNumber > 1 ? 'Preguntas' : 'Pregunta'

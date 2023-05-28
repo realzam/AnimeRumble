@@ -63,6 +63,7 @@ const QuestionPreviewItem = ({ index }: Props): JSX.Element => {
 					setIsHover(false);
 				}}
 				sx={{
+					boxShadow: '0px 1px 8px 0px rgba(0,0,0,0.53)',
 					marginY: 2,
 					display: 'flex',
 					border: '1px solid',

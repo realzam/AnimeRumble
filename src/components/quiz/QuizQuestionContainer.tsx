@@ -71,7 +71,13 @@ const QuizQuestionContainer = (): JSX.Element => {
 	}, [debounced, index]);
 
 	return (
-		<Card>
+		<Card
+			sx={{
+				// minWidth: '750px',
+				maxWidth: '1000px',
+				margin: '0 auto',
+			}}
+		>
 			<CardContent>
 				<Stack spacing={5}>
 					<ConfigQuestionQuiz />

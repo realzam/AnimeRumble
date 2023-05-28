@@ -127,6 +127,9 @@ const AnswerQuizNormal = ({
 				answerValue.trim().length == 0
 			}
 			title='Es necesario agregar una respuesta'
+			sx={{
+				zIndex: 100,
+			}}
 		>
 			<Card
 				variant='darken'

@@ -11,6 +11,7 @@ import { readChunk } from 'read-chunk';
 import { db } from '@/db';
 import { QuizModel } from '@/db/models';
 import { IQuizBasic } from '@/interfaces';
+import { isValidTokenJose } from '@/utils/edge';
 
 type Data =
 	| {
@@ -22,7 +23,6 @@ type Data =
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.get(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-	console.log(req.query);
 	const states = ['draf', 'in-progress', 'finished'];
 	let state = 'draf';
 	if (req.query.state) {
@@ -30,6 +30,13 @@ router.get(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	}
 	if (!states.includes(state)) {
 		return res.status(422).json({ message: 'state no es valido' });
+	}
+	if (state === 'draft') {
+		const { token } = req.cookies;
+		const { valid } = await isValidTokenJose(token);
+		if (!valid) {
+			return res.status(422).json({ message: 'state no es valido' });
+		}
 	}
 	await await db.connect();
 	const quizzes = await QuizModel.find({ status: state });
@@ -78,14 +85,14 @@ router.post(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 				}
 				const dirPath = path.join(
 					process.cwd(),
-					'public',
-					'quizes',
+					'files',
+					'quizzes',
 					newQuiz.id,
 				);
 				if (!fs.existsSync(dirPath)) {
 					fs.mkdirSync(dirPath);
 				}
-				newQuiz.img = `/quizes/${newQuiz.id}/overlay.${fileInfo.ext}`;
+				newQuiz.img = `/quizzes/${newQuiz.id}/overlay.${fileInfo.ext}`;
 				const filePath = path.join(dirPath, 'overlay.' + fileInfo.ext);
 				console.log('uwuw', newQuiz.img, filePath);
 

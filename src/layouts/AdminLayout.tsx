@@ -59,7 +59,7 @@ export const AdminLayout = ({ children, selected = 0 }: Props) => {
 				</Box>
 				<Divider />
 				<List>
-					{['Encuestas', 'Loteria', 'Bingo', 'Anime Rumble'].map(
+					{['Quizzes', 'Loteria', 'Bingo', 'Anime Rumble'].map(
 						(text, index) => (
 							<ListItem key={text} disablePadding>
 								<ListItemButton selected={index === selected}>
