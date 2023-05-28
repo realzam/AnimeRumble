@@ -43,8 +43,8 @@ export class UserDB {
 
 	@prop({
 		type: String,
-		enum: ['admin', 'client'],
-		default: 'client',
+		enum: ['admin', 'user'],
+		default: 'user',
 		required: true,
 	})
 	role: IUserRoles;
