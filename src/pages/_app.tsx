@@ -4,7 +4,6 @@ import Head from 'next/head';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { Analytics } from '@vercel/analytics/react';
 import Cookies from 'js-cookie';
 
 import { GTMAnalytics, GTMscript } from '@/components/GTMscript';
@@ -56,7 +55,6 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 						<GTMAnalytics />
 						<GTMscript />
 						<Component {...pageProps} />
-						<Analytics />
 					</ThemeProvider>
 				</QuizProvider>
 			</UIProvider>
