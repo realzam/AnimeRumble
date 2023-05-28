@@ -7,8 +7,8 @@ import {
 	DialogContentText,
 	DialogActions,
 	Button,
+	Box,
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 
 import QuestionsPreviewList from './QuestionsPreviewList';
 import QuizQuestionContainer from './QuizQuestionContainer';
@@ -26,16 +26,26 @@ const WrapperQuizPage = (): JSX.Element => {
 	};
 
 	return (
-		<MainLayout title={quiz.title}>
-			<Grid container columnSpacing={3}>
-				<Grid xs={3}>
-					<QuestionsPreviewList />
-				</Grid>
-				<Grid xs={9}>
+		<MainLayout title={quiz.title} useMain={false}>
+			<Box
+				sx={{
+					flexGrow: 1,
+					maxHeight: 'calc(100% - 60px)',
+					display: 'flex',
+					flexDrection: 'row',
+				}}
+			>
+				<QuestionsPreviewList />
+				<Box
+					sx={{
+						flexGrow: 1,
+						p: 3,
+						overflowY: 'auto',
+					}}
+				>
 					<QuizQuestionContainer />
-				</Grid>
-			</Grid>
-
+				</Box>
+			</Box>
 			<Dialog
 				open={showDialogDelete}
 				onClose={handleClose}

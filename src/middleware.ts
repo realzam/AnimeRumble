@@ -15,8 +15,8 @@ router.use(async (request, event, next) => {
 
 const isAuthenticated = async (req: NextRequest) => {
 	const tokenCookie = req.cookies.get('token')?.value || '';
-	const token = await isValidTokenJose<IJWTUser>(tokenCookie);
-	return token !== undefined;
+	const { valid } = await isValidTokenJose<IJWTUser>(tokenCookie);
+	return valid;
 };
 
 router.use('/admin', async req => {

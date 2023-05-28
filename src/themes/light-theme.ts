@@ -23,7 +23,7 @@ export const lightThemePalette = createTheme({
 		},
 		background: {
 			paper: '#FFF',
-			darker: '#f4f4f4',
+			darker: '#efefef',
 			appBar: '#FFF',
 			default: '#F2F4F8',
 		},

@@ -57,7 +57,13 @@ const ThemeSwitcher = (): JSX.Element => {
 	return (
 		<MaterialUISwitch
 			checked={theme.palette.mode === 'dark'}
-			onClick={toggleColorMode}
+			onClick={() => {
+				document.documentElement.setAttribute(
+					'data-color-scheme',
+					theme.palette.mode === 'dark' ? 'light' : 'dark',
+				);
+				toggleColorMode();
+			}}
 			disableRipple
 		/>
 	);

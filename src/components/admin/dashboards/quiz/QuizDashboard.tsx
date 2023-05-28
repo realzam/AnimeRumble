@@ -68,7 +68,7 @@ const QuizDashboard = (): JSX.Element => {
 							setOpenQuizDialog(true);
 						}}
 					>
-						Crear Encuesta
+						Crear quiz
 					</Button>
 				</Stack>
 				<Skeleton variant='rounded' height={140} />
@@ -124,7 +124,7 @@ const QuizDashboard = (): JSX.Element => {
 							/>
 							<Typography variant='h1'>Aquí no hay nada</Typography>
 							<Typography variant='body1'>
-								Una vez que crees una encuesta prodras verlo aquí
+								Una vez que crees un quiz prodras verlo aquí
 							</Typography>
 							<Button
 								variant='outlined'
@@ -132,7 +132,7 @@ const QuizDashboard = (): JSX.Element => {
 									setOpenQuizDialog(true);
 								}}
 							>
-								Crear Encuesta
+								Crear quiz
 							</Button>
 						</Stack>
 					</Card>
@@ -159,7 +159,7 @@ const QuizDashboard = (): JSX.Element => {
 						marginBottom: 3,
 					}}
 				>
-					Crear Encuesta
+					Crear quiz
 				</Button>
 			</Stack>
 			{data.map(quiz => (

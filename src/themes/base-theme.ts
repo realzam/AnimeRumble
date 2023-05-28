@@ -64,8 +64,8 @@ export const baseComponentsTheme = ({ palette, breakpoints }: Theme) =>
 						backgroundColor: palette.background.appBar,
 						borderRadius: '99px',
 						// minHeight: 44,
-						width: 'min-content',
-						padding: '0.25rem',
+						width: 'fit-content',
+						padding: '3px',
 						boxShadow: '0px 2px 8px 0px rgba(0,0,0,0.13)',
 						marginBottom: 15,
 					},
@@ -85,6 +85,7 @@ export const baseComponentsTheme = ({ palette, breakpoints }: Theme) =>
 						right: 3,
 						height: 'auto',
 						background: 'none',
+						transition: 'all 0.3s ease-out',
 						'&:after': {
 							content: '""',
 							display: 'block',

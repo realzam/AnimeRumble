@@ -37,5 +37,7 @@ yarn-error.log*
 next-env.d.ts
 
 #public images
-public/quizes/*
-!public/quizes/.gitkeep 
+files/*
+!files/.gitkeep
+files/quizzes/*
+!files/quizzes/.gitkeep
