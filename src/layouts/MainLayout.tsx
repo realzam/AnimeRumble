@@ -33,7 +33,7 @@ export const MainLayout = ({ children, title, useMain = true }: Props) => {
 				{useMain ? (
 					<main
 						style={{
-							margin: '40px auto',
+							margin: '40px 0',
 							maxWidth: '1440px',
 							padding: '0px 30px',
 						}}
