@@ -1,10 +1,11 @@
+import { log } from 'console';
 import path from 'path';
 
 import Email from 'email-templates';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 
-export const sendMail = async () => {
+const sendMail = async (to: string, subject: string, email: string) => {
 	if (
 		!process.env.GOOGLE_CLIENT_ID ||
 		!process.env.GOOGLE_CLIENT_SECRET ||
@@ -23,7 +24,6 @@ export const sendMail = async () => {
 	});
 	try {
 		const accessToken = await oAuth2Client.getAccessToken();
-		console.log('accessToken', accessToken.token);
 
 		const tranport = nodemailer.createTransport({
 			host: 'smtp.gmail.com',
@@ -41,25 +41,29 @@ export const sendMail = async () => {
 
 		const result = await tranport.sendMail({
 			from: 'AnimeRumble',
-			to: 'sza0210escom@gmail.com',
-			subject: 'HellofromGmalAPI',
-			text: 'GOALDODSAADO',
+			to,
+			subject,
+			html: email,
 		});
-		const email = new Email();
-
-		email
-			.render(
-				path.join(process.cwd(), 'src', 'emails', 'verify', 'email.pug'),
-				{
-					name: 'Elon Musk',
-				},
-			)
-			.then(console.log)
-			.catch(console.error);
 		console.log('sendmail', result);
 
 		return result;
 	} catch (error) {
 		console.log('error sendmail', error);
 	}
+};
+
+export const sendVerifyEmail = (to: string) => {
+	const email = new Email();
+	email
+		.render(path.join(process.cwd(), 'src', 'emails', 'verify', 'email.pug'), {
+			name: 'Elon Musk',
+		})
+		.then(async email => {
+			console.log('sendVerifyEmail');
+			console.log(email);
+
+			await sendMail(to, 'verifyEmail', email);
+		})
+		.catch(console.error);
 };

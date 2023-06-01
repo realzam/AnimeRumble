@@ -5,7 +5,7 @@ import { createRouter } from 'next-connect';
 import { db } from '@/db';
 import { QuizModel, UserDB, UserModel } from '@/db/models';
 import { IQuizBasic } from '@/interfaces';
-import { sendMail } from '@/utils/mail';
+import { sendVerifyEmail } from '@/utils/mail';
 
 type Data =
 	| {
@@ -21,7 +21,7 @@ router.post(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	// const quiz = UserModel.findOne({})
 	// await db.disconnect();
 	try {
-		await sendMail();
+		await sendVerifyEmail('sza0210escom@gmail.com');
 		return res.status(200).json({ message: 'ok' });
 	} catch (error) {
 		return res.status(200).json({ message: 'error' });
