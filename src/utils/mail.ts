@@ -1,4 +1,3 @@
-import { log } from 'console';
 import path from 'path';
 
 import Email from 'email-templates';
@@ -53,12 +52,31 @@ const sendMail = async (to: string, subject: string, email: string) => {
 	}
 };
 
-export const sendVerifyEmail = (to: string) => {
+export const sendVerifyEmail = (name: string, to: string, url: string) => {
 	const email = new Email();
 	email
 		.render(path.join(process.cwd(), 'src', 'emails', 'verify', 'email.pug'), {
-			name: 'Elon Musk',
+			name,
+			url,
 		})
+		.then(async email => {
+			console.log('sendVerifyEmail');
+			console.log(email);
+
+			await sendMail(to, 'verifyEmail', email);
+		})
+		.catch(console.error);
+};
+
+export const sendRecoveryEmail = (name: string, to: string, url: string) => {
+	const email = new Email();
+	email
+		.render(
+			path.join(process.cwd(), 'src', 'emails', 'recovery', 'email.pug'),
+			{
+				url,
+			},
+		)
 		.then(async email => {
 			console.log('sendVerifyEmail');
 			console.log(email);
