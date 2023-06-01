@@ -1,3 +1,6 @@
+import path from 'path';
+
+import Email from 'email-templates';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 
@@ -42,6 +45,17 @@ export const sendMail = async () => {
 			subject: 'HellofromGmalAPI',
 			text: 'GOALDODSAADO',
 		});
+		const email = new Email();
+
+		email
+			.render(
+				path.join(process.cwd(), 'src', 'emails', 'verify', 'email.pug'),
+				{
+					name: 'Elon Musk',
+				},
+			)
+			.then(console.log)
+			.catch(console.error);
 		console.log('sendmail', result);
 
 		return result;
