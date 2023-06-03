@@ -28,6 +28,13 @@ router.use('/admin', async req => {
 	return NextResponse.next();
 });
 
+router.use('/auth', async req => {
+	if (await isAuthenticated(req)) {
+		return NextResponse.redirect(new URL('http://localhost:3000/'));
+	}
+	return NextResponse.next();
+});
+
 router.use('/api/quiz', async req => {
 	if (req.nextUrl.pathname !== '/api/quiz' && !(await isAuthenticated(req))) {
 		return new NextResponse(

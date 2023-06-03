@@ -1,16 +1,14 @@
-import { useContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { ErrorOutline, Visibility, VisibilityOff } from '@mui/icons-material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { ErrorOutline } from '@mui/icons-material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import {
 	Box,
 	Button,
 	Chip,
 	Divider,
-	IconButton,
 	InputAdornment,
 	Link,
 	Paper,
@@ -21,15 +19,14 @@ import { Stack } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import validator from 'validator';
 
-import { AuthContext } from '@/context';
+import { animeRumbleApi } from '@/api';
 import { MainLayout } from '@/layouts';
 
 interface FormData {
 	email: string;
-	password: string;
 }
 
-const LoginPage = () => {
+const ForgotPasswordPage = () => {
 	const router = useRouter();
 	const destination = useMemo(() => {
 		if (router.query.p === undefined) {
@@ -38,8 +35,6 @@ const LoginPage = () => {
 		return router.query.p.toString();
 	}, [router.query.p]);
 
-	const { loginUser } = useContext(AuthContext);
-	const [showPassword, setShowPassword] = useState(false);
 	const [showError, setShowError] = useState(false);
 
 	const {
@@ -51,25 +46,19 @@ const LoginPage = () => {
 	const isEmail = (email: string): string | undefined => {
 		return validator.isEmail(email) ? undefined : 'El correo no es válido';
 	};
-	const onLoginUser = async ({ email, password }: FormData) => {
+	const onLoginUser = async ({ email }: FormData) => {
 		setShowError(false);
-		const isValidLogin = await loginUser(email, password);
-		if (!isValidLogin) {
+		try {
+			await animeRumbleApi.post('/user/forgot-password', {
+				email,
+				destination,
+			});
+		} catch (error) {
 			setShowError(true);
 			setTimeout(() => {
 				setShowError(false);
 			}, 3000);
-			return;
 		}
-		router.replace(destination);
-	};
-
-	const handleClickShowPassword = () => setShowPassword(show => !show);
-
-	const handleMouseDownPassword = (
-		event: React.MouseEvent<HTMLButtonElement>,
-	) => {
-		event.preventDefault();
 	};
 
 	return (
@@ -77,9 +66,6 @@ const LoginPage = () => {
 			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
 				<Box
 					sx={{
-						// height: '100%',
-						// width: '100%',
-						// backgroundColor: 'red',
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
@@ -106,12 +92,15 @@ const LoginPage = () => {
 								display: showError ? 'flex' : 'none',
 							}}
 						/>
-						<Typography variant='h4'>Bienvenido</Typography>
-						<Typography>Inicia sesión</Typography>
+						<Typography variant='h4'>Recuperar contraseña</Typography>
+						<Typography>
+							Ingresa el correo asociado a tu cuenta y te eviaremos un correo
+							con un enlace pra recuperar tu contraseña
+						</Typography>
 						<Stack
 							spacing={2}
 							sx={{
-								marginTop: 2,
+								marginTop: 3,
 							}}
 						>
 							<TextField
@@ -134,47 +123,9 @@ const LoginPage = () => {
 								error={!!errors.email}
 								helperText={errors.email?.message}
 							/>
-							<TextField
-								label='Contraseña'
-								variant='outlined'
-								required
-								placeholder='Al menos 6 caracteres'
-								type={showPassword ? 'text' : 'password'}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position='start'>
-											<LockOutlinedIcon />
-										</InputAdornment>
-									),
-									endAdornment: (
-										<InputAdornment position='end'>
-											<IconButton
-												aria-label='toggle password visibility'
-												onClick={handleClickShowPassword}
-												onMouseDown={handleMouseDownPassword}
-											>
-												{showPassword ? <VisibilityOff /> : <Visibility />}
-											</IconButton>
-										</InputAdornment>
-									),
-								}}
-								{...register('password', {
-									required: 'Este campo es requerido',
-									minLength: { value: 6, message: 'Al menos 6 caracteres' },
-								})}
-								error={!!errors.password}
-								helperText={errors.password?.message}
-							/>
-							<Typography textAlign='end'>
-								<Link
-									href={`/auth/forgot-password?p=${destination}`}
-									component={NextLink}
-								>
-									Olvidaste tu contraseña?
-								</Link>
-							</Typography>
+
 							<Button fullWidth type='submit'>
-								Iniciar sesión
+								Recuperar contraseña
 							</Button>
 							<Divider
 								sx={{
@@ -182,8 +133,6 @@ const LoginPage = () => {
 								}}
 							/>
 							<Stack>
-								{/* <Typography>¿No tienes una cuenta?</Typography> */}
-
 								<Typography textAlign='end'>
 									¿No tienes una cuenta?
 									<Link
@@ -203,4 +152,4 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export default ForgotPasswordPage;

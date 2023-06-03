@@ -5,13 +5,14 @@ import {
 	QuizQuestionTimeLimit,
 	QuizQuestionType,
 } from '@/interfaces';
-import type { IUserRoles } from '@/interfaces/user';
+import type { IUserRoles, IUserState } from '@/interfaces/user';
 
 interface SeedUser {
 	name: string;
 	email: string;
 	role: IUserRoles;
 	password: string;
+	state: IUserState;
 }
 
 interface SeedData {
@@ -73,19 +74,22 @@ export const initialData: SeedData = {
 			name: 'Sergio Zamorano',
 			email: 'sergio@google.com',
 			password: bcrypt.hashSync('123456'),
-			role: 'admin',
+			role: 'player',
+			state: 'no-verified',
 		},
 		{
 			name: 'Eduardo Rios',
 			email: 'eduardo@google.com',
 			password: bcrypt.hashSync('123456'),
-			role: 'client',
+			role: 'player',
+			state: 'verified',
 		},
 		{
 			name: 'Nino Nakano',
 			email: 'nino@google.com',
 			password: bcrypt.hashSync('123456'),
 			role: 'admin',
+			state: 'verified',
 		},
 	],
 };

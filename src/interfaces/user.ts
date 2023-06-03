@@ -1,10 +1,12 @@
-export type IUserRoles = 'admin' | 'client';
+export type IUserRoles = 'admin' | 'player';
 
+export type IUserState = 'no-verified' | 'verified';
 export interface IUser {
 	id: string;
 	name: string;
 	email: string;
 	role: IUserRoles;
+	state: IUserState;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -16,12 +18,6 @@ export interface IUserResponseApi {
 		email: string;
 		role: IUserRoles;
 	};
-}
-
-export interface IJWTUser {
-	id: string;
-	email: string;
-	role: IUserRoles;
 }
 
 export interface ResgisterUserContextResponse {
