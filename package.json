@@ -33,6 +33,7 @@
 		"next": "13.4.1",
 		"next-connect": "^1.0.0",
 		"nodemailer": "^6.9.2",
+		"notistack": "^3.0.1",
 		"pug": "^3.0.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
@@ -45,6 +46,7 @@
 		"validator": "^13.9.0"
 	},
 	"devDependencies": {
+		"@prettier/plugin-pug": "^2.5.0",
 		"@typegoose/typegoose": "^11.2.0",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/email-templates": "^10.0.1",
@@ -63,7 +65,7 @@
 		"eslint-plugin-import": "^2.27.5",
 		"husky": "^8.0.3",
 		"lint-staged": "^13.1.2",
-		"prettier": "^2.8.4",
+		"prettier": "^2.8.8",
 		"typescript": "5.0.4"
 	}
 }

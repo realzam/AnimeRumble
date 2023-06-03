@@ -18,9 +18,49 @@ import ThemeSwitcher from './ThemeSwitcher';
 import { AuthContext } from '@/context';
 
 const Navbar = (): JSX.Element => {
-	const { isLoggedIn, user } = useContext(AuthContext);
+	const { isLoggedIn, user, logout } = useContext(AuthContext);
 	const theme = useTheme();
 	const isMatch = useMediaQuery(theme.breakpoints.down('sm'));
+	let e = (
+		<>
+			<Button
+				variant='outlined'
+				sx={{
+					fontSize: '16px',
+				}}
+				onClick={logout}
+			>
+				Cerrar sesion
+			</Button>
+		</>
+	);
+	if (!isLoggedIn) {
+		e = (
+			<>
+				<Stack
+					direction='row'
+					alignItems='center'
+					// justifyContent='center'
+					spacing={1}
+				>
+					<Link href='/auth/register' component={NextLink}>
+						<Button
+							variant='outlined'
+							sx={{
+								fontSize: '16px',
+							}}
+						>
+							Registarse
+						</Button>
+					</Link>
+
+					<Link href='/auth/login' component={NextLink}>
+						<Typography variant='h6'>Ingresar</Typography>
+					</Link>
+				</Stack>
+			</>
+		);
+	}
 	return (
 		<AppBar>
 			<Stack
@@ -49,29 +89,7 @@ const Navbar = (): JSX.Element => {
 					</IconButton>
 				) : (
 					<>
-						{!isLoggedIn && (
-							<Stack
-								direction='row'
-								alignItems='center'
-								// justifyContent='center'
-								spacing={1}
-							>
-								<Link href='/auth/register' component={NextLink}>
-									<Button
-										variant='outlined'
-										sx={{
-											fontSize: '16px',
-										}}
-									>
-										Registarse
-									</Button>
-								</Link>
-
-								<Link href='/auth/login' component={NextLink}>
-									<Typography variant='h6'>Ingresar</Typography>
-								</Link>
-							</Stack>
-						)}
+						{e}
 						{isLoggedIn && user?.role == 'admin' && (
 							<Link
 								href='/admin'

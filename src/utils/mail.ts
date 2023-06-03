@@ -23,7 +23,6 @@ const sendMail = async (to: string, subject: string, email: string) => {
 	});
 	try {
 		const accessToken = await oAuth2Client.getAccessToken();
-
 		const tranport = nodemailer.createTransport({
 			host: 'smtp.gmail.com',
 			port: 465,
@@ -39,13 +38,11 @@ const sendMail = async (to: string, subject: string, email: string) => {
 		});
 
 		const result = await tranport.sendMail({
-			from: 'AnimeRumble',
+			from: 'AnimeRumble <anime.rumble.app@gmail.com>',
 			to,
 			subject,
 			html: email,
 		});
-		console.log('sendmail', result);
-
 		return result;
 	} catch (error) {
 		console.log('error sendmail', error);
@@ -60,10 +57,7 @@ export const sendVerifyEmail = (name: string, to: string, url: string) => {
 			url,
 		})
 		.then(async email => {
-			console.log('sendVerifyEmail');
-			console.log(email);
-
-			await sendMail(to, 'verifyEmail', email);
+			await sendMail(to, 'Verificación de correo electrónico', email);
 		})
 		.catch(console.error);
 };
@@ -74,14 +68,12 @@ export const sendRecoveryEmail = (name: string, to: string, url: string) => {
 		.render(
 			path.join(process.cwd(), 'src', 'emails', 'recovery', 'email.pug'),
 			{
+				name,
 				url,
 			},
 		)
 		.then(async email => {
-			console.log('sendVerifyEmail');
-			console.log(email);
-
-			await sendMail(to, 'verifyEmail', email);
+			await sendMail(to, 'Recuperación de contraseña', email);
 		})
 		.catch(console.error);
 };

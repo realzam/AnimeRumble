@@ -1,67 +1,61 @@
-import { useContext, useMemo, useState } from 'react';
-import NextLink from 'next/link';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { ErrorOutline, Visibility, VisibilityOff } from '@mui/icons-material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import {
 	Box,
 	Button,
 	Chip,
-	Divider,
 	IconButton,
 	InputAdornment,
-	Link,
 	Paper,
 	TextField,
 	Typography,
 } from '@mui/material';
 import { Stack } from '@mui/system';
+import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
-import validator from 'validator';
 
-import { AuthContext } from '@/context';
+import { animeRumbleApi } from '@/api';
 import { MainLayout } from '@/layouts';
+import { isValidTokenJose } from '@/utils/edge';
 
 interface FormData {
-	email: string;
 	password: string;
+	cpassword: string;
 }
-
-const LoginPage = () => {
+interface Props {
+	token: string;
+}
+const RecoveryPasswordPage = ({ token }: Props) => {
 	const router = useRouter();
-	const destination = useMemo(() => {
-		if (router.query.p === undefined) {
-			return '/';
-		}
-		return router.query.p.toString();
-	}, [router.query.p]);
-
-	const { loginUser } = useContext(AuthContext);
 	const [showPassword, setShowPassword] = useState(false);
+	const [showCPassword, setShowCPassword] = useState(false);
 	const [showError, setShowError] = useState(false);
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		watch,
 	} = useForm<FormData>();
 
-	const isEmail = (email: string): string | undefined => {
-		return validator.isEmail(email) ? undefined : 'El correo no es válido';
-	};
-	const onLoginUser = async ({ email, password }: FormData) => {
+	const onResetPassword = async ({ password, cpassword }: FormData) => {
 		setShowError(false);
-		const isValidLogin = await loginUser(email, password);
-		if (!isValidLogin) {
+		try {
+			await animeRumbleApi.post('/user/reset-password', {
+				password,
+				cpassword,
+				token,
+			});
+			router.replace('/auth/login');
+		} catch (error) {
 			setShowError(true);
 			setTimeout(() => {
 				setShowError(false);
 			}, 3000);
-			return;
 		}
-		router.replace(destination);
 	};
 
 	const handleClickShowPassword = () => setShowPassword(show => !show);
@@ -74,12 +68,9 @@ const LoginPage = () => {
 
 	return (
 		<MainLayout title='Anime Rumble|Login'>
-			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
+			<form onSubmit={handleSubmit(onResetPassword)} noValidate>
 				<Box
 					sx={{
-						// height: '100%',
-						// width: '100%',
-						// backgroundColor: 'red',
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
@@ -106,34 +97,14 @@ const LoginPage = () => {
 								display: showError ? 'flex' : 'none',
 							}}
 						/>
-						<Typography variant='h4'>Bienvenido</Typography>
-						<Typography>Inicia sesión</Typography>
+						<Typography variant='h4'>Cambiar contraseña</Typography>
+						<Typography>Ingresa una nueva contraseña y repitela</Typography>
 						<Stack
 							spacing={2}
 							sx={{
-								marginTop: 2,
+								marginTop: 3,
 							}}
 						>
-							<TextField
-								label='Correo electrónico'
-								variant='outlined'
-								required
-								placeholder='kirito@gmail.com'
-								type='email'
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position='start'>
-											<MailOutlineIcon />
-										</InputAdornment>
-									),
-								}}
-								{...register('email', {
-									required: 'Este campo es requerido',
-									validate: isEmail,
-								})}
-								error={!!errors.email}
-								helperText={errors.email?.message}
-							/>
 							<TextField
 								label='Contraseña'
 								variant='outlined'
@@ -165,36 +136,50 @@ const LoginPage = () => {
 								error={!!errors.password}
 								helperText={errors.password?.message}
 							/>
-							<Typography textAlign='end'>
-								<Link
-									href={`/auth/forgot-password?p=${destination}`}
-									component={NextLink}
-								>
-									Olvidaste tu contraseña?
-								</Link>
-							</Typography>
-							<Button fullWidth type='submit'>
-								Iniciar sesión
-							</Button>
-							<Divider
-								sx={{
-									p: 1,
-								}}
-							/>
-							<Stack>
-								{/* <Typography>¿No tienes una cuenta?</Typography> */}
 
-								<Typography textAlign='end'>
-									¿No tienes una cuenta?
-									<Link
-										href={`/auth/register?p=${destination}`}
-										component={NextLink}
-										m={1}
-									>
-										Crear cuenta
-									</Link>
-								</Typography>
-							</Stack>
+							<TextField
+								required
+								autoComplete='off'
+								label='Confirmar contraseña'
+								placeholder='Confirmar contraseña'
+								variant='outlined'
+								type={showCPassword ? 'text' : 'password'}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position='start'>
+											<LockOutlinedIcon />
+										</InputAdornment>
+									),
+									endAdornment: (
+										<InputAdornment position='end'>
+											<IconButton
+												aria-label='toggle password visibility'
+												onClick={() => {
+													setShowCPassword(show => !show);
+												}}
+												onMouseDown={handleMouseDownPassword}
+											>
+												{showCPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+										</InputAdornment>
+									),
+								}}
+								{...register('cpassword', {
+									required: 'Este campo es requerido',
+									minLength: { value: 6, message: 'Al menos 6 caracteres' },
+									validate: (val: string) => {
+										if (watch('password') != val) {
+											return 'Las contraseñas no son iguales';
+										}
+									},
+								})}
+								error={!!errors.cpassword}
+								helperText={errors.cpassword?.message}
+							/>
+
+							<Button fullWidth type='submit'>
+								Cambiar contraseña
+							</Button>
 						</Stack>
 					</Paper>
 				</Box>
@@ -203,4 +188,19 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+	const { token } = query as { token?: string };
+	const { valid } = await isValidTokenJose(token);
+	if (!valid) {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		};
+	}
+
+	return { props: { token } };
+};
+
+export default RecoveryPasswordPage;

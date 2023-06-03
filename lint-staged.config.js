@@ -9,6 +9,7 @@ module.exports = {
 		`yarn prettier --write ${filenames.join(' ')}`,
 	],
 
+	'**/*.(pug)': () => 'yarn prettier --write "**/*.pug"',
 	// Format MarkDown and JSON
 	'**/*.(md|json)': filenames => `yarn prettier --write ${filenames.join(' ')}`,
 };

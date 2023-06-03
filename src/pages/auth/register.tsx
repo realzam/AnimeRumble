@@ -230,7 +230,7 @@ const RegisterPage = () => {
 									minLength: { value: 6, message: 'Al menos 6 caracteres' },
 									validate: (val: string) => {
 										if (watch('password') != val) {
-											return 'Las contrasañas no son iguales';
+											return 'Las contraseñas no son iguales';
 										}
 									},
 								})}

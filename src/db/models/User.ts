@@ -6,7 +6,7 @@ import {
 } from '@typegoose/typegoose';
 import bcrypt from 'bcryptjs';
 
-import type { IUserRoles } from '@/interfaces/user';
+import type { IUserRoles, IUserState } from '@/interfaces/user';
 
 @modelOptions({
 	schemaOptions: {
@@ -35,7 +35,7 @@ export class UserDB {
 	@prop({ type: String, required: true, trim: true })
 	name: string;
 
-	@prop({ type: String, required: true, trim: true })
+	@prop({ type: String, required: true, trim: true, unique: true })
 	email: string;
 
 	@prop({ type: String, required: true, trim: true })
@@ -43,11 +43,19 @@ export class UserDB {
 
 	@prop({
 		type: String,
-		enum: ['admin', 'user'],
-		default: 'user',
+		enum: ['admin', 'player'],
+		default: 'player',
 		required: true,
 	})
 	role: IUserRoles;
+
+	@prop({
+		type: String,
+		enum: ['no-verified', 'verified'],
+		default: 'no-verified',
+		required: true,
+	})
+	state: IUserState;
 
 	comparePasswords(password: string) {
 		return bcrypt.compareSync(password, this.password);

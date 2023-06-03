@@ -6,6 +6,7 @@ import { db } from '@/db';
 import { UserModel } from '@/db/models';
 import { IUser, IUserResponseApi } from '@/interfaces/user';
 import { methodMiddleware, validateMiddleware } from '@/middlewares';
+import { sendVerifyEmail } from '@/utils/mail';
 import { singToken } from '@/utils/utils';
 
 type Data =
@@ -33,12 +34,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 		password: bcrypt.hashSync(password),
 	});
 	try {
-		await newUser.save({ validateBeforeSave: true });
+		const user = await newUser.save({ validateBeforeSave: true });
+		await db.disconnect();
+		const token = await singToken({ userId: user.id }, '30m');
+		const url = `https://anime.real-apps.site/reset-password?token=${token}`;
+		sendVerifyEmail(name, email, url);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({ message: 'Algo salio mal' });
 	}
-	await db.disconnect();
 	const newUserObj = newUser.toJSON<IUser>({ flattenMaps: false });
 	const { id, role } = newUserObj;
 	const token = singToken({ email, id, role, name });

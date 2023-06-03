@@ -5,6 +5,7 @@ import Head from 'next/head';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import Cookies from 'js-cookie';
+import { SnackbarProvider } from 'notistack';
 
 import { GTMAnalytics, GTMscript } from '@/components/GTMscript';
 import { AuthProvider, QuizProvider, UIProvider } from '@/context';
@@ -40,25 +41,27 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
 	}, []);
 
 	return (
-		<AuthProvider>
-			<UIProvider toggleColorMode={toggleColorMode}>
-				<QuizProvider>
-					<ThemeProvider theme={theme}>
-						<CssBaseline />
-						<Head>
-							<title>Anime Rumble</title>
-							<meta
-								name='viewport'
-								content='width=device-width, initial-scale=1'
-							/>
-						</Head>
-						<GTMAnalytics />
-						<GTMscript />
-						<Component {...pageProps} />
-					</ThemeProvider>
-				</QuizProvider>
-			</UIProvider>
-		</AuthProvider>
+		<SnackbarProvider preventDuplicate autoHideDuration={3000}>
+			<AuthProvider>
+				<UIProvider toggleColorMode={toggleColorMode}>
+					<QuizProvider>
+						<ThemeProvider theme={theme}>
+							<CssBaseline />
+							<Head>
+								<title>Anime Rumble</title>
+								<meta
+									name='viewport'
+									content='width=device-width, initial-scale=1'
+								/>
+							</Head>
+							<GTMAnalytics />
+							<GTMscript />
+							<Component {...pageProps} />
+						</ThemeProvider>
+					</QuizProvider>
+				</UIProvider>
+			</AuthProvider>
+		</SnackbarProvider>
 	);
 };
 
