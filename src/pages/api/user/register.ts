@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/db';
 import { UserModel } from '@/db/models';
-import { IUser, IUserResponseApi } from '@/interfaces/user';
+import { IUserResponseApi } from '@/interfaces/user';
 import { methodMiddleware, validateMiddleware } from '@/middlewares';
 import { sendVerifyEmail } from '@/utils/mail';
 import { singToken } from '@/utils/utils';
@@ -37,16 +37,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 		const user = await newUser.save({ validateBeforeSave: true });
 		await db.disconnect();
 		const token = await singToken({ userId: user.id }, '30m');
-		const url = `https://anime.real-apps.site/reset-password?token=${token}`;
-		sendVerifyEmail(name, email, url);
+		await sendVerifyEmail(name, email, token);
+		return res.status(200).json({ message: 'El Correo enviado' });
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({ message: 'Algo salio mal' });
 	}
-	const newUserObj = newUser.toJSON<IUser>({ flattenMaps: false });
-	const { id, role } = newUserObj;
-	const token = singToken({ email, id, role, name });
-	return res.status(200).json({ user: newUserObj, token });
+	// const newUserObj = newUser.toJSON<IUser>({ flattenMaps: false });
+	// const { id, role } = newUserObj;
+	// const token = singToken({ email, id, role, name });
+	// return res.status(200).json({ user: newUserObj, token });
 };
 
 export default methodMiddleware(

@@ -49,8 +49,9 @@ const sendMail = async (to: string, subject: string, email: string) => {
 	}
 };
 
-export const sendVerifyEmail = (name: string, to: string, url: string) => {
+export const sendVerifyEmail = (name: string, to: string, token: string) => {
 	const email = new Email();
+	const url = `https://anime.real-apps.site/auth/verify-email?token=${token}`;
 	email
 		.render(path.join(process.cwd(), 'src', 'emails', 'verify', 'email.pug'), {
 			name,
@@ -62,8 +63,9 @@ export const sendVerifyEmail = (name: string, to: string, url: string) => {
 		.catch(console.error);
 };
 
-export const sendRecoveryEmail = (name: string, to: string, url: string) => {
+export const sendRecoveryEmail = (name: string, to: string, token: string) => {
 	const email = new Email();
+	const url = `https://anime.real-apps.site/auth/reset-password?token=${token}`;
 	email
 		.render(
 			path.join(process.cwd(), 'src', 'emails', 'recovery', 'email.pug'),

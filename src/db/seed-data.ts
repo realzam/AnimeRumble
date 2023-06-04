@@ -40,10 +40,55 @@ interface SeedQuiz {
 export const initialData: SeedData = {
 	quizzes: [
 		{
-			title: 'Takagi-san',
-			description: '1-3 preguntas',
+			title: 'Shigatsu wa kimi no uso',
+			description: 'Preguntas de los primeros 3 capítulos',
 			createdAt: Date.now(),
 			questions: [
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
+				{
+					question: '¿Cuantas flexiones?',
+					answers: ['1', '2', '30', '50'],
+					correctAnswersQuiz: [false, false, false, true],
+				},
 				{
 					question: '¿Cuantas flexiones?',
 					answers: ['1', '2', '30', '50'],

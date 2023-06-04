@@ -6,6 +6,6 @@ export interface IJWTUser {
 	role: IUserRoles;
 }
 
-export interface IJWTUserRecoveryPassword {
+export interface IJWTUserID {
 	userId: string;
 }

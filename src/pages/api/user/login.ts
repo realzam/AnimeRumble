@@ -5,6 +5,7 @@ import { db } from '@/db';
 import { UserModel } from '@/db/models';
 import { IUser, IUserResponseApi } from '@/interfaces/user';
 import { methodMiddleware, validateMiddleware } from '@/middlewares';
+import { sendVerifyEmail } from '@/utils/mail';
 import { singToken } from '@/utils/utils';
 
 type Data =
@@ -23,15 +24,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	if (!user) {
 		return res
 			.status(400)
-			.json({ message: 'Credenciales incorrectas - EMAIL' });
+			.json({ message: 'Correo o contraseña no valido(s)' });
 	}
 	if (!user.comparePasswords(password)) {
 		return res
 			.status(400)
-			.json({ message: 'Credenciales incorrectas - PASSWORD' });
+			.json({ message: 'Correo o contraseña no valido(s)' });
 	}
 
 	await db.disconnect();
+	if (user.state === 'no-verified') {
+		const token = await singToken({ userId: user.id }, '30m');
+		sendVerifyEmail(user.name, user.email, token);
+		return res.status(400).json({
+			message: 'Correo no verificado, se envio correo de verificación',
+		});
+	}
 	const userObj = user.toJSON<IUser>({ flattenMaps: false });
 	const { id, role, name } = userObj;
 	const token = singToken({ email, id, role });
