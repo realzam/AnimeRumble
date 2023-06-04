@@ -54,7 +54,13 @@ const Navbar = (): JSX.Element => {
 						</Button>
 					</Link>
 
-					<Link href='/auth/login' component={NextLink}>
+					<Link
+						href='/auth/login'
+						component={NextLink}
+						sx={{
+							marginX: 2,
+						}}
+					>
 						<Typography variant='h6'>Ingresar</Typography>
 					</Link>
 				</Stack>
@@ -97,6 +103,9 @@ const Navbar = (): JSX.Element => {
 								display='flex'
 								alignItems='end'
 								justifyContent='center'
+								sx={{
+									marginX: 2,
+								}}
 							>
 								<Typography variant='h6'>Admin Panel</Typography>
 							</Link>

@@ -6,8 +6,8 @@ type PropsNextImage = React.ComponentProps<typeof NextImage>;
 type PropsImage = Omit<PropsNextImage, 'onError' | 'loader' | 'placeholder'>;
 
 interface Props extends PropsImage {
-	srcError: string;
-	placeholder: string;
+	srcError?: string;
+	placeholder?: string;
 }
 
 const Image = ({ srcError, placeholder, ...props }: Props): JSX.Element => {
@@ -25,9 +25,9 @@ const Image = ({ srcError, placeholder, ...props }: Props): JSX.Element => {
 		<NextImage
 			{...props}
 			src={srcState}
-			placeholder='blur'
+			placeholder={placeholder !== undefined ? 'blur' : undefined}
 			blurDataURL={placeholder}
-			onError={() => setSrc(srcError)}
+			onError={srcError !== undefined ? () => setSrc(srcError) : undefined}
 			loader={imageLoader}
 		/>
 	);

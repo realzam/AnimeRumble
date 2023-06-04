@@ -7,9 +7,10 @@ import { Box, Button, Typography } from '@mui/material';
 
 interface Props {
 	setFile: Dispatch<SetStateAction<File | undefined>>;
+	initialImage?: string;
 }
-const UploadImage = ({ setFile }: Props): JSX.Element => {
-	const [image, setImage] = useState<string>('');
+const UploadImage = ({ setFile, initialImage = '' }: Props): JSX.Element => {
+	const [image, setImage] = useState<string>(initialImage);
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	function handleDrop(e: React.DragEvent<HTMLDivElement>) {

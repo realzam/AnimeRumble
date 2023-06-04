@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/db';
 import { UserModel } from '@/db/models';
-import { IJWTUserRecoveryPassword, IQuiz } from '@/interfaces';
+import { IJWTUserID, IQuiz } from '@/interfaces';
 import { methodMiddleware, validateMiddleware } from '@/middlewares';
 import { isValidTokenJose } from '@/utils/edge';
 type Data =
@@ -19,8 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 		password: string;
 		cpassword: string;
 	};
-	const { valid, token: tokenObj } =
-		await isValidTokenJose<IJWTUserRecoveryPassword>(token);
+	const { valid, token: tokenObj } = await isValidTokenJose<IJWTUserID>(token);
 	if (!valid) {
 		return res.status(400).json({ message: 'Token no valido' });
 	}

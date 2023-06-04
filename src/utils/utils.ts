@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { IJWTUser } from '@/interfaces/user';
+import { IJWTUser } from '@/interfaces';
 
 export const singToken = (
 	payload: string | object | Buffer,

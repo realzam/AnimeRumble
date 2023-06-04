@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/router';
 
-import { isAxiosError } from 'axios';
+import { AxiosError, isAxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
 import { AuthContext, authReducer } from './';
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: Props) => {
 	const loginUser = async (
 		email: string,
 		password: string,
-	): Promise<boolean> => {
+	): Promise<[false, string] | [true]> => {
 		try {
 			const { data } = await animeRumbleApi.post('/user/login', {
 				email,
@@ -54,10 +54,15 @@ export const AuthProvider = ({ children }: Props) => {
 			const { token, user } = data;
 			Cookies.set('token', token);
 			dispatch({ type: 'Auth.Login', payload: user });
-			return true;
-		} catch (error) {
+			return [true];
+		} catch (e) {
+			const error = e as AxiosError<{ message: string }>;
+
 			// dispatch('')
-			return false;
+			return [
+				false,
+				error.response?.data.message || 'Correo o contraseña no valido(s)',
+			];
 		}
 	};
 
@@ -72,14 +77,14 @@ export const AuthProvider = ({ children }: Props) => {
 		// 	};
 		// }
 		try {
-			const { data } = await animeRumbleApi.post('/user/register', {
+			await animeRumbleApi.post('/user/register', {
 				email,
 				password,
 				name,
 			});
-			const { token, user } = data;
-			Cookies.set('token', token);
-			dispatch({ type: 'Auth.Login', payload: user });
+			// const { token, user } = data;
+			// Cookies.set('token', token);
+			// dispatch({ type: 'Auth.Login', payload: user });
 			return {
 				hasError: false,
 			};

@@ -18,16 +18,13 @@ const UI_INITIAL_STATE: UIState = {
 };
 
 export const UIProvider = ({ children, toggleColorMode }: Props) => {
-	const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
-	const setDialogID = (id: string) => {
-		dispatch({ type: 'UI.SetDialogID', payload: id });
-	};
+	const [state] = useReducer(uiReducer, UI_INITIAL_STATE);
+
 	return (
 		<UIContext.Provider
 			value={{
 				...state,
 				toggleColorMode,
-				setDialogID,
 			}}
 		>
 			{children}

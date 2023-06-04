@@ -37,8 +37,7 @@ router.post(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 				.json({ message: 'El correo electrónico no está registrado.' });
 		}
 		const token = await singToken({ userId: user.id }, '30m');
-		const url = `https://anime.real-apps.site/auth/reset-password?token=${token}`;
-		await sendRecoveryEmail(user.name, email, url);
+		await sendRecoveryEmail(user.name, email, token);
 		return res.status(200).json({ message: 'ok' });
 	} catch (error) {
 		return res.status(200).json({ message: 'error' });

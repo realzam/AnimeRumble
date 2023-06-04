@@ -21,6 +21,7 @@ import { Stack } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import validator from 'validator';
 
+import SendEmailVerification from '@/components/auth/sendEmailVerification';
 import { AuthContext } from '@/context';
 import { MainLayout } from '@/layouts';
 
@@ -41,6 +42,7 @@ const LoginPage = () => {
 	const { loginUser } = useContext(AuthContext);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showError, setShowError] = useState(false);
+	const [showVerifyEmail, setShowVerifyEmail] = useState(false);
 
 	const {
 		register,
@@ -53,14 +55,19 @@ const LoginPage = () => {
 	};
 	const onLoginUser = async ({ email, password }: FormData) => {
 		setShowError(false);
-		const isValidLogin = await loginUser(email, password);
+		const [isValidLogin, message] = await loginUser(email, password);
 		if (!isValidLogin) {
-			setShowError(true);
-			setTimeout(() => {
-				setShowError(false);
-			}, 3000);
+			if (message === 'Correo o contraseña no valido(s)') {
+				setShowError(true);
+				setTimeout(() => {
+					setShowError(false);
+				}, 3000);
+			} else {
+				setShowVerifyEmail(true);
+			}
 			return;
 		}
+
 		router.replace(destination);
 	};
 
@@ -72,6 +79,13 @@ const LoginPage = () => {
 		event.preventDefault();
 	};
 
+	if (showVerifyEmail) {
+		return (
+			<MainLayout title='Anime Rumble|Login'>
+				<SendEmailVerification />
+			</MainLayout>
+		);
+	}
 	return (
 		<MainLayout title='Anime Rumble|Login'>
 			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
