@@ -113,66 +113,37 @@ router.put(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	form.parse(req, async (error, fields, files) => {
 		if (error) {
 			console.error(error);
-			res.status(500).json({ message: 'Error parsing form data' });
-		} else {
-			req.body = fields;
-			await body('title')
-				.isString()
-				.withMessage('El título es requerido')
-				.run(req);
+			return res.status(500).json({ message: 'Error parsing form data' });
+		}
+		req.body = fields;
+		await body('title')
+			.isString()
+			.withMessage('El título es requerido')
+			.run(req);
 
-			await body('quizID')
-				.isMongoId()
-				.withMessage('El quizID es requerido')
-				.run(req);
-			await body('description').isString().optional().run(req);
-			// Comprobar er
-			// Comprobar errores de validación
-			const errors = validationResult(req);
-			if (!errors.isEmpty()) {
-				return res.status(422).json({ errors: errors.array() });
-			}
-			const { title, quizID, description } = fields as {
-				title: string;
-				quizID: string;
-				description: string;
-			};
-			await db.connect();
-			const q = await QuizModel.findById(quizID);
-			if (!q) {
-				return res.status(400).json({ message: 'El quiz no existe' });
-			}
-			const image = files.img as formidable.File;
-			if (!image) {
-				const newQuiz = await QuizModel.findByIdAndUpdate(
-					quizID,
-					{
-						$set: {
-							title,
-							description: description || q.description,
-						},
-					},
-					{ new: true },
-				);
-				await db.disconnect();
-				if (!newQuiz) {
-					return res.status(400).json({ message: 'El quiz no existe' });
-				}
-				return res.status(200).json(newQuiz.toJSON());
-			}
-
-			const pattern = /image-*/;
-			const buffer = await readChunk(image.filepath, { length: image.size });
-			const fileInfo = await imageType(buffer);
-			if (!fileInfo?.mime.match(pattern)) {
-				return res.status(400).json({ message: 'image no vailid is a' });
-			}
-			const dirPath = path.join(process.cwd(), 'files', 'quizzes', quizID);
-			if (!fs.existsSync(dirPath)) {
-				fs.mkdirSync(dirPath);
-			}
-			const filePath = path.join(dirPath, 'overlay.' + fileInfo.ext);
-			fs.renameSync(image.filepath, filePath);
+		await body('quizID')
+			.isMongoId()
+			.withMessage('El quizID es requerido')
+			.run(req);
+		await body('description').isString().optional().run(req);
+		// Comprobar er
+		// Comprobar errores de validación
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422).json({ errors: errors.array() });
+		}
+		const { title, quizID, description } = fields as {
+			title: string;
+			quizID: string;
+			description: string;
+		};
+		await db.connect();
+		const q = await QuizModel.findById(quizID);
+		if (!q) {
+			return res.status(400).json({ message: 'El quiz no existe' });
+		}
+		const image = files.img as formidable.File;
+		if (!image) {
 			const newQuiz = await QuizModel.findByIdAndUpdate(
 				quizID,
 				{
@@ -189,6 +160,34 @@ router.put(async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 			}
 			return res.status(200).json(newQuiz.toJSON());
 		}
+
+		const pattern = /image-*/;
+		const buffer = await readChunk(image.filepath, { length: image.size });
+		const fileInfo = await imageType(buffer);
+		if (!fileInfo?.mime.match(pattern)) {
+			return res.status(400).json({ message: 'image no vailid is a' });
+		}
+		const dirPath = path.join(process.cwd(), 'files', 'quizzes', quizID);
+		if (!fs.existsSync(dirPath)) {
+			fs.mkdirSync(dirPath);
+		}
+		const filePath = path.join(dirPath, 'overlay.' + fileInfo.ext);
+		fs.renameSync(image.filepath, filePath);
+		const newQuiz = await QuizModel.findByIdAndUpdate(
+			quizID,
+			{
+				$set: {
+					title,
+					description: description || q.description,
+				},
+			},
+			{ new: true },
+		);
+		await db.disconnect();
+		if (!newQuiz) {
+			return res.status(400).json({ message: 'El quiz no existe' });
+		}
+		return res.status(200).json(newQuiz.toJSON());
 	});
 });
 

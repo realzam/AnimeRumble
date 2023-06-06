@@ -1,6 +1,22 @@
+import fs from 'fs';
+import path from 'path';
+
+import formidable from 'formidable';
+import imageType from 'image-type';
 import jwt from 'jsonwebtoken';
+import { readChunk } from 'read-chunk';
 
 import { IJWTUser } from '@/interfaces';
+
+const saveFormidableFile = async (
+	file: formidable.File,
+	destinationPath: string,
+	filePath: string,
+) => {
+	const parentDirectory = path.join(process.cwd(), 'files', destinationPath);
+	fs.mkdirSync(parentDirectory, { recursive: true });
+	fs.renameSync(file.filepath, filePath);
+};
 
 export const singToken = (
 	payload: string | object | Buffer,
@@ -30,18 +46,25 @@ export const isValidToken = (
 	});
 };
 
-export const encodeBase64 = (value: string) => {
-	let result = value;
-	for (let i = 0; i < 5; i++) {
-		result = Buffer.from(result).toString('base64');
-	}
-	return result;
+export const deleteFile = async (filePath: string) => {
+	const parentDirectory = path.join(process.cwd(), 'files', filePath);
+	fs.unlinkSync(parentDirectory);
 };
 
-export const dencodeBase64 = (value: string) => {
-	let result = value;
-	for (let i = 0; i < 5; i++) {
-		result = Buffer.from(result, 'base64').toString('ascii');
+export const uploadImage = async (
+	image: formidable.File,
+	filePath: string,
+	fileName: string,
+): Promise<[true, string] | [false]> => {
+	const pattern = /image-*/;
+	const buffer = await readChunk(image.filepath, { length: image.size });
+	const fileInfo = await imageType(buffer);
+	if (!fileInfo?.mime.match(pattern)) {
+		return [false];
 	}
-	return result;
+
+	const resPath = path.join(filePath, `${fileName}.${fileInfo.ext}`);
+	const finalPath = path.join(process.cwd(), 'files', resPath);
+	await saveFormidableFile(image, filePath, finalPath);
+	return [true, resPath];
 };
