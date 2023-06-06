@@ -72,7 +72,11 @@ export class QuestionDB {
 			props.correctAnswerTrueFalse === undefined
 				? this.correctAnswerTrueFalse
 				: props.correctAnswerTrueFalse;
-		this.img = props.img || this.img;
+		if (props.img === '') {
+			this.img = undefined;
+		} else {
+			this.img = props.img || this.img;
+		}
 	}
 	clone() {
 		const clone = new QuestionDB();

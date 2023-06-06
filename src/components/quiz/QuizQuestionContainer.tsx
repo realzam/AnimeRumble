@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 import {
 	Card,
@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { useDebouncedCallback } from 'use-debounce';
+
+import UploadImage from '../ui/UploadImage';
 
 import ConfigQuestionQuiz from './ConfigQuestionQuiz';
 import QuestionTypeQuiz from './QuestionTypeQuiz';
@@ -48,7 +50,7 @@ const QuizQuestionContainer = (): JSX.Element => {
 	const [touched, setTouched] = useState(false);
 	const { quiz, mutate } = useQuiz();
 	const { index } = useContext(QuizContext);
-	const question = quiz.questions[index];
+	const question = useMemo(() => quiz.questions[index], [index, quiz]);
 	const {
 		isValidQuestion,
 		isValidCorrectAnswersQuiz,
@@ -57,18 +59,32 @@ const QuizQuestionContainer = (): JSX.Element => {
 	} = useValidQuestion(question.id);
 	const debounced = useDebouncedCallback(async (value: string) => {
 		console.log('/quiz/update-question/', value.trim());
-		await animeRumbleApi.put(`/quiz/update-question/`, {
+		const { data } = await animeRumbleApi.put(`/quiz/update-question/`, {
 			quizID: quiz.id,
 			questionID: question.id,
 			question: value.trim(),
 		});
+		mutate(data);
 	}, 1000);
-
+	const setFile = useDebouncedCallback(async (file?: File) => {
+		console.log('save imagequestion', question.id);
+		const dataForm = new FormData();
+		dataForm.set('quizID', quiz.id);
+		dataForm.set('questionID', question.id);
+		dataForm.set('img', file || '');
+		// console.log('/quiz/update-question/', value.trim());
+		const { data } = await animeRumbleApi.put(
+			`/quiz/update-question/`,
+			dataForm,
+		);
+		mutate(data);
+	}, 1000);
 	useEffect(() => {
 		return () => {
 			debounced.flush();
+			setFile.flush();
 		};
-	}, [debounced, index]);
+	}, [index, debounced, setFile]);
 
 	return (
 		<Card
@@ -82,7 +98,6 @@ const QuizQuestionContainer = (): JSX.Element => {
 				<Stack spacing={5}>
 					<ConfigQuestionQuiz />
 					<Divider />
-					{/* <UploadImage setFile={setFile} /> */}
 					<WarningTooltip
 						title='Es necesaria una pregunta'
 						open={touched && !isValidQuestion}
@@ -133,9 +148,15 @@ const QuizQuestionContainer = (): JSX.Element => {
 							variant='darken'
 							sx={{
 								height: '300px',
-								width: '400px',
+								width: '533px',
 							}}
-						/>
+						>
+							<UploadImage
+								callback={setFile}
+								initialImage={question.img}
+								confirmDelete
+							/>
+						</Paper>
 					</Box>
 					{question.type === 'Quiz' ? (
 						<WarningTooltip

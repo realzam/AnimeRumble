@@ -4,6 +4,14 @@ body {
 	margin: 0;
 }
 
+body {
+	overflow-y: hidden;
+}
+
+#__next {
+	overflow-y: auto;
+}
+
 @keyframes fadeIn {
 	0% {
 		opacity: 0;

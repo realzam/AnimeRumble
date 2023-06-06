@@ -81,7 +81,7 @@ const QuizDialogUpdate = ({
 			<form noValidate autoComplete='off' onSubmit={handleSubmit(handleCreate)}>
 				<DialogTitle>Crear encuesta</DialogTitle>
 				<DialogContent>
-					<UploadImage setFile={setFile} initialImage={image} />
+					<UploadImage callback={setFile} initialImage={image} />
 					<TextField
 						autoFocus
 						margin='dense'

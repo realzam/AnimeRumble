@@ -62,7 +62,7 @@ const QuizDialog = ({ open, setOpen }: Props): JSX.Element => {
 			<form noValidate autoComplete='off' onSubmit={handleSubmit(handleCreate)}>
 				<DialogTitle>Crear encuesta</DialogTitle>
 				<DialogContent>
-					<UploadImage setFile={setFile} />
+					<UploadImage callback={setFile} />
 					<TextField
 						autoFocus
 						margin='dense'
