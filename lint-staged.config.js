@@ -4,12 +4,13 @@ module.exports = {
 	'**/*.(ts|tsx)': () => 'yarn tsc --noEmit',
 
 	// Lint then format TypeScript and JavaScript files
-	'**/*.(ts|tsx|js)': filenames => [
+	'**/*.(ts|tsx|js)': (filenames) => [
 		`yarn eslint --fix ${filenames.join(' ')}`,
 		`yarn prettier --write ${filenames.join(' ')}`,
 	],
 
 	'**/*.(pug)': () => 'yarn prettier --write "**/*.pug"',
 	// Format MarkDown and JSON
-	'**/*.(md|json)': filenames => `yarn prettier --write ${filenames.join(' ')}`,
+	'**/*.(md|json)': (filenames) =>
+		`yarn prettier --write ${filenames.join(' ')}`,
 };
