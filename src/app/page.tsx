@@ -1,16 +1,17 @@
 'use client';
 
-import { useTheme } from 'next-themes';
+import ActivityCard from '@/components/ui/ActivityCard';
 
 export default function Home() {
-	const { resolvedTheme } = useTheme();
-
 	return (
-		<>
-			hola 2
-			<span className='text-gray-700 dark:text-gray-200 p-1 sm:px-3 sm:py-2 '>
-				Current theme: {resolvedTheme}
-			</span>
-		</>
+		<div className='container grid grid-cols-3 gap-4 mt-4'>
+			<ActivityCard />
+			<ActivityCard />
+			<ActivityCard />
+			<ActivityCard />
+			<ActivityCard />
+			<ActivityCard />
+			<ActivityCard />
+		</div>
 	);
 }

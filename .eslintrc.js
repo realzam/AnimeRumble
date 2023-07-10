@@ -5,17 +5,18 @@ module.exports = {
 		'plugin:import/recommended',
 		'prettier',
 	],
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'react'],
 	rules: {
+		'object-shorthand': ['error', 'always'],
 		'@typescript-eslint/no-unused-vars': [
 			'error',
 			{ argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
 		],
-		// '@typescript-eslint/consistent-type-imports': [
-		// 	'error',
-		// 	{ prefer: 'type-imports', fixStyle: 'inline-type-imports' },
-		// ],
-		// 'import/consistent-type-specifier-style': ['error', 'prefer-inline'],
+		'@typescript-eslint/consistent-type-imports': [
+			'error',
+			{ prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+		],
+		'import/consistent-type-specifier-style': ['error', 'prefer-inline'],
 		'import/named': 'off',
 		'eol-last': ['error', 'always'],
 		'@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
