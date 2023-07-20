@@ -1,4 +1,5 @@
 import { Chewy } from 'next/font/google';
+import NextLink from 'next/link';
 
 import AnimeRumbleIcon from './AnimeRumbleIcon';
 import { HamburgerMenu } from './HamburgerMenu';
@@ -15,10 +16,10 @@ const chewy = Chewy({
 
 function Navbar() {
 	return (
-		<header className='supports-backdrop-blur:bg-background/60 bg-background/95 sticky top-0 z-40 w-full border-b backdrop-blur'>
-			<div className='container flex h-14 items-center'>
-				<div className='mr-4 flex '>
-					<a className='mr-6 flex items-center space-x-2' href='/'>
+		<header className='sticky top-0 z-40 w-full border-b supports-backdrop-blur:bg-background/60 bg-background/80 backdrop-blur'>
+			<div className='container flex items-center h-14'>
+				<div className='flex mr-4 '>
+					<NextLink className='flex items-center mr-6 space-x-2' href='/'>
 						<AnimeRumbleIcon height={24} width={24} />
 						<span
 							className={cn(
@@ -28,12 +29,12 @@ function Navbar() {
 						>
 							Anime Rumble
 						</span>
-					</a>
+					</NextLink>
 				</div>
-				<div className='flex flex-1 items-center space-x-2 justify-end'>
-					<nav className='hidden sm:flex items-center space-x-6 text-lg font-medium'>
-						<Link href='/'>Ingresar</Link>
-						<Link href='/'>Registrarse</Link>
+				<div className='flex items-center justify-end flex-1 space-x-2'>
+					<nav className='items-center hidden space-x-6 text-lg font-medium sm:flex'>
+						<Link href='/login'>Ingresar</Link>
+						<Link href='/login'>Registrarse</Link>
 					</nav>
 					<ToggleThemeButton />
 					<HamburgerMenu className='inline-flex sm:hidden'>

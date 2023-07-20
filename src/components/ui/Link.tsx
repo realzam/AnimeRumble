@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { forwardRef } from 'react';
 import NextLink, { type LinkProps } from 'next/link';
 
 import { cn } from '@/lib/utils';
@@ -7,14 +7,14 @@ import { cn } from '@/lib/utils';
 // 	return <NextLink {...props}>Link</NextLink>;
 // };
 
-const Link = React.forwardRef<
+const Link = forwardRef<
 	HTMLAnchorElement,
-	LinkProps & { children: React.ReactNode; className?: string }
+	LinkProps & { children: string; className?: string }
 >(({ className, children, ...props }, ref) => {
 	return (
 		<NextLink
 			className={cn(
-				'transition-colors hover:text-foreground/50 text-foreground',
+				'transition-colors hover:text-secondary-darken derk:hover:text-secondary/80 text-foreground',
 				className,
 			)}
 			ref={ref}

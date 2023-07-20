@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { forwardRef } from 'react';
 
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 type HamburgerMenuProps = Omit<ButtonProps, 'asChild' | 'size'>;
 
-const HamburgerMenu = React.forwardRef<HTMLButtonElement, HamburgerMenuProps>(
+const HamburgerMenu = forwardRef<HTMLButtonElement, HamburgerMenuProps>(
 	({ className, variant = 'outline', children, ...props }, ref) => {
 		return (
 			<Sheet>

@@ -36,6 +36,7 @@ module.exports = {
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))',
+					darken: '#c887bc',
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -61,6 +62,22 @@ module.exports = {
 					DEFAULT: '#9360f7',
 					light: '#c9affb',
 				},
+				loteria: {
+					DEFAULT: '#f3425f',
+					light: '#f9a0af',
+				},
+				bingo: {
+					DEFAULT: '#f7b928',
+					light: '#fbdc93',
+				},
+			},
+			letterSpacing: {
+				wide: '0.5px',
+				wider: '1px',
+				widest: '1.5px',
+			},
+			dropShadow: {
+				text: '0 0 10px rgba(16, 64, 70, 0.5)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -76,10 +93,19 @@ module.exports = {
 					from: { height: 'var(--radix-accordion-content-height)' },
 					to: { height: 0 },
 				},
+				'show-overlay': {
+					'0%, 29.999%': { opacity: 0, zIndex: 1 },
+					'30%, 100%': { opacity: 1, zIndex: 3 },
+				},
+			},
+			transitionDuration: {
+				600: '600ms',
+				2000: '2000ms',
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
+				'show-overlay': 'show-overlay 600ms',
 			},
 		},
 	},
