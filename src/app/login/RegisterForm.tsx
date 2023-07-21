@@ -1,11 +1,14 @@
+import { type ObservablePrimitive } from '@legendapp/state';
+import { observer } from '@legendapp/state/react';
+
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
 interface Props {
-	children?: React.ReactNode;
+	active: ObservablePrimitive<boolean>;
 }
 
-function RegisterForm({ children }: Props): JSX.Element {
+const RegisterForm = observer(({ active }: Props): JSX.Element => {
 	return (
 		<>
 			<h1 className='m-0 mb-4 text-3xl font-bold -tracking-widest text-primary dark:text-secondary'>
@@ -39,9 +42,17 @@ function RegisterForm({ children }: Props): JSX.Element {
 			>
 				Registarse
 			</Button>
-			{children}
+
+			<Button
+				type='button'
+				onClick={() => active.toggle()}
+				variant='link'
+				className='md:hidden group  py-3 px-[80px] font-bold relative transition-all duration-300 ease-in-out'
+			>
+				Iniciar Sesión
+			</Button>
 		</>
 	);
-}
+});
 
 export default RegisterForm;

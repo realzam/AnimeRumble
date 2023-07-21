@@ -1,3 +1,6 @@
+import { type ObservablePrimitive } from '@legendapp/state';
+import { observer } from '@legendapp/state/react';
+
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/Input';
@@ -5,10 +8,10 @@ import { Label } from '@/components/ui/label';
 import Link from '@/components/ui/Link';
 
 interface Props {
-	children?: React.ReactNode;
+	active: ObservablePrimitive<boolean>;
 }
 
-function LoginForm({ children }: Props): JSX.Element {
+const LoginForm = observer(({ active }: Props): JSX.Element => {
 	return (
 		<>
 			<h1 className='m-0 mb-4 text-3xl font-bold -tracking-widest text-primary dark:text-secondary'>
@@ -46,9 +49,16 @@ function LoginForm({ children }: Props): JSX.Element {
 			>
 				iniciar sesión
 			</Button>
-			{children}
+			<Button
+				type='button'
+				onClick={() => active.toggle()}
+				variant='link'
+				className='md:hidden group m-3 py-3 px-[80px] font-bold relative transition-all duration-300 ease-in-out'
+			>
+				Registrarse
+			</Button>
 		</>
 	);
-}
+});
 
 export default LoginForm;
