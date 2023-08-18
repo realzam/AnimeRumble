@@ -8,6 +8,14 @@
 	"tabWidth": 2,
 	"bracketSpacing": true,
 	"trailingComma": "all",
+	"overrides": [
+		{
+			"files": "*.tsx",
+			"options": {
+				"parser": "typescript"
+			}
+		}
+	],
 	"importOrder": [
 		"^(react/(.*)$)|^(react$)",
 		"^(next/(.*)$)|^(next$)",
@@ -17,12 +25,16 @@
 		"^@/types/(.*)$",
 		"^@/lib/(.*)$",
 		"^@/hooks/(.*)$",
-		"^@/components/ui/(.*)$",
+		"^@ui/(.*)$",
+		"^@web/(.*)$",
 		"^@/components/(.*)$",
 		"^@/styles/(.*)$",
 		"",
 		"^[./]"
 	],
 	"importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
-	"plugins": ["@ianvs/prettier-plugin-sort-imports"]
+	"plugins": [
+		"@ianvs/prettier-plugin-sort-imports",
+		"prettier-plugin-tailwindcss"
+	]
 }

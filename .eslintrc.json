@@ -3,13 +3,21 @@
 	"root": true,
 	"extends": [
 		"next/core-web-vitals",
-		"prettier",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:import/recommended",
-		"plugin:tailwindcss/recommended"
+		"plugin:tailwindcss/recommended",
+		"prettier"
 	],
-	"plugins": ["tailwindcss"],
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"tsconfigRootDir": "./"
+	},
+	"plugins": ["tailwindcss", "prettier"],
 	"settings": {
+		"import/resolver": {
+			"webpack": true,
+			"typescript": true
+		},
 		"tailwindcss": {
 			"callees": ["cn", "cva"],
 			"config": "tailwind.config.ts"
@@ -35,7 +43,8 @@
 			"error",
 			{ "argsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_" }
 		],
+		"import/consistent-type-specifier-style": ["error", "prefer-inline"],
 		"object-shorthand": ["error", "always"],
-		"import/consistent-type-specifier-style": ["error", "prefer-inline"]
+		"tailwindcss/no-custom-classname": "off"
 	}
 }
