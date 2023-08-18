@@ -1,11 +1,15 @@
 import '@/styles/globals.css';
 
-import { ThemeProvider } from 'next-themes';
+import { Poppins } from 'next/font/google';
 
-// import Navbar from '../components/ui/Navbar';
+import Navbar from '@web/Navbar';
 
-// import { Providers } from './Providers';
+import { Providers } from './Providers';
 
+const poppins = Poppins({
+	subsets: ['latin'],
+	weight: '400',
+});
 export const metadata = {
 	title: 'AnimeRumble',
 	description: 'Aplicación web para el club de anime en ESCOM',
@@ -43,16 +47,13 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='es' suppressHydrationWarning>
-			<body>
-				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					{children}
-				</ThemeProvider>
-				{/* <Providers>
-					<div className='flex flex-col min-h-screen'>
+			<body className={poppins.className}>
+				<Providers>
+					<div className='flex min-h-screen flex-col'>
 						<Navbar />
 						<main className='flex flex-1'>{children}</main>
 					</div>
-				</Providers> */}
+				</Providers>
 			</body>
 		</html>
 	);

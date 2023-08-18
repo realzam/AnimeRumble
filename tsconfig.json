@@ -1,4 +1,8 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"ts-node": {
+		"require": ["tsconfig-paths/register"]
+	},
 	"compilerOptions": {
 		"target": "es5",
 		"lib": ["dom", "dom.iterable", "esnext"],
@@ -9,19 +13,20 @@
 		"noEmit": true,
 		"esModuleInterop": true,
 		"module": "esnext",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
-		"noImplicitAny": false,
 		"plugins": [
 			{
 				"name": "next"
 			}
 		],
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@ui/*": ["./src/components/ui/*"],
+			"@web/*": ["./src/components/ui-web/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
