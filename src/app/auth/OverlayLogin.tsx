@@ -1,6 +1,8 @@
 'use client';
 
 import { type ObservablePrimitive } from '@legendapp/state';
+import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
+import { Reactive } from '@legendapp/state/react';
 import { IconArrowRight } from '@tabler/icons-react';
 
 import { cn } from '@/lib/utils';
@@ -9,14 +11,16 @@ import { Button } from '@ui/Button';
 interface Props {
 	active: ObservablePrimitive<boolean>;
 }
-
+enableReactComponents();
 const OverlayLogin = ({ active }: Props) => {
 	return (
-		<div
-			className={cn(
-				't-0 absolute flex h-full w-1/2 translate-x-[-20%] flex-col items-center justify-center px-10 py-0 text-center transition-transform duration-600 ease-in-out',
-				active.get() && 'translate-x-0',
-			)}
+		<Reactive.div
+			$className={() =>
+				cn(
+					't-0 absolute flex h-full w-1/2 translate-x-[-20%] flex-col items-center justify-center px-10 py-0 text-center transition-transform duration-600 ease-in-out',
+					active.get() && 'translate-x-0',
+				)
+			}
 		>
 			<h1 className='drop-shadow-text m-0 text-[45px] font-bold leading-[45px] -tracking-widest'>
 				Ohayou
@@ -36,7 +40,7 @@ const OverlayLogin = ({ active }: Props) => {
 					className='absolute right-[70px] opacity-0 transition-all duration-300 ease-in-out group-hover:right-10 group-hover:opacity-100'
 				/>
 			</Button>
-		</div>
+		</Reactive.div>
 	);
 };
 

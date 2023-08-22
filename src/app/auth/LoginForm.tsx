@@ -1,11 +1,11 @@
 import { type ObservablePrimitive } from '@legendapp/state';
-import { observer } from '@legendapp/state/react';
+import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
+import { Reactive } from '@legendapp/state/react';
 import { IconBrandFacebook, IconBrandGoogle } from '@tabler/icons-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@ui/Button';
 import {
-	Card,
 	CardContent,
 	CardDescription,
 	CardFooter,
@@ -18,14 +18,17 @@ import { Label } from '@ui/Label';
 interface Props {
 	active: ObservablePrimitive<boolean>;
 }
+enableReactComponents();
 
-const LoginForm = observer(({ active }: Props) => {
+const LoginForm = ({ active }: Props) => {
 	return (
-		<Card
-			className={cn(
-				'absolute left-0 top-0 z-[2] flex h-full w-full flex-col justify-center border-none transition-all duration-1000 ease-in-out md:w-1/2 md:duration-600',
-				active.get() && 'translate-x-full',
-			)}
+		<Reactive.div
+			$className={() =>
+				cn(
+					'absolute left-0 top-0 z-[2] flex h-full w-full flex-col justify-center rounded-xl border border-none bg-card text-card-foreground shadow transition-all duration-1000 ease-in-out md:w-1/2 md:duration-600',
+					active.get() && 'translate-x-full',
+				)
+			}
 		>
 			<CardHeader className='space-y-1'>
 				<CardTitle className='text-2xl'>Iniciar sesión</CardTitle>
@@ -56,18 +59,29 @@ const LoginForm = observer(({ active }: Props) => {
 				</div>
 				<div className='grid gap-2'>
 					<Label htmlFor='email'>Email</Label>
-					<Input id='email' type='email' placeholder='m@example.com' />
+					<Input
+						autoComplete='email'
+						id='email'
+						type='email'
+						placeholder='m@example.com'
+						name='email'
+					/>
 				</div>
 				<div className='grid gap-2'>
 					<Label htmlFor='password'>Password</Label>
-					<Input id='password' type='password' />
+					<Input
+						id='password'
+						type='password'
+						name='password'
+						autoComplete='current-password'
+					/>
 				</div>
 			</CardContent>
 			<CardFooter>
 				<Button className='w-full'>Iniciar sesión</Button>
 			</CardFooter>
-		</Card>
+		</Reactive.div>
 	);
-});
+};
 
 export default LoginForm;
