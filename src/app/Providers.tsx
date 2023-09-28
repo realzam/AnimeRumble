@@ -1,11 +1,13 @@
 import TailwindIndicator from '@web/TailwindIndicator';
-import ThemeProvider from '@web/ThemeProvider';
+import { ThemeProvider, TrpcProvider } from '@/components/providers';
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (
-		<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-			{children}
-			<TailwindIndicator />
-		</ThemeProvider>
+		<TrpcProvider>
+			<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+				{children}
+				<TailwindIndicator />
+			</ThemeProvider>
+		</TrpcProvider>
 	);
 }

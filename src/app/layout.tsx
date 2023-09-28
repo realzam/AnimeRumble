@@ -2,8 +2,6 @@ import '@/styles/globals.css';
 
 import { Poppins } from 'next/font/google';
 
-import Navbar from '@web/Navbar';
-
 import { Providers } from './Providers';
 
 const poppins = Poppins({
@@ -48,12 +46,7 @@ export default function RootLayout({
 	return (
 		<html lang='es' suppressHydrationWarning>
 			<body className={poppins.className}>
-				<Providers>
-					<div className='flex min-h-screen flex-col'>
-						<Navbar />
-						<main className='flex flex-1'>{children}</main>
-					</div>
-				</Providers>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);

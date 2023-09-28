@@ -1,3 +1,4 @@
+import React from 'react';
 import { Chewy } from 'next/font/google';
 import NextLink from 'next/link';
 
@@ -11,9 +12,16 @@ import ToggleThemeButton from './ToggleThemeButton';
 
 const chewy = Chewy({ subsets: ['latin'], weight: '400' });
 
-const Navbar = () => {
-	return (
-		<header className='supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur transition-colors'>
+const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+	({ className, ...props }, ref) => (
+		<header
+			ref={ref}
+			className={cn(
+				'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur transition-colors',
+				className,
+			)}
+			{...props}
+		>
 			<div className='container flex h-14 items-center'>
 				<div className='mr-4 flex '>
 					<NextLink className='mr-6 flex items-center space-x-2' href='/'>
@@ -46,7 +54,8 @@ const Navbar = () => {
 				</div>
 			</div>
 		</header>
-	);
-};
+	),
+);
+Navbar.displayName = 'Card';
 
 export default Navbar;

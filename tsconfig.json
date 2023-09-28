@@ -4,7 +4,7 @@
 		"require": ["tsconfig-paths/register"]
 	},
 	"compilerOptions": {
-		"target": "es5",
+		"target": "es6",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
@@ -13,11 +13,12 @@
 		"noEmit": true,
 		"esModuleInterop": true,
 		"module": "esnext",
-		"moduleResolution": "bundler",
+		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
+		"strictNullChecks": true,
 		"plugins": [
 			{
 				"name": "next"
@@ -29,6 +30,13 @@
 			"@web/*": ["./src/components/ui-web/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"**/*.mjs",
+		".next/types/**/*.ts",
+		"next.config.mjs"
+	],
 	"exclude": ["node_modules"]
 }

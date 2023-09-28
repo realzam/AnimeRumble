@@ -3,7 +3,6 @@
 	"style": "new-york",
 	"rsc": true,
 	"tsx": true,
-	"namming": "pascal",
 	"tailwind": {
 		"config": "tailwind.config.ts",
 		"css": "src/styles/globals.css",

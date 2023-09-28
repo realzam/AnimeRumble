@@ -58,6 +58,10 @@ module.exports = {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 				},
+				sakura: {
+					DEFAULT: 'hsl(var(--sakura))',
+					darken: 'hsl(var(--sakura-darken))',
+				},
 				animePurple: {
 					DEFAULT: 'hsl(var(--anime-purple))',
 					light: 'hsl(var(--anime-purple-light))',
@@ -84,6 +88,9 @@ module.exports = {
 			transitionDuration: {
 				600: '600ms',
 				2000: '2000ms',
+			},
+			backgroundPosition: {
+				'right-center': 'right center',
 			},
 			keyframes: {
 				'accordion-down': {
