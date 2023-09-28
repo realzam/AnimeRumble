@@ -7,19 +7,16 @@ import { Separator } from '@ui/Separator';
 import Navbar from '@web/Navbar';
 
 import AnswersTypeContainer from './AnswersTypeContainer';
+import ListQuizzes from './ListQuizzes';
 import { PointsSelect } from './PointsSelect';
 import { TimeSelect } from './TimeSelect';
-
-const TAGS = Array.from({ length: 8 }).map(
-	(_, i, a) => `v1.2.0-beta.${a.length - i}`,
-);
 
 export default function Home() {
 	return (
 		<>
 			<Navbar />
 			<div className='container flex h-[calc(100vh-3.5rem-1px)] py-8'>
-				<Card className='mr-4 flex h-full w-72 shrink-0 flex-col'>
+				<Card className='mr-4 flex h-full w-80 shrink-0 flex-col'>
 					<CardHeader>
 						<CardTitle>Shigatsu wa kimi no uso</CardTitle>
 						<CardDescription>
@@ -28,7 +25,7 @@ export default function Home() {
 					</CardHeader>
 					<Separator />
 
-					<Tasks />
+					<ListQuizzes />
 				</Card>
 				<Card className='flex flex-1  flex-col p-8'>
 					<UIScrollArea className='h-full'>
@@ -54,18 +51,3 @@ export default function Home() {
 		</>
 	);
 }
-
-const Tasks = () => {
-	return (
-		<UIScrollArea>
-			<div style={{ padding: '15px 20px' }}>
-				<div className='text-violet-400'>Tags uwu</div>
-				{TAGS.map((tag) => (
-					<div className='mt-3 border-t pt-3' key={tag}>
-						{tag}
-					</div>
-				))}
-			</div>
-		</UIScrollArea>
-	);
-};

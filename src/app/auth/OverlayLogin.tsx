@@ -32,12 +32,12 @@ const OverlayLogin = ({ active }: Props) => {
 			</p>
 			<Button
 				onClick={() => active.toggle()}
-				className='group relative m-3 border-2 border-white bg-[rgba(255,255,255,0.2)] px-[70px] py-3 font-bold capitalize tracking-wider text-white transition-all duration-300 ease-in-out hover:tracking-[3px] focus:outline-none active:scale-95 dark:border-white dark:bg-[rgba(255,255,255,0.2)] dark:text-white dark:hover:bg-neutral-900/90'
+				className='group relative m-3 border-2 border-white bg-[rgba(255,255,255,0.2)] px-[65px] py-3 font-bold capitalize tracking-wider text-white transition-all duration-300 ease-in-out hover:tracking-[3px] focus:outline-none active:scale-95 dark:border-white dark:bg-[rgba(255,255,255,0.2)] dark:text-white dark:hover:bg-neutral-900/90'
 			>
 				Iniciar Sesión
 				<IconArrowRight
 					fill='currentColor'
-					className='absolute right-[70px] opacity-0 transition-all duration-300 ease-in-out group-hover:right-10 group-hover:opacity-100'
+					className='absolute right-[60px] opacity-0 transition-all duration-300 ease-in-out group-hover:right-[30px] group-hover:opacity-100'
 				/>
 			</Button>
 		</Reactive.div>

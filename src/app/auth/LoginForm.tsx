@@ -78,7 +78,9 @@ const LoginForm = ({ active }: Props) => {
 				</div>
 			</CardContent>
 			<CardFooter>
-				<Button className='w-full'>Iniciar sesión</Button>
+				<Button className='w-full' variant='gradient' type='submit'>
+					Iniciar sesión
+				</Button>
 			</CardFooter>
 		</Reactive.div>
 	);
