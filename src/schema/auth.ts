@@ -5,6 +5,9 @@ import { zodCustomErrorMap } from '@/lib/zodCustomErrorMap';
 z.setErrorMap(zodCustomErrorMap);
 const LoginSchema = z.object({
 	email: z.string().nonempty().email(),
+	password: z
+		.string()
+		.min(6, 'La constraseña debe contener al menos 6 carácter(es)'),
 });
 
 const RegisterSchema = z
