@@ -1,88 +1,118 @@
-import { type ObservablePrimitive } from '@legendapp/state';
+// import { useRouter } from 'next/navigation';
+import { LoginSchema } from '@/schema/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
-import { Reactive } from '@legendapp/state/react';
-import { IconBrandFacebook, IconBrandGoogle } from '@tabler/icons-react';
+import { Show, useObservable, useSelector } from '@legendapp/state/react';
+import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
+import { AnimatePresence, motion } from 'framer-motion';
+import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { type z } from 'zod';
 
-import { cn } from '@/lib/utils';
+import { sleep } from '@/lib/utils';
+import { Alert, AlertDescription } from '@ui/alert';
 import { Button } from '@ui/Button';
-import {
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@ui/Card';
+import { CardContent } from '@ui/Card';
 import { Input } from '@ui/Input';
 import { Label } from '@ui/Label';
+import ReactiveInputPassword from '@/components/ui/ReactiveInputPassword';
 
-interface Props {
-	active: ObservablePrimitive<boolean>;
-}
 enableReactComponents();
+const LoginForm = () => {
+	// const router = useRouter();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+	} = useForm<z.infer<typeof LoginSchema>>({
+		resolver: zodResolver(LoginSchema),
+	});
+	const errorMsg = useObservable('');
+	const hasError = useSelector(() => errorMsg.get().length > 0);
 
-const LoginForm = ({ active }: Props) => {
+	async function onSubmit(values: z.infer<typeof LoginSchema>) {
+		errorMsg.set('');
+		console.log('onSubmit');
+		await sleep(1000 * 1);
+
+		const res = await signIn('credentials', {
+			email: values.email,
+			password: values.password,
+			redirect: true,
+			callbackUrl: '/dashboard',
+		});
+		console.log('res', res);
+
+		if (res?.error) {
+			errorMsg.set(res.error);
+			setTimeout(() => {
+				errorMsg.set('');
+			}, 3000);
+			return;
+		}
+		// if (res?.ok) {
+		// 	router.push(res.url || '/dashboard');
+		// }
+	}
+
 	return (
-		<Reactive.div
-			$className={() =>
-				cn(
-					'absolute left-0 top-0 z-[2] flex h-full w-full flex-col justify-center rounded-xl border border-none bg-card text-card-foreground shadow transition-all duration-1000 ease-in-out md:w-1/2 md:duration-600',
-					active.get() && 'translate-x-full',
-				)
-			}
-		>
-			<CardHeader className='space-y-1'>
-				<CardTitle className='text-2xl'>Iniciar sesión</CardTitle>
-				<CardDescription>
-					Enter your email below to create your account
-				</CardDescription>
-			</CardHeader>
-			<CardContent className='grid gap-4'>
-				<div className='grid grid-cols-2 gap-6'>
-					<Button variant='outline'>
-						<IconBrandFacebook className='mr-2 h-4 w-4' />
-						Facebook
-					</Button>
-					<Button variant='outline'>
-						<IconBrandGoogle className='mr-2 h-4 w-4' />
-						Google
-					</Button>
-				</div>
-				<div className='relative'>
-					<div className='absolute inset-0 flex items-center'>
-						<span className='w-full border-t' />
-					</div>
-					<div className='relative flex justify-center text-xs uppercase'>
-						<span className='bg-background px-2 text-muted-foreground'>
-							Or continue with
-						</span>
-					</div>
-				</div>
+		<CardContent className=''>
+			<Show if={hasError} wrap={AnimatePresence}>
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 0.7 }}
+					exit={{ opacity: 0 }}
+				>
+					<Alert variant='destructive' className='mb-4 px-3 py-2'>
+						<div className='flex items-center'>
+							<ExclamationTriangleIcon className='h-4 w-4' />
+							{/* <AlertTitle>Error</AlertTitle> */}
+							<AlertDescription className='ml-4'>
+								{errorMsg.get()}
+							</AlertDescription>
+						</div>
+					</Alert>
+				</motion.div>
+			</Show>
+			<form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
 				<div className='grid gap-2'>
 					<Label htmlFor='email'>Email</Label>
 					<Input
 						autoComplete='email'
 						id='email'
-						type='email'
 						placeholder='m@example.com'
-						name='email'
+						type='email'
+						error={!!errors.email}
+						errorMessage={errors.email?.message}
+						{...register('email')}
 					/>
 				</div>
 				<div className='grid gap-2'>
 					<Label htmlFor='password'>Password</Label>
-					<Input
-						id='password'
+					<ReactiveInputPassword
+						autoComplete='new-password'
+						id='register-password'
+						// name='password'
 						type='password'
-						name='password'
-						autoComplete='current-password'
+						error={!!errors.password}
+						errorMessage={errors.password?.message}
+						{...register('password')}
 					/>
 				</div>
-			</CardContent>
-			<CardFooter>
-				<Button className='w-full' variant='gradient' type='submit'>
-					Iniciar sesión
+				<Button
+					className='w-full'
+					variant='gradient'
+					type='submit'
+					disabled={isSubmitting}
+				>
+					<Show if={isSubmitting} else={<>Crear cuenta</>}>
+						<ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+						Espere porfavor
+					</Show>
 				</Button>
-			</CardFooter>
-		</Reactive.div>
+			</form>
+		</CardContent>
 	);
 };
 

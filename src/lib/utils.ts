@@ -32,6 +32,9 @@ export function hashPassword(password: string) {
 }
 
 export function comparePassword(password: string, compare: string) {
-	const pass = hashPassword(password);
+	const hashDigest = sha512(env.AGUA + password);
+	const pass = Base64.stringify(
+		hmacSHA512(env.FUEGO + hashDigest, env.PASS_KEY),
+	);
 	return bcrypt.compareSync(pass, compare);
 }

@@ -7,6 +7,7 @@ import { enableReactComponents } from '@legendapp/state/config/enableReactCompon
 import { Show, useObservable, useSelector } from '@legendapp/state/react';
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
@@ -38,11 +39,14 @@ const RegisterForm = () => {
 		console.log('onSubmit');
 		await sleep(1000 * 1);
 		await createUser.mutate(values, {
-			onSuccess(data, variables, context) {
+			onSuccess(_, variables, __) {
 				console.log('onSuccess');
-				console.log(data);
-				console.log(variables);
-				console.log(context);
+				signIn('credentials', {
+					email: variables.email,
+					password: variables.password,
+					redirect: true,
+					callbackUrl: '/dashboard',
+				});
 			},
 			onError(data) {
 				console.log('onError', data.message);
@@ -98,7 +102,7 @@ const RegisterForm = () => {
 					</Label>
 					<Input
 						autoComplete='email'
-						id='email'
+						id='register-email'
 						// name='email'
 						placeholder='m@example.com'
 						type='email'
