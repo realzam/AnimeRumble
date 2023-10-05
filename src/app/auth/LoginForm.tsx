@@ -1,4 +1,6 @@
-// import { useRouter } from 'next/navigation';
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
 import { LoginSchema } from '@/schema/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
@@ -10,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
 import { sleep } from '@/lib/utils';
-import { Alert, AlertDescription } from '@ui/alert';
+import { Alert, AlertDescription } from '@ui/Alert';
 import { Button } from '@ui/Button';
 import { CardContent } from '@ui/Card';
 import { Input } from '@ui/Input';
@@ -19,7 +21,8 @@ import ReactiveInputPassword from '@/components/ui/ReactiveInputPassword';
 
 enableReactComponents();
 const LoginForm = () => {
-	// const router = useRouter();
+	const router = useRouter();
+	const searchParams = useSearchParams();
 	const {
 		register,
 		handleSubmit,
@@ -32,27 +35,27 @@ const LoginForm = () => {
 
 	async function onSubmit(values: z.infer<typeof LoginSchema>) {
 		errorMsg.set('');
-		console.log('onSubmit');
 		await sleep(1000 * 1);
-
 		const res = await signIn('credentials', {
 			email: values.email,
 			password: values.password,
-			redirect: true,
-			callbackUrl: '/dashboard',
+			redirect: false,
 		});
-		console.log('res', res);
 
-		if (res?.error) {
-			errorMsg.set(res.error);
-			setTimeout(() => {
-				errorMsg.set('');
-			}, 3000);
-			return;
+		if (res) {
+			console.log('res', res);
+
+			if (res.error) {
+				errorMsg.set(res.error);
+				setTimeout(() => {
+					errorMsg.set('');
+				}, 3000);
+			} else {
+				const callbackUrl = searchParams.get('callbackUrl') || '/';
+				const urlDecoaded = decodeURIComponent(callbackUrl);
+				router.replace(urlDecoaded);
+			}
 		}
-		// if (res?.ok) {
-		// 	router.push(res.url || '/dashboard');
-		// }
 	}
 
 	return (

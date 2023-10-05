@@ -12,11 +12,11 @@ import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
 import { sleep } from '@/lib/utils';
+import { Alert, AlertDescription } from '@ui/Alert';
 import { Button } from '@ui/Button';
 import { CardContent } from '@ui/Card';
 import { Input } from '@ui/Input';
 import { Label } from '@ui/Label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import ReactiveInputPassword from '@/components/ui/ReactiveInputPassword';
 
 enableReactComponents();
