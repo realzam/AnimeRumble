@@ -10,6 +10,11 @@ const nextConfig = {
 				destination: '/dashboard/quizzes',
 				permanent: true,
 			},
+			{
+				source: '/quizz',
+				destination: '/dashboard/quizzes',
+				permanent: true,
+			},
 		];
 	},
 };

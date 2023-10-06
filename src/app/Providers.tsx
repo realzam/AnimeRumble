@@ -1,5 +1,6 @@
 import TailwindIndicator from '@web/TailwindIndicator';
 import {
+	ReactQuery,
 	SessionProvider,
 	ThemeProvider,
 	TrpcProvider,
@@ -10,8 +11,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 		<SessionProvider>
 			<TrpcProvider>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					{children}
-					<TailwindIndicator />
+					<ReactQuery>
+						{children}
+						<TailwindIndicator />
+					</ReactQuery>
 				</ThemeProvider>
 			</TrpcProvider>
 		</SessionProvider>

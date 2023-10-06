@@ -6,10 +6,10 @@ import { ScrollArea as UIScrollArea } from '@ui/ScrollArea';
 import { Separator } from '@ui/Separator';
 import Navbar from '@web/Navbar';
 
-import AnswersTypeContainer from './AnswersTypeContainer';
-import ListQuizzes from './ListQuizzes';
-import { PointsSelect } from './PointsSelect';
-import { TimeSelect } from './TimeSelect';
+import AnswersTypeContainer from '../AnswersTypeContainer';
+import ListQuizzes from '../ListQuizzes';
+import { PointsSelect } from '../PointsSelect';
+import { TimeSelect } from '../TimeSelect';
 
 export default function Home() {
 	return (

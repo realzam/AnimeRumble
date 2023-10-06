@@ -1,4 +1,4 @@
-import { users } from '@/db/models/schema';
+import { users } from '@/db/models';
 import { RegisterSchema } from '@/schema/auth';
 import { publicProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';

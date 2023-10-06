@@ -14,8 +14,8 @@
 		"clean:all": "rimraf node_modules && rimraf .next && rimraf pnpm-lock.yaml && rimraf drizzle",
 		"ui": "node ~/ui/packages/cli/dist/index.js",
 		"co": "sui-mono commit",
-		"generate": "drizzle-kit generate:sqlite",
-		"db:clean": "rimraf drizzle && rimraf sqlite.db && drizzle-kit generate:sqlite"
+		"db:generate": "drizzle-kit generate:sqlite",
+		"db:clean": "rimraf drizzle && rimraf sqlite.db && drizzle-kit generate:sqlite && drizzle-kit push:sqlite"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.3.1",
@@ -34,6 +34,7 @@
 		"@t3-oss/env-nextjs": "^0.6.1",
 		"@tabler/icons-react": "^2.38.0",
 		"@tanstack/react-query": "^4.35.7",
+		"@tanstack/react-query-devtools": "^4.35.7",
 		"@tanstack/react-table": "^8.10.3",
 		"@trpc/client": "^10.38.5",
 		"@trpc/react-query": "^10.38.5",
@@ -53,6 +54,7 @@
 		"eslint-config-next": "13.5.4",
 		"framer-motion": "^10.16.4",
 		"i18next": "^23.5.1",
+		"nanoid": "^5.0.1",
 		"next": "13.5.4",
 		"next-auth": "^4.23.2",
 		"next-themes": "^0.2.1",

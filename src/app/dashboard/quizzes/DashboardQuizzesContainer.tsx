@@ -1,6 +1,16 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { trpc } from '@/trpc/client/client';
+import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
+import { Show } from '@legendapp/state/react';
+import { ReloadIcon } from '@radix-ui/react-icons';
+
 import { Separator } from '@ui/Separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/Tabs';
+import { Button } from '@/components/ui/Button';
 
+enableReactComponents();
 const DashboardQuizzesContainer = () => {
 	return (
 		<div className='flex-1 space-y-4 p-8 pt-6'>
@@ -52,6 +62,8 @@ const DashboardQuizzesContainer = () => {
 };
 
 function PodcastEmptyPlaceholder() {
+	const createQuiz = trpc.quizz.createQuizz.useMutation();
+	const router = useRouter();
 	return (
 		<div className='flex h-[450px] shrink-0 items-center justify-center rounded-md border border-dashed'>
 			<div className='mx-auto flex max-w-[420px] flex-col items-center justify-center text-center'>
@@ -74,6 +86,30 @@ function PodcastEmptyPlaceholder() {
 				<p className='mb-4 mt-2 text-sm text-muted-foreground'>
 					You have not added any podcasts. Add one below.
 				</p>
+				<Button
+					className=''
+					variant='gradient'
+					type='submit'
+					disabled={createQuiz.isLoading}
+					onClick={() => {
+						createQuiz.mutate(
+							{
+								title: 'Hola mundo',
+							},
+							{
+								onSuccess: ({ quiz }) => {
+									console.log(quiz);
+									router.push(`/quizz/${quiz.id}`);
+								},
+							},
+						);
+					}}
+				>
+					<Show if={createQuiz.isLoading} else={<>Crear quiz</>}>
+						<ReloadIcon className='mr-2 h-4 w-4 animate-spin' />
+						Espere porfavor
+					</Show>
+				</Button>
 			</div>
 		</div>
 	);
