@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 	`name` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS `questions` (
+CREATE TABLE IF NOT EXISTS `questions` ( 
 	`id` integer,
 	`quizId` text NOT NULL,
 	`question` text,

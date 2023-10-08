@@ -3,8 +3,12 @@ import { z } from 'zod';
 import { zodCustomErrorMap } from '@/lib/zodCustomErrorMap';
 
 z.setErrorMap(zodCustomErrorMap);
-const CreteQuizSchema = z.object({
+const CreateQuizSchema = z.object({
 	title: z.string().nonempty(),
 });
 
-export { CreteQuizSchema };
+const GetQuizSchema = z.object({
+	id: z.string().nonempty(),
+});
+
+export { CreateQuizSchema, GetQuizSchema };

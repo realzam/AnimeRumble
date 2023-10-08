@@ -11,7 +11,9 @@ import ListQuizzes from '../ListQuizzes';
 import { PointsSelect } from '../PointsSelect';
 import { TimeSelect } from '../TimeSelect';
 
-export default function Home() {
+interface Props {}
+
+export default function QuizPage({}: Props) {
 	return (
 		<>
 			<Navbar />
