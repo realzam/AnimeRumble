@@ -1,17 +1,22 @@
+import { redirect } from 'next/navigation';
 import { serverClient } from '@/trpc/client/serverClient';
 
-async function getData(id: string) {
-	const res = await serverClient.quizz.quizz({ id });
-	console.log('getData', res);
+import QuizPage from './QuizzPage';
 
-	return res;
+async function getData(id: string) {
+	try {
+		const res = await serverClient.quizz.quizz({ id });
+		return res;
+	} catch (error) {
+		return undefined;
+	}
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-	console.log('params', params);
-
 	const data = await getData(params.id);
-	console.log(data);
-
-	return <>hola</>;
+	if (!data) {
+		redirect('/dashboard');
+	} else {
+		return <QuizPage id={data.id} initialQuiz={data} />;
+	}
 }

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "fa6c0d4f-34ad-43e2-b16b-74c1a5537177",
+  "id": "eb6b98d9-d781-48ea-938e-cb49fbf639d6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -39,9 +39,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
           "autoincrement": false
         },
         "quizId": {
@@ -55,8 +55,9 @@
           "name": "question",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
         },
         "questionType": {
           "name": "questionType",
@@ -68,6 +69,20 @@
         "answers": {
           "name": "answers",
           "type": "blob",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "correctAnswer": {
+          "name": "correctAnswer",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "correctAnswerTF": {
+          "name": "correctAnswerTF",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -113,8 +128,9 @@
           "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
         },
         "state": {
           "name": "state",

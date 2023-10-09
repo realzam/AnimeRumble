@@ -15,12 +15,13 @@
 		"ui": "node ~/ui/packages/cli/dist/index.js",
 		"co": "sui-mono commit",
 		"db:generate": "drizzle-kit generate:sqlite",
-		"db:clean": "rimraf drizzle && rimraf sqlite.db && drizzle-kit generate:sqlite && drizzle-kit push:sqlite",
+		"db:clean": "rimraf drizzle && rimraf sqlite.db && drizzle-kit generate:sqlite",
 		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.3.1",
 		"@legendapp/state": "^1.11.3",
+		"@radix-ui/react-aspect-ratio": "^1.0.3",
 		"@radix-ui/react-checkbox": "^1.0.4",
 		"@radix-ui/react-dialog": "^1.0.5",
 		"@radix-ui/react-dropdown-menu": "^2.0.6",

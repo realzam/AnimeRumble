@@ -4,7 +4,7 @@ import { blob, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 export const quizzes = sqliteTable('quizzes', {
 	id: text('id').primaryKey().notNull(),
 	title: text('title').notNull(),
-	description: text('description'),
+	description: text('description').default('').notNull(),
 	state: text('state', { enum: ['active', 'finished', 'draft'] }).notNull(),
 });
 
@@ -13,11 +13,11 @@ export const questions = sqliteTable('questions', {
 	quizId: text('quizId')
 		.references(() => quizzes.id)
 		.notNull(),
-	question: text('question'),
+	question: text('question').default('').notNull(),
 	questionType: text('questionType', { enum: ['Multiple', 'TF'] }).notNull(),
 	answers: blob('answers', { mode: 'json' }).$type<string[]>(),
-	correctAnswer: blob('answers', { mode: 'json' }).$type<string[]>(),
-	correctAnswerTF: integer('id', { mode: 'boolean' }),
+	correctAnswer: blob('correctAnswer', { mode: 'json' }).$type<string[]>(),
+	correctAnswerTF: integer('correctAnswerTF', { mode: 'boolean' }),
 });
 
 export const quizzesRelations = relations(quizzes, ({ many }) => ({

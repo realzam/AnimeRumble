@@ -1,21 +1,23 @@
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE `users` (
 	`email` text PRIMARY KEY NOT NULL,
 	`password` text NOT NULL,
 	`name` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS `questions` ( 
-	`id` integer,
+CREATE TABLE `questions` (
+	`id` text PRIMARY KEY NOT NULL,
 	`quizId` text NOT NULL,
-	`question` text,
+	`question` text DEFAULT '' NOT NULL,
 	`questionType` text NOT NULL,
 	`answers` blob,
+	`correctAnswer` blob,
+	`correctAnswerTF` integer,
 	FOREIGN KEY (`quizId`) REFERENCES `quizzes`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS `quizzes` (
+CREATE TABLE `quizzes` (
 	`id` text PRIMARY KEY NOT NULL,
 	`title` text NOT NULL,
-	`description` text,
+	`description` text DEFAULT '' NOT NULL,
 	`state` text NOT NULL
 );
