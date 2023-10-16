@@ -4,7 +4,7 @@ import { zodCustomErrorMap } from '@/lib/zodCustomErrorMap';
 
 z.setErrorMap(zodCustomErrorMap);
 const LoginSchema = z.object({
-	email: z.string().nonempty().email(),
+	email: z.string().min(1).email(),
 	password: z
 		.string()
 		.min(6, 'La constraseña debe contener al menos 6 carácter(es)'),
@@ -14,7 +14,7 @@ const RegisterSchema = z
 	.object({
 		email: z
 			.string()
-			.nonempty({ message: 'El correo debe contener al menos 1 carácter(es)' })
+			.min(1, { message: 'El correo debe contener al menos 1 carácter(es)' })
 			.email(),
 		password: z
 			.string()

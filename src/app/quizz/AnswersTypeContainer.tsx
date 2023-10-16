@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+
 import { Show, useObservable, useSelector } from '@legendapp/state/react';
 
 import {

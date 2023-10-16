@@ -1,9 +1,13 @@
 import * as schema from '@/db/models/quizzes';
-import { CreateQuizSchema, GetQuizSchema } from '@/schema/quiz';
+import {
+	CreateQuizSchema,
+	GetQuizSchema,
+	UpdateQuizSchema,
+} from '@/schema/quiz';
 import { publicProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import Database from 'better-sqlite3';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { customAlphabet, urlAlphabet } from 'nanoid';
 
@@ -42,7 +46,7 @@ export const quizRouter = router({
 				quiz: quiz[0],
 			};
 		}),
-	quizz: publicProcedure.input(GetQuizSchema).query(async (opts) => {
+	getQuizz: publicProcedure.input(GetQuizSchema).query(async (opts) => {
 		const { input } = opts;
 		const quiz = await db.query.quizzes.findMany({
 			with: {
@@ -63,4 +67,49 @@ export const quizRouter = router({
 
 		return quiz[0];
 	}),
+	addQuestion: publicProcedure.input(GetQuizSchema).query(async (opts) => {
+		const {
+			input: { id: idQuiz },
+		} = opts;
+		const quiz = await db.query.quizzes.findFirst({
+			where: eq(schema.quizzes.id, idQuiz),
+		});
+		if (!quiz) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'No existe el quiz',
+			});
+		}
+		const nanoid = customAlphabet(urlAlphabet, 15);
+		const idQuestion = nanoid();
+		const question = await db
+			.insert(schema.questions)
+			.values({
+				id: idQuestion,
+				questionType: 'Multiple',
+				quizId: idQuiz,
+				question: '',
+			})
+			.returning();
+
+		return question;
+	}),
+	updateQuestion: publicProcedure
+		.input(UpdateQuizSchema)
+		.mutation(async (opts) => {
+			const {
+				input: { quizId, questionId, question },
+			} = opts;
+			await db
+				.update(schema.questions)
+				.set({
+					question,
+				})
+				.where(
+					and(
+						eq(schema.questions.id, questionId),
+						eq(schema.questions.quizId, quizId),
+					),
+				);
+		}),
 });

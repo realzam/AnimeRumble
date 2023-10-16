@@ -5,7 +5,7 @@ import QuizPage from './QuizzPage';
 
 async function getData(id: string) {
 	try {
-		const res = await serverClient.quizz.quizz({ id });
+		const res = await serverClient.quizz.getQuizz({ id });
 		return res;
 	} catch (error) {
 		return undefined;
@@ -17,6 +17,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 	if (!data) {
 		redirect('/dashboard');
 	} else {
-		return <QuizPage id={data.id} initialQuiz={data} />;
+		return <QuizPage initialQuiz={data} />;
 	}
 }
