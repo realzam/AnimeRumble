@@ -1,3 +1,4 @@
+import path from 'path';
 import { type Config } from 'drizzle-kit';
 
 export default {
@@ -5,6 +6,6 @@ export default {
 	out: './drizzle',
 	driver: 'better-sqlite',
 	dbCredentials: {
-		url: 'sqlite.db',
+		url: path.resolve(__dirname, 'sqlite.db'),
 	},
 } satisfies Config;
