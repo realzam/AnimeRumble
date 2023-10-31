@@ -1,5 +1,8 @@
 'use client';
 
+import { useContext } from 'react';
+import { QuizContext } from '@/context/quiz';
+import { trpc } from '@/trpc/client/client';
 import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
 import {
 	Reactive,
@@ -29,11 +32,16 @@ const colorsVariants = cva('', {
 		color: 'red',
 	},
 });
-
-type ActivityCardProps = VariantProps<typeof colorsVariants>;
-const AnswerCard = ({ color }: ActivityCardProps) => {
-	const asnwer = useObservable('');
+interface Props {
+	index?: number;
+}
+type ActivityCardProps = VariantProps<typeof colorsVariants> & Props;
+const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
+	const { questionUI, quiz, refetch } = useContext(QuizContext);
+	const asnwer = useObservable(questionUI.answers[index]);
 	const colored = useSelector(() => asnwer.get().length > 0);
+	const updateQuestion = trpc.quizz.updateQuestion.useMutation();
+
 	return (
 		<Card
 			className={cn(
@@ -48,7 +56,7 @@ const AnswerCard = ({ color }: ActivityCardProps) => {
 						className: 'h-full w-12 rounded-sm border-none',
 					}),
 				)}
-			></div>
+			/>
 			<div className='flex h-full w-full items-center'>
 				<Reactive.textarea
 					placeholder='Escribe una respuesta'
@@ -62,6 +70,23 @@ const AnswerCard = ({ color }: ActivityCardProps) => {
 							colored && 'text-slate-100',
 						)
 					}
+					onChange={() => {
+						updateQuestion.mutate(
+							{
+								questionId: questionUI.id,
+								quizId: quiz.id,
+								answerUpdate: {
+									index,
+									value: 'hhhola',
+								},
+							},
+							{
+								onSettled: () => {
+									refetch();
+								},
+							},
+						);
+					}}
 				/>
 				<Show if={colored}>
 					<Checkbox className='m-2 h-8 w-8 shrink-0 rounded-full border-4 transition-colors duration-300 focus-visible:ring-8' />

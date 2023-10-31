@@ -39,6 +39,8 @@ export const quizRouter = router({
 					questionType: 'Multiple',
 					quizId: idQuiz,
 					question: '¿Que día es hoy?',
+					answers: ['', '', '', ''],
+					correctAnswer: [false, false, false, false],
 				})
 				.run();
 
@@ -89,6 +91,8 @@ export const quizRouter = router({
 				questionType: 'Multiple',
 				quizId: idQuiz,
 				question: '',
+				answers: ['', '', '', ''],
+				correctAnswer: [false, false, false],
 			})
 			.returning();
 
@@ -97,13 +101,26 @@ export const quizRouter = router({
 	updateQuestion: publicProcedure
 		.input(UpdateQuizSchema)
 		.mutation(async (opts) => {
-			const {
-				input: { quizId, questionId, question },
-			} = opts;
+			const { input } = opts;
+			const { quizId, questionId, answerUpdate, ...values } = input;
+			let answers = undefined;
+			if (answerUpdate) {
+				const question = await db.query.questions.findFirst({
+					where: and(
+						eq(schema.questions.id, questionId),
+						eq(schema.questions.quizId, quizId),
+					),
+				});
+				if (question) {
+					answers = [...question.answers];
+					answers[answerUpdate.index] = answerUpdate.value;
+				}
+			}
 			await db
 				.update(schema.questions)
 				.set({
-					question,
+					...values,
+					answers,
 				})
 				.where(
 					and(

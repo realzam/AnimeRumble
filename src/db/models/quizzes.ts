@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { blob, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const quizzes = sqliteTable('quizzes', {
 	id: text('id').primaryKey().notNull(),
@@ -14,9 +14,23 @@ export const questions = sqliteTable('questions', {
 		.references(() => quizzes.id)
 		.notNull(),
 	question: text('question').default('').notNull(),
-	questionType: text('questionType', { enum: ['Multiple', 'TF'] }).notNull(),
-	answers: blob('answers', { mode: 'json' }).$type<string[]>(),
-	correctAnswer: blob('correctAnswer', { mode: 'json' }).$type<string[]>(),
+	questionType: text('questionType', { enum: ['Multiple', 'TF'] })
+		.default('Multiple')
+		.notNull(),
+	time: text('time', {
+		enum: ['5', '10', '15', '20', '30', '45', '60', '90'],
+	})
+		.default('20')
+		.notNull(),
+	points: text('points', {
+		enum: ['standar', 'none', 'double'],
+	})
+		.default('standar')
+		.notNull(),
+	answers: text('answers', { mode: 'json' }).$type<string[]>().notNull(),
+	correctAnswer: text('correctAnswer', { mode: 'json' })
+		.$type<boolean[]>()
+		.notNull(),
 	correctAnswerTF: integer('correctAnswerTF', { mode: 'boolean' }),
 });
 

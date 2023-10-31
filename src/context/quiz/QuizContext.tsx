@@ -20,6 +20,9 @@ interface ContextProps {
 	quiz: TypeResultData;
 	indexQuestionUI: Observable<number>;
 	questionUI: TypeResultData['questions'][0];
+	valueQuestion: Observable<string>;
+	typeQuestion: Observable<'Multiple' | 'TF'>;
+	setIndexQuestionUI: (i: number) => void;
 }
 
 export const QuizContext = createContext({} as ContextProps);

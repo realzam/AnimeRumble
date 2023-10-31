@@ -1,6 +1,11 @@
+'use client';
+
 import { useContext } from 'react';
 import { QuizContext } from '@/context/quiz';
-import { Reactive, useObserve } from '@legendapp/state/react';
+import { trpc } from '@/trpc/client/client';
+import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
+import { Reactive } from '@legendapp/state/react';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { AspectRatio } from '@ui/AspectRatio';
 import { Card } from '@ui/Card';
@@ -8,13 +13,28 @@ import { ScrollArea } from '@ui/ScrollArea';
 
 import AnswersTypeContainer from '../AnswersTypeContainer';
 import { PointsSelect } from '../PointsSelect';
-import { TimeSelect } from '../TimeSelect';
+import TimeSelect from '../TimeSelect';
 
+enableReactComponents();
 const QuizzPageContainer = () => {
-	const { questionUI } = useContext(QuizContext);
-	useObserve(() => {
-		console.log('QuizzPageContainer', questionUI);
-	});
+	const updateQuiz = trpc.quizz.updateQuestion.useMutation();
+	const { questionUI, quiz, valueQuestion, refetch } = useContext(QuizContext);
+
+	const debounced = useDebouncedCallback(async () => {
+		await updateQuiz.mutate(
+			{
+				questionId: questionUI.id,
+				quizId: quiz.id,
+				question: valueQuestion.get(),
+			},
+			{
+				onSettled: () => {
+					refetch();
+				},
+			},
+		);
+	}, 500);
+
 	return (
 		<Card className='flex w-full flex-col py-8 pl-4 pr-2'>
 			<ScrollArea type='always'>
@@ -25,10 +45,8 @@ const QuizzPageContainer = () => {
 							name='question'
 							id='question'
 							placeholder='Escribe tu pregunta'
-							$value={() => questionUI.question}
-							onChange={(e) => {
-								console.log('e', e);
-							}}
+							$value={valueQuestion}
+							onChange={debounced}
 						/>
 					</div>
 					<div className='my-5 flex h-80 items-center justify-between'>

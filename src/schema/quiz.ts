@@ -14,11 +14,17 @@ const GetQuizSchema = z.object({
 const UpdateQuizSchema = z.object({
 	quizId: z.string().min(1),
 	questionId: z.string().min(1),
-
-	question: z.string(),
+	question: z.string().optional(),
 	questionType: z.enum(['Multiple', 'TF']).optional(),
-
 	correctAnswerTF: z.boolean().optional(),
+	time: z.enum(['5', '10', '15', '20', '30', '45', '60', '90']).optional(),
+	points: z.enum(['standar', 'none', 'double']).optional(),
+	answerUpdate: z
+		.object({
+			index: z.number().min(0).max(3),
+			value: z.string().min(1),
+		})
+		.optional(),
 });
 
 export { CreateQuizSchema, GetQuizSchema, UpdateQuizSchema };

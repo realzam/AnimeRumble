@@ -1,7 +1,7 @@
 'use client';
 
+import { QuizProvider } from '@/context/quiz';
 import { type serverClient } from '@/trpc/client/serverClient';
-import { QuizProvider } from '@context/quiz';
 
 import Navbar from '@web/Navbar';
 
