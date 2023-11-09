@@ -1,0 +1,41 @@
+{
+	"endOfLine": "lf",
+	"useTabs": true,
+	"semi": true,
+	"singleQuote": true,
+	"jsxSingleQuote": true,
+	"arrowParens": "always",
+	"tabWidth": 2,
+	"bracketSpacing": true,
+	"trailingComma": "all",
+	"overrides": [
+		{
+			"files": "*.tsx",
+			"options": {
+				"parser": "typescript"
+			}
+		}
+	],
+	"importOrder": [
+		"<BUILTIN_MODULES>",
+		"^(react/(.*)$)|^(react$)",
+		"^(next/(.*)$)|^(next$)",
+		"<THIRD_PARTY_MODULES>",
+		"",
+		"^types$",
+		"^@/types/(.*)$",
+		"^@/lib/(.*)$",
+		"^@/hooks/(.*)$",
+		"^@ui/(.*)$",
+		"^@web/(.*)$",
+		"^@/components/(.*)$",
+		"^@/styles/(.*)$",
+		"",
+		"^[./]"
+	],
+	"importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+	"plugins": [
+		"@ianvs/prettier-plugin-sort-imports",
+		"prettier-plugin-tailwindcss"
+	]
+}
