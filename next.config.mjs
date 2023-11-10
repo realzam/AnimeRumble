@@ -4,7 +4,21 @@ import './src/env.mjs';
 const nextConfig = {
 	reactStrictMode: true,
 	images: {
-		domains: ['lh3.googleusercontent.com', 'images.unsplash.com', 'utfs.io'],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: '**.googleusercontent.com',
+			},
+
+			{
+				protocol: 'https',
+				hostname: 'images.unsplash.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'utfs.io',
+			},
+		],
 	},
 	async redirects() {
 		return [

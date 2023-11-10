@@ -15,8 +15,6 @@ async function getData(id: string) {
 
 export default async function Page({ params }: { params: { id: string } }) {
 	const data = await getData(params.id);
-	console.log(data);
-
 	if (!data) {
 		redirect('/dashboard');
 	} else {

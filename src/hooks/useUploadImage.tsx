@@ -39,22 +39,24 @@ const UploadImage = ({ isUploading }: UploadImageProps) => {
 
 	if (files.length === 0) {
 		return (
-			<Card
-				className='flex w-full flex-col items-center justify-center border-2 border-dashed px-6 py-10 text-center'
-				{...getRootProps()}
-			>
-				<UploadCloud size={44} />
-				<label
-					htmlFor='file-upload'
-					className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
+			<AspectRatio ratio={16 / 9}>
+				<Card
+					className='flex h-full w-full flex-col items-center justify-center border-2 border-dashed px-6 py-10 text-center'
+					{...getRootProps()}
 				>
-					Elegir imagen o arrastrar y soltar
-				</label>
-				<input className='sr-only' {...getInputProps()} />
-				<div className='m-0 h-[1.25rem] text-xs leading-5 text-gray-600'>
-					Image (4MB)
-				</div>
-			</Card>
+					<UploadCloud size={44} />
+					<label
+						htmlFor='file-upload'
+						className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
+					>
+						Elegir imagen o arrastrar y soltar
+					</label>
+					<input className='sr-only' {...getInputProps()} />
+					<div className='m-0 h-[1.25rem] text-xs leading-5 text-gray-600'>
+						Image (4MB)
+					</div>
+				</Card>
+			</AspectRatio>
 		);
 	}
 	return (

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "0d466522-629a-40e5-ba4b-4c4495abb1d9",
+  "id": "ce9349a9-023e-4e93-ad19-0812db5f9ec6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -106,7 +106,8 @@
           "columns": [
             "provider",
             "providerAccountId"
-          ]
+          ],
+          "name": "account_provider_providerAccountId_pk"
         }
       },
       "uniqueConstraints": {}
@@ -246,7 +247,8 @@
           "columns": [
             "identifier",
             "token"
-          ]
+          ],
+          "name": "verificationToken_identifier_token_pk"
         }
       },
       "uniqueConstraints": {}
@@ -254,17 +256,24 @@
     "questions": {
       "name": "questions",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
         "quizId": {
           "name": "quizId",
           "type": "text",
           "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "indexQuestion": {
+          "name": "indexQuestion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
@@ -307,8 +316,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "correctAnswer": {
-          "name": "correctAnswer",
+        "correctAnswers": {
+          "name": "correctAnswers",
           "type": "text",
           "primaryKey": false,
           "notNull": true,

@@ -1,36 +1,17 @@
-'use client';
+// import { useRef } from 'react';
 
-import React, { useContext } from 'react';
-import { BearContext } from '@/context/bear/bearContext';
-// import { trpc } from '@/trpc/client/client';
-import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
+import QuizDetailsContiener from './QuizDetailsContiener';
+import QuizPageSideBar from './QuizPageSideBar';
 
-import { Button } from '@/components/ui/Button';
-
-import AddQuizButton from './AddQuizButton';
-
-enableReactComponents();
 const QuizContainer = () => {
-	const { initialQuiz } = useContext(BearContext);
-
-	// const data = useMemo(() => quizQuery.data, [quizQuery.data]);
+	// const renderCount = ++useRef(0).current;
 	return (
-		<div className='flex flex-col'>
-			<div>
-				quiz title:
-				{initialQuiz.title}
+		<div className='relative'>
+			{/* <div className='absolute left-1 top-1'>Renders: {renderCount}</div> */}
+			<div className='container flex h-[calc(100vh-3.5rem-1px)] py-8'>
+				<QuizPageSideBar />
+				<QuizDetailsContiener />
 			</div>
-			<div>question:{initialQuiz.questions.length}</div>
-			<Button
-				className='m-3'
-				onClick={() => {
-					// isSelectedX.set((v) => v + 1);
-				}}
-			>
-				Add bear
-			</Button>
-			{/* <button onClick={() => refetch()}>refetch</button> */}
-			<AddQuizButton />
 		</div>
 	);
 };

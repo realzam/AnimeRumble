@@ -29,9 +29,25 @@ const UpdateQuizSchema = z.object({
 	answerUpdate: z
 		.object({
 			index: z.number().min(0).max(3),
-			value: z.string().min(1),
+			value: z.string(),
+		})
+		.optional(),
+	correctAnswerUpdate: z
+		.object({
+			index: z.number().min(0).max(3),
+			value: z.boolean(),
 		})
 		.optional(),
 });
 
-export { CreateQuizSchema, GetQuizSchema, UpdateQuizSchema };
+const DeleteQuestionSchema = z.object({
+	quizId: z.string().min(1),
+	questionId: z.string().min(1),
+});
+
+export {
+	CreateQuizSchema,
+	GetQuizSchema,
+	UpdateQuizSchema,
+	DeleteQuestionSchema,
+};

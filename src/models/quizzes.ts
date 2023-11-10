@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const quizzes = sqliteTable('quizzes', {
 	id: text('id').primaryKey().notNull(),
@@ -11,10 +11,11 @@ export const quizzes = sqliteTable('quizzes', {
 });
 
 export const questions = sqliteTable('questions', {
-	id: text('id').primaryKey().notNull(),
 	quizId: text('quizId')
 		.references(() => quizzes.id)
 		.notNull(),
+	indexQuestion: int('indexQuestion').notNull(),
+	id: text('id').primaryKey().notNull(),
 	question: text('question').default('').notNull(),
 	questionType: text('questionType', { enum: ['Multiple', 'TF'] })
 		.default('Multiple')
@@ -30,7 +31,7 @@ export const questions = sqliteTable('questions', {
 		.default('standar')
 		.notNull(),
 	answers: text('answers', { mode: 'json' }).$type<string[]>().notNull(),
-	correctAnswer: text('correctAnswer', { mode: 'json' })
+	correctAnswers: text('correctAnswers', { mode: 'json' })
 		.$type<boolean[]>()
 		.notNull(),
 	correctAnswerTF: integer('correctAnswerTF', { mode: 'boolean' }),

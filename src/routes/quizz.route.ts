@@ -2,13 +2,14 @@ import { env } from '@/env.mjs';
 import * as schema from '@/models/quizzes';
 import {
 	CreateQuizSchema,
+	DeleteQuestionSchema,
 	GetQuizSchema,
 	UpdateQuizSchema,
 } from '@/schema/quiz';
 import { publicProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import Database from 'better-sqlite3';
-import { and, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { customAlphabet, urlAlphabet } from 'nanoid';
 import { UTApi } from 'uploadthing/server';
@@ -47,7 +48,8 @@ export const quizRouter = router({
 					quizId: idQuiz,
 					question: '',
 					answers: ['', '', '', ''],
-					correctAnswer: [false, false, false, false],
+					correctAnswers: [false, false, false, false],
+					indexQuestion: 0,
 				})
 				.run();
 			if (img) {
@@ -80,6 +82,7 @@ export const quizRouter = router({
 					columns: {
 						quizId: false,
 					},
+					orderBy: [asc(schema.questions.indexQuestion)],
 				},
 			},
 			where: eq(schema.quizzes.id, input.id),
@@ -113,6 +116,13 @@ export const quizRouter = router({
 			input: { id: idQuiz },
 		} = opts;
 		const quiz = await db.query.quizzes.findFirst({
+			with: {
+				questions: {
+					columns: {
+						quizId: false,
+					},
+				},
+			},
 			where: eq(schema.quizzes.id, idQuiz),
 		});
 		if (!quiz) {
@@ -129,7 +139,8 @@ export const quizRouter = router({
 			quizId: idQuiz,
 			question: '',
 			answers: ['', '', '', ''],
-			correctAnswer: [false, false, false],
+			correctAnswers: [false, false, false],
+			indexQuestion: quiz.questions.length,
 		});
 
 		return await db.query.quizzes.findFirst({
@@ -147,8 +158,15 @@ export const quizRouter = router({
 		.input(UpdateQuizSchema)
 		.mutation(async (opts) => {
 			const { input } = opts;
-			const { quizId, questionId, answerUpdate, ...values } = input;
+			const {
+				quizId,
+				questionId,
+				answerUpdate,
+				correctAnswerUpdate,
+				...values
+			} = input;
 			let answers = undefined;
+			let correctAnswers: boolean[] | undefined = undefined;
 			if (answerUpdate) {
 				const question = await db.query.questions.findFirst({
 					where: and(
@@ -161,11 +179,25 @@ export const quizRouter = router({
 					answers[answerUpdate.index] = answerUpdate.value;
 				}
 			}
+
+			if (correctAnswerUpdate) {
+				const question = await db.query.questions.findFirst({
+					where: and(
+						eq(schema.questions.id, questionId),
+						eq(schema.questions.quizId, quizId),
+					),
+				});
+				if (question) {
+					correctAnswers = [...question.correctAnswers];
+					correctAnswers[correctAnswerUpdate.index] = correctAnswerUpdate.value;
+				}
+			}
 			await db
 				.update(schema.questions)
 				.set({
 					...values,
 					answers,
+					correctAnswers,
 				})
 				.where(
 					and(
@@ -173,5 +205,23 @@ export const quizRouter = router({
 						eq(schema.questions.quizId, quizId),
 					),
 				);
+		}),
+	deleteQuestion: publicProcedure
+		.input(DeleteQuestionSchema)
+		.mutation(async (opts) => {
+			const { input } = opts;
+			const questions = await db.query.questions.findMany({
+				where: and(eq(schema.questions.quizId, input.quizId)),
+			});
+			if (questions.length >= 2) {
+				await db
+					.delete(schema.questions)
+					.where(eq(schema.questions.id, input.questionId));
+			} else {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'No se puede eliminar la única pregunta',
+				});
+			}
 		}),
 });
