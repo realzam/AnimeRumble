@@ -1,29 +1,44 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"ts-node": {
+		"require": ["tsconfig-paths/register"]
+	},
+
 	"compilerOptions": {
-		"target": "es5",
+		"target": "es2022",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
+		"strictNullChecks": true,
 		"strict": true,
-		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
 		"module": "esnext",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
-		"baseUrl": ".",
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"strictPropertyInitialization": false,
-		"strictNullChecks": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@ui/*": ["./src/components/ui/*"],
+			"@web/*": ["./src/components/web/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "env.d.ts", "**/*.ts", "**/*.tsx"],
-	"exclude": ["node_modules"],
-	"typeRoots": ["env.d.ts"]
+	"include": [
+		"next-env.d.ts",
+		"**/*.js",
+		"**/*.ts",
+		"**/*.tsx",
+		"**/*.d.ts",
+		"**/*.mjs",
+		".next/types/**/*.ts"
+	],
+	"exclude": ["node_modules"]
 }
