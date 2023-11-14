@@ -21,7 +21,7 @@ export const quizzes = mysqlTable('quizzes', {
 
 export const questions = mysqlTable('questions', {
 	quizId: varchar('quizId', { length: 30 }).notNull(),
-	position: tinyint('position', { unsigned: true }).notNull(),
+	position: tinyint('position').notNull(),
 	id: varchar('id', { length: 30 }).primaryKey().notNull(),
 	question: varchar('question', { length: 100 }).default('').notNull(),
 	questionType: varchar('questionType', { length: 8, enum: ['Multiple', 'TF'] })

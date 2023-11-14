@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { LoginSchema } from '@/schema/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,10 +8,11 @@ import { enableReactComponents } from '@legendapp/state/config/enableReactCompon
 import { Show, useObservable, useSelector } from '@legendapp/state/react';
 import { ExclamationTriangleIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
+import animeRumbleRoutes from '@/lib/routes';
 import { sleep } from '@/lib/utils';
 import { Alert, AlertDescription } from '@ui/Alert';
 import { Button } from '@ui/Button';
@@ -32,6 +34,22 @@ const LoginForm = () => {
 	});
 	const errorMsg = useObservable('');
 	const hasError = useSelector(() => errorMsg.get().length > 0);
+	const session = useSession();
+
+	useEffect(() => {
+		if (session.status == 'authenticated') {
+			let callbackUrl = searchParams.get('callbackUrl');
+			if (!callbackUrl) {
+				callbackUrl =
+					session.data.user.role == 'admin'
+						? animeRumbleRoutes.dashboard
+						: animeRumbleRoutes.home;
+			}
+			const urlDecoaded = decodeURIComponent(callbackUrl);
+
+			router.replace(urlDecoaded);
+		}
+	}, [router, searchParams, session]);
 
 	async function onSubmit(values: z.infer<typeof LoginSchema>) {
 		errorMsg.set('');
@@ -41,19 +59,12 @@ const LoginForm = () => {
 			password: values.password,
 			redirect: false,
 		});
-
 		if (res) {
-			console.log('res', res);
-
 			if (res.error) {
 				errorMsg.set(res.error);
 				setTimeout(() => {
 					errorMsg.set('');
 				}, 3000);
-			} else {
-				const callbackUrl = searchParams.get('callbackUrl') || '/';
-				const urlDecoaded = decodeURIComponent(callbackUrl);
-				router.replace(urlDecoaded);
 			}
 		}
 	}

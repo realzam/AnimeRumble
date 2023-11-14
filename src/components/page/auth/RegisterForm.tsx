@@ -11,6 +11,7 @@ import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { type z } from 'zod';
 
+import animeRumbleRoutes from '@/lib/routes';
 import { sleep } from '@/lib/utils';
 import { Alert, AlertDescription } from '@ui/Alert';
 import { Button } from '@ui/Button';
@@ -45,7 +46,7 @@ const RegisterForm = () => {
 					email: variables.email,
 					password: variables.password,
 					redirect: true,
-					callbackUrl: '/dashboard',
+					callbackUrl: animeRumbleRoutes.home,
 				});
 			},
 			onError(data) {

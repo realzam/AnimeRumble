@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
+import animeRumbleRoutes from '@/lib/routes';
 import { useUploadImage } from '@/hooks/useUploadImage.old2';
 import { Button } from '@ui/Button';
 import {
@@ -59,7 +60,7 @@ const CreateQuizButton = () => {
 			},
 			{
 				onSuccess: (v) => {
-					router.push('/admin/quiz/' + v.quiz.id);
+					router.push(animeRumbleRoutes.createQuiz + v.quiz.id);
 				},
 			},
 		);

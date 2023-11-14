@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { serverClient } from '@/trpc/client/serverClient';
 
+import animeRumbleRoutes from '@/lib/routes';
 import QuizPage from '@/components/page/quiz/QuizPage';
 
 async function getData(id: string) {
@@ -16,7 +17,7 @@ async function getData(id: string) {
 export default async function Page({ params }: { params: { id: string } }) {
 	const data = await getData(params.id);
 	if (!data) {
-		redirect('/admin/dashboard');
+		redirect(animeRumbleRoutes.dashboardQuizzes);
 	} else {
 		return <QuizPage initialQuiz={data} />;
 	}

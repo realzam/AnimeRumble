@@ -1,6 +1,7 @@
 import React from 'react';
 import NextLink from 'next/link';
 
+import animeRumbleRoutes from '@/lib/routes';
 import { Button } from '@ui/Button';
 
 interface Props {
@@ -19,7 +20,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 						className='w-full justify-start'
 						asChild
 					>
-						<NextLink href='/dashboard/quizzes'>
+						<NextLink href={animeRumbleRoutes.dashboardQuizzes}>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 24 24'
@@ -41,7 +42,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 						className='w-full justify-start'
 						asChild
 					>
-						<NextLink href='/dashboard/bingo'>
+						<NextLink href={animeRumbleRoutes.dashboardBingo}>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 24 24'
@@ -65,7 +66,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 						className='w-full justify-start'
 						asChild
 					>
-						<NextLink href='/dashboard/bingo'>
+						<NextLink href={animeRumbleRoutes.dashboardLoteria}>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 24 24'
@@ -91,7 +92,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 						className='w-full justify-start'
 						asChild
 					>
-						<NextLink href='/dashboard/config'>
+						<NextLink href={animeRumbleRoutes.dashboardConfig}>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 24 24'

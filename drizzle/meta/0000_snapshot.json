@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "803752ee-d49c-4cda-a3cd-820450bdd33e",
+  "id": "e3593940-fa42-41fa-88f3-4e9ce118202f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -252,7 +252,7 @@
         },
         "position": {
           "name": "position",
-          "type": "tinyint unsigned",
+          "type": "tinyint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

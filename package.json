@@ -12,6 +12,7 @@
 		"clean:all": "rimraf node_modules && rimraf .next && rimraf pnpm-lock.yaml",
 		"format:check": "prettier \"**/*.{js,ts,tsx}\" --check --cache",
 		"format:write": "prettier \"**/*.{js,ts,tsx}\" --write --cache",
+		"db:clean": "rimraf drizzle && drizzle-kit generate:mysql && drizzle-kit push:mysql",
 		"db:push": "drizzle-kit push:mysql",
 		"db:generate": "drizzle-kit generate:mysql",
 		"db:live": "pnpm drizzle-kit studio --port 7777",

@@ -7,6 +7,7 @@ import { trpc } from '@/trpc/client/client';
 import { type serverClient } from '@/trpc/client/serverClient';
 import { Pencil } from 'lucide-react';
 
+import animeRumbleRoutes from '@/lib/routes';
 import { AspectRatio } from '@ui/AspectRatio';
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/Card';
 import { ScrollArea } from '@ui/ScrollArea';
@@ -72,7 +73,7 @@ const QuizzesListView = ({ initialQuizzes, type }: Props) => {
 										size='icon'
 										variant='ghost'
 										onClick={() => {
-											router.push('/admin/quiz/' + [quiz.id]);
+											router.push(animeRumbleRoutes.createQuiz + quiz.id);
 										}}
 									>
 										<Pencil />

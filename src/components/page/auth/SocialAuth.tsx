@@ -1,9 +1,32 @@
-import { IconBrandFacebook, IconBrandGoogle } from '@tabler/icons-react';
-import { signIn } from 'next-auth/react';
+'use client';
 
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { IconBrandFacebook, IconBrandGoogle } from '@tabler/icons-react';
+import { signIn, useSession } from 'next-auth/react';
+
+import animeRumbleRoutes from '@/lib/routes';
 import { Button } from '@ui/Button';
 
 const SocialAuth = () => {
+	const router = useRouter();
+	const session = useSession();
+	const searchParams = useSearchParams();
+	useEffect(() => {
+		if (session.status == 'authenticated') {
+			let callbackUrl = searchParams.get('callbackUrl');
+			if (!callbackUrl) {
+				callbackUrl =
+					session.data.user.role == 'admin'
+						? animeRumbleRoutes.dashboard
+						: animeRumbleRoutes.home;
+			}
+			const urlDecoaded = decodeURIComponent(callbackUrl);
+
+			router.replace(urlDecoaded);
+		}
+	}, [router, searchParams, session]);
+
 	return (
 		<>
 			<div className='grid grid-cols-2 gap-6'>
@@ -13,8 +36,8 @@ const SocialAuth = () => {
 				</Button>
 				<Button
 					variant='outline'
-					onClick={() => {
-						signIn('google').catch(console.error);
+					onClick={async () => {
+						await signIn('google', { redirect: false });
 					}}
 				>
 					<IconBrandGoogle className='mr-2 h-4 w-4' />

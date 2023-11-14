@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
 
 import { type QuestionType, type QuizDataType } from '@/types/quizQuery';
+import animeRumbleRoutes from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import {
 	Accordion,
@@ -82,7 +83,7 @@ const AssignateQuiz = ({ refetch, quiz }: Props) => {
 							type='submit'
 							onClick={() => {
 								router.push(
-									'/admin/quiz/' +
+									animeRumbleRoutes.createQuiz +
 										quiz.id +
 										'?index=' +
 										quiz.questions.findIndex((q) => q.hasError),
@@ -127,7 +128,9 @@ const ValidQuestionItem = ({ question: q, index, quizID }: PropsItem) => {
 							variant='outline'
 							className='w-fit'
 							onClick={() => {
-								router.push('/admin/quiz/' + quizID + '?index=' + index);
+								router.push(
+									animeRumbleRoutes.createQuiz + quizID + '?index=' + index,
+								);
 							}}
 						>
 							Modificar
@@ -189,7 +192,9 @@ const InvalidQuestionItem = ({ question: q, index, quizID }: PropsItem) => {
 							variant='outline'
 							className='w-fit border-destructive hover:bg-destructive/20'
 							onClick={() => {
-								router.push('/admin/quiz/' + quizID + '?index=' + index);
+								router.push(
+									animeRumbleRoutes.createQuiz + quizID + '?index=' + index,
+								);
 							}}
 						>
 							Arreglar

@@ -40,7 +40,7 @@ CREATE TABLE `verificationToken` (
 --> statement-breakpoint
 CREATE TABLE `questions` (
 	`quizId` varchar(30) NOT NULL,
-	`position` tinyint unsigned NOT NULL,
+	`position` tinyint NOT NULL,
 	`id` varchar(30) NOT NULL,
 	`question` varchar(100) NOT NULL DEFAULT '',
 	`questionType` varchar(8) NOT NULL DEFAULT 'Multiple',

@@ -1,3 +1,5 @@
+'server-only';
+
 import { env } from '@/env.mjs'; // On server
 import * as schema from '@/models';
 import { connect } from '@planetscale/database';

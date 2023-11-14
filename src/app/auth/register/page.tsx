@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { getAuthSession } from '@/lib/nextauth';
+import animeRumbleRoutes from '@/lib/routes';
 import { Card } from '@ui/Card';
 import AuthCardContent from '@/components/page/auth/AuthCardContent';
 
@@ -9,9 +10,9 @@ const RegisterPage = async () => {
 
 	if (session?.user) {
 		if (session.user.role == 'admin') {
-			redirect('/admin/dashboard');
+			redirect(animeRumbleRoutes.dashboard);
 		}
-		redirect('/');
+		redirect(animeRumbleRoutes.home);
 	}
 	return (
 		<div className='flex flex-1 items-center justify-center py-0 xs:py-6'>
