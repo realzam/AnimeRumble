@@ -1,11 +1,13 @@
-import path from 'path';
 import { type Config } from 'drizzle-kit';
 
+import 'dotenv/config';
+
 export default {
-	schema: './src/db/models/*',
+	schema: './src/models/*',
 	out: './drizzle',
-	driver: 'better-sqlite',
+	breakpoints: true,
+	driver: 'mysql2',
 	dbCredentials: {
-		url: path.resolve(__dirname, 'sqlite.db'),
+		uri: process.env.DATABASE_URL!,
 	},
 } satisfies Config;

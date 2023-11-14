@@ -6,10 +6,25 @@ export const env = createEnv({
 		AGUA: z.string().min(1),
 		FUEGO: z.string().min(1),
 		PASS_KEY: z.string().min(1),
+
+		NEXTAUTH_URL: z.string().min(1),
+		NEXTAUTH_SECRET: z.string().min(1),
+		GOOGLE_CLIENT_ID: z.string().min(1),
+		GOOGLE_CLIENT_SECRET: z.string().min(1),
+
+		UPLOADTHING_SECRET: z.string().min(1),
+		UPLOADTHING_APP_ID: z.string().min(1),
+
+		DATABASE_HOST: z.string().min(1),
+		DATABASE_USERNAME: z.string().min(1),
+		DATABASE_PASSWORD: z.string().min(1),
 	},
-	runtimeEnv: {
-		AGUA: process.env.AGUA,
-		FUEGO: process.env.FUEGO,
-		PASS_KEY: process.env.PASS_KEY,
+	client: {
+		// NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),
 	},
+
+	// For Next.js >= 13.4.4, you only need to destructure client variables:
+	// experimental__runtimeEnv: {
+	//   NEXT_PUBLIC_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY,
+	// }
 });

@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 import { screens } from 'tailwindcss/defaultTheme';
+import { withUt } from 'uploadthing/tw';
 
-module.exports = {
+export default withUt({
 	darkMode: ['class'],
 	content: [
 		'./pages/**/*.{ts,tsx}',
@@ -80,11 +81,6 @@ module.exports = {
 				wider: '1px',
 				widest: '1.5px',
 			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)',
-			},
 			transitionDuration: {
 				600: '600ms',
 				2000: '2000ms',
@@ -92,26 +88,42 @@ module.exports = {
 			backgroundPosition: {
 				'right-center': 'right center',
 			},
+			borderRadius: {
+				lg: 'var(--radius)',
+				md: 'calc(var(--radius) - 2px)',
+				sm: 'calc(var(--radius) - 4px)',
+			},
 			keyframes: {
 				'accordion-down': {
-					from: { height: 0 },
+					from: { height: '0' },
 					to: { height: 'var(--radix-accordion-content-height)' },
 				},
 				'accordion-up': {
 					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: 0 },
+					to: { height: '0' },
 				},
-				'show-overlay': {
-					'0%, 29.999%': { opacity: 0, zIndex: 1 },
-					'30%, 100%': { opacity: 1, zIndex: 3 },
+				'ping-slow': {
+					'0%': {
+						transform: 'scale(1)',
+						opacity: '1',
+					},
+					'25%': {
+						transform: 'scale(2)',
+						opacity: '0',
+					},
+					'100%': {
+						transform: 'scale(2)',
+						opacity: '0',
+					},
 				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'show-overlay': 'show-overlay 0.6s',
+				'ping-slow': 'ping-slow 3s cubic-bezier(0, 0, 0.2, 1) 3s infinite',
 			},
 		},
 	},
 	plugins: [require('tailwindcss-animate')],
-};
+});

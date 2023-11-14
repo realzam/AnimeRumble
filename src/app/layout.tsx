@@ -1,14 +1,21 @@
-import '@/styles/globals.css';
-
+import { type Metadata, type Viewport } from 'next';
 import { Poppins } from 'next/font/google';
+import { ourFileRouter } from '@/app/api/uploadthing/core';
+import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
+import { extractRouterConfig } from 'uploadthing/server';
 
-import { Providers } from './Providers';
+import { cn } from '@/lib/utils';
+import Navbar from '@web/Navbar';
+import { Providers } from '@/components/providers/Providers';
+
+import '@/styles/globals.css';
 
 const poppins = Poppins({
 	subsets: ['latin'],
 	weight: '400',
 });
-export const metadata = {
+
+export const metadata: Metadata = {
 	title: 'AnimeRumble',
 	description: 'Aplicación web para el club de anime en ESCOM',
 	keywords: [
@@ -29,13 +36,16 @@ export const metadata = {
 		},
 	],
 	creator: 'realzam',
+	icons: {
+		icon: '/favicon.ico',
+	},
+};
+
+export const viewport: Viewport = {
 	themeColor: [
 		{ media: '(prefers-color-scheme: light)', color: 'white' },
 		{ media: '(prefers-color-scheme: dark)', color: 'black' },
 	],
-	icons: {
-		icon: '/favicon.ico',
-	},
 };
 
 export default function RootLayout({
@@ -45,8 +55,12 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='es' suppressHydrationWarning>
-			<body className={poppins.className}>
-				<Providers>{children}</Providers>
+			<body className={cn(poppins.className, 'antialiased')}>
+				<NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+				<Providers>
+					<Navbar />
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);

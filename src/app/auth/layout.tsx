@@ -1,5 +1,3 @@
-import Navbar from '@web/Navbar';
-
 export const metadata = {
 	title: 'Auth AnimeRumble',
 };
@@ -10,8 +8,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<div className='flex min-h-screen flex-col'>
-			<Navbar />
+		<div className='flex h-[calc(100vh-3.5rem-1px)] flex-col'>
 			<main className='flex flex-1'>{children}</main>
 		</div>
 	);

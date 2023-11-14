@@ -1,65 +1,109 @@
+import React from 'react';
 import { trpc } from '@/trpc/client/client';
-import { type Observable } from '@legendapp/state';
-import { useObservable, useSelector } from '@legendapp/state/react';
+import { useObservable, useObserve } from '@legendapp/state/react';
+import { useObservableQuery } from '@legendapp/state/react-hooks/useObservableQuery';
+import { type UseBaseQueryResult } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
 
-import { QuizContext, type TypeResultData } from './QuizContext';
+import { type QuizDataType } from '@/types/quizQuery';
 
-type TypeQuestion = TypeResultData['questions'][0];
-
-export interface QuizState {
-	quiz: TypeResultData;
-	questionUI: TypeQuestion;
-	indexQuestionUI: Observable<number>;
-	valueQuestion: Observable<string>;
-	typeQuestion: Observable<'Multiple' | 'TF'>;
-}
+import { QuizContex, type UiType } from './QuizContex';
 
 interface Props {
-	children: JSX.Element | JSX.Element[];
-	initialQuiz: TypeResultData;
+	initialQuiz: QuizDataType;
+	children: React.ReactNode;
+	index: number;
 }
 
-export const QuizProvider = ({ children, initialQuiz }: Props) => {
-	const { refetch, data } = trpc.quizz.getQuizz.useQuery(
-		{ id: initialQuiz.id },
-		{
-			initialData: initialQuiz,
-			// refetchInterval: 3000,
-		},
-	);
-	const quiz = useSelector(() => data);
-	const index = useObservable(0);
-	const questionUI = useSelector<TypeQuestion>(
-		() => quiz.questions[index.get()],
-	);
-	const valueQuestion = useObservable(questionUI.question);
-	const typeQuestion = useObservable(questionUI.questionType);
-	const setIndexQuestionUI = (i: number) => {
-		console.log(
-			'setIndexQuestionUI',
-			i,
-			quiz.questions[i].question,
-			quiz.questions[i].questionType,
-		);
+type QQ = UseBaseQueryResult<QuizDataType, unknown>;
 
-		index.set(i);
-		valueQuestion.set(quiz.questions[i].question);
-		typeQuestion.set(quiz.questions[i].questionType);
+const QuizProvider = ({ children, initialQuiz, index }: Props) => {
+	const utils = trpc.useUtils();
+	let n = 0;
+	if (index >= 0 && index < initialQuiz.questions.length) {
+		n = index;
+	}
+
+	const ui = useObservable<UiType>({
+		questionId: initialQuiz.questions[n].id,
+		question: initialQuiz.questions[n],
+		isDragging: false,
+		scroll: n > 0,
+		scrollToQuestion: initialQuiz.questions[n].id,
+	});
+
+	const quiz = useObservable(initialQuiz);
+	const query$ = useObservableQuery({
+		queryKey: getQueryKey(trpc.quizz.getQuizz, { id: initialQuiz.id }, 'query'),
+		queryFn: () =>
+			utils.client.quizz.getQuizz
+				.query({ id: initialQuiz.id })
+				.then((res: QuizDataType) => res),
+		initialData: initialQuiz,
+	});
+	const props$ = useObservable<Omit<QQ, 'data'>>(() => {
+		const q = query$.get();
+		const { data: _, ...opt } = q;
+		return opt;
+	});
+
+	const setQuestionUi = (id: string) => {
+		const question = quiz.questions.get().find((q) => q.id === id);
+		if (question) {
+			ui.set((v) => ({
+				...v,
+				question,
+				questionId: question.id,
+				isDragging: false,
+			}));
+		}
+	};
+	const setQuestionUiAfterDelete = () => {
+		const index = quiz.questions
+			.get()
+			.findIndex((q) => q.id === ui.question.id.get());
+		let question = quiz.questions[0].get();
+		if (index > 0) {
+			question = quiz.questions[index - 1].get();
+		}
+		ui.set((v) => ({
+			...v,
+			question,
+			questionId: question.id,
+			isDragging: false,
+		}));
 	};
 
+	useObserve(() => {
+		const q = query$.get();
+		const { data, ...opt } = q;
+		if (data) {
+			quiz.set(data);
+		}
+		props$.set(opt);
+	});
+
+	useObserve(() => {
+		const e = quiz.questions.get().find((q) => q.id === ui.questionId.get());
+		if (e) {
+			ui.question.set(e);
+		}
+	});
+
 	return (
-		<QuizContext.Provider
+		<QuizContex.Provider
 			value={{
-				refetch,
+				id: initialQuiz.id,
 				quiz,
-				questionUI,
-				indexQuestionUI: index,
-				valueQuestion,
-				setIndexQuestionUI,
-				typeQuestion,
+				props$,
+				ui,
+				setQuestionUi,
+				setQuestionUiAfterDelete,
 			}}
 		>
 			{children}
-		</QuizContext.Provider>
+		</QuizContex.Provider>
 	);
 };
+
+export default QuizProvider;

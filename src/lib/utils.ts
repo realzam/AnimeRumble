@@ -1,5 +1,5 @@
 import React from 'react';
-import { env } from '@/env.mjs'; // On server
+import { env } from '@/env.mjs';
 import bcrypt from 'bcryptjs';
 import { clsx, type ClassValue } from 'clsx';
 import Base64 from 'crypto-js/enc-base64';

@@ -1,15 +1,12 @@
-import { users } from '@/db/models';
+import { users } from '@/models';
 import { RegisterSchema } from '@/schema/auth';
 import { publicProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
-import Database from 'better-sqlite3';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { nanoid } from 'nanoid';
 
+import { db } from '@/lib/db';
 import { hashPassword } from '@/lib/utils';
-
-const sqlite = new Database('sqlite.db');
-const db = drizzle(sqlite);
 
 export const authRouter = router({
 	register: publicProcedure.input(RegisterSchema).mutation(async (opts) => {
@@ -30,10 +27,11 @@ export const authRouter = router({
 				message: 'El correo ya esta registrado',
 			});
 		}
-		await db
-			.insert(users)
-			.values({ ...values, password: hashPassword(values.password) })
-			.run();
+		await db.insert(users).values({
+			...values,
+			password: hashPassword(values.password),
+			id: nanoid(),
+		});
 		return {
 			message: 'goodbye!',
 		};

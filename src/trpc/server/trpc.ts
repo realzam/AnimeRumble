@@ -1,7 +1,9 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { ZodError } from 'zod';
 
-const t = initTRPC.create({
+import { type Context } from './context';
+
+const t = initTRPC.context<Context>().create({
 	errorFormatter(opts) {
 		const { shape, error } = opts;
 		delete shape.data.stack;
@@ -19,5 +21,41 @@ const t = initTRPC.create({
 	},
 });
 
+const isAuthed = t.middleware(({ next, ctx }) => {
+	if (!ctx.session?.user.email) {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+		});
+	}
+	return next({
+		ctx: {
+			session: ctx.session,
+		},
+	});
+});
+
+const isAdim = t.middleware(({ next, ctx }) => {
+	if (!ctx.session?.user.email) {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+		});
+	}
+
+	if (ctx.session?.user.role !== 'admin') {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			cause: 'no tienes los permisos requeridos',
+		});
+	}
+
+	return next({
+		ctx: {
+			session: ctx.session,
+		},
+	});
+});
+
 export const router = t.router;
 export const publicProcedure = t.procedure;
+export const userProcedure = t.procedure.use(isAuthed);
+export const adminProcedure = t.procedure.use(isAuthed).use(isAdim);
