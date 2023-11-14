@@ -1,10 +1,5 @@
 import { withAuth } from 'next-auth/middleware';
 
-export default withAuth(
-	// `withAuth` augments your `Request` with the user's token.
-	function middleware(req) {
-		console.log(req.nextauth.token);
-	},
-);
+export default withAuth(async function middleware() {});
 
-export const config = { matcher: ['/dashboard/:path*'] };
+export const config = { matcher: ['/admin/:path*'] };

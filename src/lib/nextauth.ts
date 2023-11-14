@@ -1,21 +1,15 @@
 import { env } from '@/env.mjs'; // On server
-import * as schema from '@/models';
 import { accounts, users } from '@/models';
 import { LoginSchema } from '@/schema/auth';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import Database from 'better-sqlite3';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 
-import { comparePassword } from './utils';
+import { db } from '@/lib/db';
 
-const sqlite = new Database('sqlite.db');
-const db = drizzle(sqlite, { schema });
-migrate(db, { migrationsFolder: 'drizzle' });
+import { comparePassword } from './utils';
 
 const providerCredentials = Credentials({
 	name: 'credentials',
@@ -37,7 +31,6 @@ const providerCredentials = Credentials({
 			.limit(1);
 
 		if (usersResults.length === 0) {
-			console.log('no user');
 			throw new Error('Correo o contraseña incorrecto');
 		}
 		const user = usersResults[0];
@@ -49,7 +42,6 @@ const providerCredentials = Credentials({
 			.limit(1);
 
 		if (accountResults.length > 0) {
-			console.log('usuario esta registrado con', accountResults[0].provider);
 			throw new Error(`Inicia session con ${accountResults[0].provider}`);
 		}
 
@@ -59,7 +51,6 @@ const providerCredentials = Credentials({
 		);
 
 		if (!isValidPassword) {
-			console.log('invalid password');
 			throw new Error('Correo o contraseña incorrecto');
 		}
 		return {

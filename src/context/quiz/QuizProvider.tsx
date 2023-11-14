@@ -12,15 +12,24 @@ import { QuizContex, type UiType } from './QuizContex';
 interface Props {
 	initialQuiz: QuizDataType;
 	children: React.ReactNode;
+	index: number;
 }
 
 type QQ = UseBaseQueryResult<QuizDataType, unknown>;
 
-const QuizProvider = ({ children, initialQuiz }: Props) => {
+const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 	const utils = trpc.useUtils();
+	let n = 0;
+	if (index >= 0 && index < initialQuiz.questions.length) {
+		n = index;
+	}
+
 	const ui = useObservable<UiType>({
-		questionId: initialQuiz.questions[0].id,
-		question: initialQuiz.questions[0],
+		questionId: initialQuiz.questions[n].id,
+		question: initialQuiz.questions[n],
+		isDragging: false,
+		scroll: n > 0,
+		scrollToQuestion: initialQuiz.questions[n].id,
 	});
 
 	const quiz = useObservable(initialQuiz);
@@ -41,38 +50,28 @@ const QuizProvider = ({ children, initialQuiz }: Props) => {
 	const setQuestionUi = (id: string) => {
 		const question = quiz.questions.get().find((q) => q.id === id);
 		if (question) {
-			ui.set({
+			ui.set((v) => ({
+				...v,
 				question,
 				questionId: question.id,
-			});
+				isDragging: false,
+			}));
 		}
 	};
-	const setQuestionUiAfterDelete = (id: string) => {
-		const delQ = quiz.questions.get().find((q) => q.id === id);
-		console.log('setQuestionUiAfterDelete - info', id, ui.questionId.get());
-
-		console.log(
-			'setQuestionUiAfterDelete - info',
-			delQ?.question,
-			ui.question.question.get(),
-		);
-
-		if (id !== ui.questionId.get()) {
-			console.log('setQuestionUiAfterDelete - omit');
-
-			return;
-		}
-
-		const index = quiz.questions.get().findIndex((q) => q.id === id);
+	const setQuestionUiAfterDelete = () => {
+		const index = quiz.questions
+			.get()
+			.findIndex((q) => q.id === ui.question.id.get());
 		let question = quiz.questions[0].get();
-		if (index !== -1) {
-			question = quiz.questions[index].get();
+		if (index > 0) {
+			question = quiz.questions[index - 1].get();
 		}
-		console.log('setQuestionUiAfterDelete - question', index);
-		ui.set({
+		ui.set((v) => ({
+			...v,
 			question,
 			questionId: question.id,
-		});
+			isDragging: false,
+		}));
 	};
 
 	useObserve(() => {

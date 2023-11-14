@@ -1,7 +1,6 @@
-import Image from 'next/image';
 import { type Session } from 'next-auth';
 
-import { Avatar } from '@ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/Avatar';
 
 interface Props {
 	user: Session['user'];
@@ -10,18 +9,12 @@ interface Props {
 const UserAvatar = ({ user }: Props) => {
 	return (
 		<Avatar>
-			{user.image ? (
-				<div className='relative aspect-square h-full w-full'>
-					<Image
-						src={user.image}
-						alt='profile picture'
-						fill
-						referrerPolicy='no-referrer'
-					/>
-				</div>
-			) : (
-				<></>
-			)}
+			<AvatarImage
+				src={user.image!}
+				alt='profile picture'
+				referrerPolicy='no-referrer'
+			/>
+			<AvatarFallback>OM</AvatarFallback>
 		</Avatar>
 	);
 };

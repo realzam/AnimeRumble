@@ -5,6 +5,7 @@ import {
 	useComputed,
 	useObservable,
 	useObserve,
+	useSelector,
 	useUnmount,
 } from '@legendapp/state/react';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -48,6 +49,10 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 		asnwer.set(ui.question.answers.get()[index]);
 		checked.set(ui.question.correctAnswers.get()[index]);
 	});
+
+	const animateCheck = useSelector(
+		() => ui.question.errors.get().findIndex((e) => e !== '') === 3,
+	);
 
 	const debounced = useDebouncedCallback(async () => {
 		trpcUtils.client.quizz.updateQuestion
@@ -105,8 +110,9 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 				/>
 				<Show if={colored}>
 					<ReactiveCheckbox
-						className='m-2 h-8 w-8 shrink-0 rounded-full border-4 transition-colors duration-300 focus-visible:ring-8'
+						className='z-10 m-2 h-8 w-8 shrink-0 rounded-full border-4 transition-colors duration-300 focus-visible:ring-8'
 						$checked={checked}
+						showRippleAwait={animateCheck}
 						onCheckedChange={(v) => {
 							checked.set(v as boolean);
 							trpcUtils.client.quizz.updateQuestion
@@ -130,6 +136,10 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 };
 
 const AnswerTFCard = ({ variantTrue = true }: { variantTrue?: boolean }) => {
+	const { ui } = useQuiz();
+	const animateCheck = useSelector(
+		() => ui.question.errors.get().findIndex((e) => e !== '') === 3,
+	);
 	return (
 		<Card className='flex h-24 items-center overflow-hidden'>
 			<div
@@ -149,6 +159,7 @@ const AnswerTFCard = ({ variantTrue = true }: { variantTrue?: boolean }) => {
 				</h3>
 				<RadioGroupItem
 					value={variantTrue ? 'True' : 'False'}
+					showRippleAwait={animateCheck}
 					className='m-2 h-8 w-8 shrink-0 rounded-full border-4 transition-colors duration-300 focus-visible:ring-8'
 				/>
 			</div>

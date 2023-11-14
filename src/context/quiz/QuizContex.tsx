@@ -9,6 +9,9 @@ type QQ = UseBaseQueryResult<QuizDataType, unknown>;
 export interface UiType {
 	questionId: string;
 	question: QuestionType;
+	isDragging: boolean;
+	scrollToQuestion: string;
+	scroll: boolean;
 }
 
 interface State {
@@ -17,7 +20,7 @@ interface State {
 	props$: ObservableObject<Omit<QQ, 'data'>>;
 	ui: ObservableObject<UiType>;
 	setQuestionUi: (id: string) => void;
-	setQuestionUiAfterDelete: (id: string) => void;
+	setQuestionUiAfterDelete: () => void;
 }
 
 export const QuizContex = createContext<State | null>(null);

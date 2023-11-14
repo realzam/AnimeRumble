@@ -18,17 +18,20 @@ const RadioGroup = React.forwardRef<
 		/>
 	);
 });
+
 RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 
 const RadioGroupItem = React.forwardRef<
 	React.ElementRef<typeof RadioGroupPrimitive.Item>,
-	React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, children: _, ...props }, ref) => {
+	React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> & {
+		showRippleAwait?: boolean;
+	}
+>(({ className, children: _, showRippleAwait = false, ...props }, ref) => {
 	return (
 		<RadioGroupPrimitive.Item
 			ref={ref}
 			className={cn(
-				'peer h-4 w-4 shrink-0 rounded-sm border border-primary text-primary-foreground shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+				'group peer h-4 w-4 shrink-0 rounded-sm border border-primary text-primary-foreground shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
 				className,
 			)}
 			{...props}
@@ -36,6 +39,11 @@ const RadioGroupItem = React.forwardRef<
 			<RadioGroupPrimitive.Indicator className='flex items-center justify-center text-current'>
 				<CheckIcon className='h-full w-full' />
 			</RadioGroupPrimitive.Indicator>
+			{showRippleAwait && (
+				<span className='flex h-full items-center justify-center'>
+					<span className='h-full w-full rounded-full bg-primary opacity-0 group-data-[state=unchecked]:animate-ping-slow' />
+				</span>
+			)}
 		</RadioGroupPrimitive.Item>
 	);
 });

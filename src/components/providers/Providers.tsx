@@ -1,6 +1,7 @@
 import { UploadThingProvider } from '@/context/uploadThing/UploadThingProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { TooltipProvider } from '@ui/Tooltip';
 import TailwindIndicator from '@web/TailwindIndicator';
 
 import SessionProvider from './SessionProvider';
@@ -13,7 +14,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 			<TrpcProvider>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<UploadThingProvider>
-						{children}
+						<TooltipProvider>{children}</TooltipProvider>
 						<ReactQueryDevtools />
 						<TailwindIndicator />
 					</UploadThingProvider>

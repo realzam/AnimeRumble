@@ -1,10 +1,13 @@
 import { type Config } from 'drizzle-kit';
 
+import 'dotenv/config';
+
 export default {
 	schema: './src/models/*',
 	out: './drizzle',
-	driver: 'better-sqlite',
+	breakpoints: true,
+	driver: 'mysql2',
 	dbCredentials: {
-		url: 'sqlite.db',
+		uri: process.env.DATABASE_URL!,
 	},
 } satisfies Config;

@@ -16,7 +16,7 @@ async function getData(id: string) {
 export default async function Page({ params }: { params: { id: string } }) {
 	const data = await getData(params.id);
 	if (!data) {
-		redirect('/dashboard');
+		redirect('/admin/dashboard');
 	} else {
 		return <QuizPage initialQuiz={data} />;
 	}

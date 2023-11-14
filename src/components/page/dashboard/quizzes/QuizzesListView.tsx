@@ -13,6 +13,7 @@ import { ScrollArea } from '@ui/ScrollArea';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
+import AssignateQuiz from '../../quiz/AssignateQuiz';
 import DeleteQuizAlertDialog from './DeleteQuizAlertDialog';
 import EmptyQuizzesListView from './EmptyQuizzesListView';
 
@@ -71,7 +72,7 @@ const QuizzesListView = ({ initialQuizzes, type }: Props) => {
 										size='icon'
 										variant='ghost'
 										onClick={() => {
-											router.push('/quiz/' + [quiz.id]);
+											router.push('/admin/quiz/' + [quiz.id]);
 										}}
 									>
 										<Pencil />
@@ -83,7 +84,7 @@ const QuizzesListView = ({ initialQuizzes, type }: Props) => {
 								</div>
 							</CardHeader>
 							<div>
-								<Button className=''>Asignar</Button>
+								<AssignateQuiz quiz={quiz} refetch={quizzes.refetch} />
 								<Button className='mx-3' variant='outline'>
 									Empezar
 								</Button>

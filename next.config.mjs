@@ -23,13 +23,13 @@ const nextConfig = {
 	async redirects() {
 		return [
 			{
-				source: '/dashboard',
-				destination: '/dashboard/quizzes',
+				source: '/admin/dashboard',
+				destination: '/admin/dashboard/quizzes',
 				permanent: true,
 			},
 			{
-				source: '/quizz',
-				destination: '/dashboard/quizzes',
+				source: '/admin/quizz',
+				destination: '/admin/dashboard/quizzes',
 				permanent: true,
 			},
 		];

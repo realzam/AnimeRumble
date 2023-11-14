@@ -102,11 +102,26 @@ export default withUt({
 					from: { height: 'var(--radix-accordion-content-height)' },
 					to: { height: '0' },
 				},
+				'ping-slow': {
+					'0%': {
+						transform: 'scale(1)',
+						opacity: '1',
+					},
+					'25%': {
+						transform: 'scale(2)',
+						opacity: '0',
+					},
+					'100%': {
+						transform: 'scale(2)',
+						opacity: '0',
+					},
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'show-overlay': 'show-overlay 0.6s',
+				'ping-slow': 'ping-slow 3s cubic-bezier(0, 0, 0.2, 1) 3s infinite',
 			},
 		},
 	},

@@ -1,3 +1,5 @@
+'use client';
+
 import {
 	Computed,
 	Memo,
@@ -5,6 +7,7 @@ import {
 	useComputed,
 	useObservable,
 	useObserve,
+	useSelector,
 } from '@legendapp/state/react';
 
 import { type QuestionType } from '@/types/quizQuery';
@@ -19,6 +22,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@ui/Select';
+import {
+	Tooltip,
+	TooltipArrow,
+	TooltipContent,
+	TooltipTrigger,
+} from '@ui/Tooltip';
 
 import { AnswerCard, AnswerTFCard } from './AnswerCard';
 
@@ -36,6 +45,15 @@ const QuestionAnswersTypeContainer = () => {
 		return undefined;
 	});
 
+	const error = useSelector(() =>
+		ui.question.errors.get().find((e) => e !== ''),
+	);
+	const showError = useSelector(
+		() =>
+			ui.question.errors[0].get() === '' &&
+			!ui.question.errors.get().every((e) => e === ''),
+	);
+
 	useObserve(ui.question, () => {
 		let v = undefined;
 		if (ui.question.correctAnswerTF.get() !== null) {
@@ -44,6 +62,7 @@ const QuestionAnswersTypeContainer = () => {
 		correctAnswerTF.set(v);
 	});
 	const onChange = (v: 'True' | 'False') => {
+		correctAnswerTF.set(v);
 		trpcUtils.client.quizz.updateQuestion
 			.mutate({
 				questionId: ui.question.id.get(),
@@ -88,28 +107,38 @@ const QuestionAnswersTypeContainer = () => {
 					)}
 				</Memo>
 			</div>
-			<Show if={multiple}>
-				<div className='mt-2 grid grid-cols-2 gap-4'>
-					<AnswerCard index={0} />
-					<AnswerCard color='blue' index={1} />
-					<AnswerCard color='yellow' index={2} />
-					<AnswerCard color='green' index={3} />
-				</div>
-			</Show>
-			<Show if={tf}>
-				<Computed>
-					{() => (
-						<RadioGroup
-							value={correctAnswerTF.get()}
-							className='mt-2 grid grid-cols-2 gap-4'
-							onValueChange={onChange}
-						>
-							<AnswerTFCard />
-							<AnswerTFCard variantTrue={false} />
-						</RadioGroup>
-					)}
-				</Computed>
-			</Show>
+			<Tooltip open={showError}>
+				<TooltipTrigger className='flex cursor-auto' asChild>
+					<div className='flex w-full'>
+						<Show if={multiple}>
+							<div className='mt-2 grid w-full grid-cols-2 gap-4'>
+								<AnswerCard index={0} />
+								<AnswerCard color='blue' index={1} />
+								<AnswerCard color='yellow' index={2} />
+								<AnswerCard color='green' index={3} />
+							</div>
+						</Show>
+						<Show if={tf}>
+							<Computed>
+								{() => (
+									<RadioGroup
+										value={correctAnswerTF.get()}
+										className='mt-2 grid w-full grid-cols-2 gap-4'
+										onValueChange={onChange}
+									>
+										<AnswerTFCard />
+										<AnswerTFCard variantTrue={false} />
+									</RadioGroup>
+								)}
+							</Computed>
+						</Show>
+					</div>
+				</TooltipTrigger>
+				<TooltipContent>
+					<p>{error}</p>
+					<TooltipArrow />
+				</TooltipContent>
+			</Tooltip>
 		</div>
 	);
 };

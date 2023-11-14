@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 
+import { sleep } from '@/lib/utils';
 import useQuiz from '@/hooks/useQuiz';
 import {
 	AlertDialog,
@@ -21,14 +22,15 @@ interface Props {
 	questionId: string;
 }
 const QuestionItemListActionDelete = ({ questionId }: Props) => {
-	const { setQuestionUiAfterDelete } = useQuiz();
+	const { setQuestionUiAfterDelete, quiz, props$, trpcUtils, id } = useQuiz();
 	const [open, setOpen] = useState(false);
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
 			<AlertDialogTrigger asChild>
 				<Button
 					variant='ghost'
-					className='p-1 text-destructive/10 hover:text-destructive'
+					size='icon'
+					className='p-0 text-destructive/10 hover:bg-transparent hover:text-destructive'
 				>
 					<Trash2 />
 				</Button>
@@ -50,18 +52,16 @@ const QuestionItemListActionDelete = ({ questionId }: Props) => {
 						onClick={async (e) => {
 							e.preventDefault();
 							e.stopPropagation();
-							setQuestionUiAfterDelete(questionId);
+							setQuestionUiAfterDelete();
+							if (quiz.questions.get().length > 1) {
+								await sleep(100);
+								await trpcUtils.client.quizz.deleteQuestion.mutate({
+									questionId,
+									quizId: id,
+								});
+								await props$.refetch();
+							}
 							setOpen(false);
-							// if (quiz.questions.get().length > 1) {
-							// 	setQuestionUiAfterDelete(questionId);
-							// 	await sleep(1000);
-							// 	await trpcUtils.client.quizz.deleteQuestion.mutate({
-							// 		questionId,
-							// 		quizId: id,
-							// 	});
-							// 	await props$.refetch();
-							// 	setOpen(false);
-							// }
 						}}
 					>
 						Delete

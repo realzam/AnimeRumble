@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
-import { useUploadImage } from '@/hooks/useUploadImage';
+import { useUploadImage } from '@/hooks/useUploadImage.old2';
 import { Button } from '@ui/Button';
 import {
 	Dialog,
@@ -39,8 +39,6 @@ const CreateQuizButton = () => {
 
 	const onClientUploadComplete = (res?: UploadFileResponse[]) => {
 		res ??= [];
-		console.log('onClientUploadComplete  gogogogogogogo', res, getValues());
-
 		isSubmitting.set(false);
 		let img:
 			| {
@@ -61,27 +59,13 @@ const CreateQuizButton = () => {
 			},
 			{
 				onSuccess: (v) => {
-					router.push('/quiz/' + v.quiz.id);
+					router.push('/admin/quiz/' + v.quiz.id);
 				},
 			},
 		);
 	};
 
-	// onClick={() => {
-	// 	createQuiz.mutate(
-	// 		{
-	// 			title: 'Hola mundo',
-	// 		},
-	// 		{
-	// 			onSuccess: ({ quiz }) => {
-	// 				console.log(quiz);
-	// 				router.push(`/quizz/${quiz.id}`);
-	// 			},
-	// 		},
-	// 	);
-	// }}
-
-	const { UploadImage, startUpload, isUploading } = useUploadImage({
+	const { UploadImage, startUpload } = useUploadImage({
 		onClientUploadComplete,
 	});
 
@@ -130,7 +114,7 @@ const CreateQuizButton = () => {
 							/>
 						</div>
 
-						<UploadImage isUploading={isUploading} />
+						<UploadImage />
 					</div>
 					<DialogFooter>
 						<Button
