@@ -48,7 +48,7 @@ const QuestionItemList = ({ id, item }: Props) => {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<div className='absolute right-[-14px] top-[calc(50%-12px)] z-10 flex h-6 w-6 items-center justify-center rounded-full bg-destructive p-[1px]'>
-							<AlertCircle />
+							<AlertCircle className='text-white' />
 						</div>
 					</TooltipTrigger>
 					<TooltipContent side='right' className='bg-destructive'>

@@ -34,7 +34,7 @@ const QuizQuestionInput = () => {
 				question: value.get(),
 			})
 			.then(() => props$.get().refetch());
-	}, 500);
+	}, 2000);
 
 	return (
 		<Tooltip open={showError}>

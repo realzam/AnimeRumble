@@ -8,6 +8,13 @@
       "when": 1699976232052,
       "tag": "0000_blue_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1699989701925,
+      "tag": "0001_bored_amazoness",
+      "breakpoints": true
     }
   ]
 }

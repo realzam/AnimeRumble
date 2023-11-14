@@ -23,7 +23,6 @@ import {
 
 import { useUploadThing } from '@/lib/uploadthing';
 import { cn } from '@/lib/utils';
-import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import ComfirmDeleteAlertDialog from '@/components/web/ComfirmDeleteAlertDialog';
@@ -65,34 +64,31 @@ const UploadImage = ({ mode = 'manual', onRemoveImage }: UploadImageProps) => {
 	});
 
 	return (
-		<div>
+		<>
 			<Show if={showUp}>
-				<AspectRatio ratio={16 / 9}>
-					<Card
-						className={cn(
-							'flex h-full w-full flex-col items-center justify-center border-2 border-dashed px-6 py-10 text-center transition-colors duration-300',
-							isDragActive && 'border-primary bg-primary/5',
-						)}
-						{...getRootProps()}
+				<Card
+					className={cn(
+						'flex h-full w-full flex-col items-center justify-center border-2 border-dashed px-6 py-10 text-center transition-colors duration-300',
+						isDragActive && 'border-primary bg-primary/5',
+					)}
+					{...getRootProps()}
+				>
+					<UploadCloud size={44} />
+					<label
+						htmlFor='file-upload'
+						className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
 					>
-						<UploadCloud size={44} />
-						<label
-							htmlFor='file-upload'
-							className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
-						>
-							Elegir imagen o arrastrar y soltar.V2
-						</label>
-						<input className='sr-only' {...getInputProps()} />
-						<div className='m-0 h-[1.25rem] text-xs leading-5 text-gray-600'>
-							Image (4MB)
-						</div>
-					</Card>
-				</AspectRatio>
+						Elegir imagen o arrastrar y soltar.V2
+					</label>
+					<input className='sr-only' {...getInputProps()} />
+					<div className='m-0 h-[1.25rem] text-xs leading-5 text-gray-600'>
+						Image (4MB)
+					</div>
+				</Card>
 			</Show>
 			<Show if={showPreview}>
-				<Card className='relative overflow-hidden'>
-					<AspectRatio
-						ratio={16 / 9}
+				<Card className='relative h-full w-full overflow-hidden'>
+					<div
 						{...getRootProps()}
 						onClick={(e) => {
 							if (!isUploading.get()) {
@@ -114,7 +110,7 @@ const UploadImage = ({ mode = 'manual', onRemoveImage }: UploadImageProps) => {
 							)}
 						</Computed>
 						<input className='sr-only' {...getInputProps()} />
-					</AspectRatio>
+					</div>
 					<Show if={isNotUploading}>
 						<ComfirmDeleteAlertDialog
 							title='¿Quieres continuar?'
@@ -142,12 +138,12 @@ const UploadImage = ({ mode = 'manual', onRemoveImage }: UploadImageProps) => {
 					<Show if={isUploading}>
 						<div className='absolute inset-0 z-[1] bg-zinc-950/40'></div>
 						<span className='absolute left-[calc(50%-20px)] top-[calc(50%-20px)] z-[2] h-10 w-10 animate-bounce rounded-full bg-primary p-2 drop-shadow-lg'>
-							<ArrowUpFromLine className='h-full w-full' />
+							<ArrowUpFromLine className='h-full w-full text-white' />
 						</span>
 					</Show>
 				</Card>
 			</Show>
-		</div>
+		</>
 	);
 };
 

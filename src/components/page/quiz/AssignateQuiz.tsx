@@ -50,9 +50,9 @@ const AssignateQuiz = ({ refetch, quiz }: Props) => {
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-[425px]'>
 				<DialogHeader>
-					<DialogTitle>Edit profile</DialogTitle>
+					<DialogTitle>Resumen</DialogTitle>
 					<DialogDescription>
-						Make changes to your profile here. Click save when youre done.
+						Informacion de las preguntas que estaran en el quiz
 					</DialogDescription>
 				</DialogHeader>
 				<Accordion type='single' collapsible>

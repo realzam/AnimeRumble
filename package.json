@@ -14,7 +14,7 @@
 		"format:write": "prettier \"**/*.{js,ts,tsx}\" --write --cache",
 		"db:clean": "rimraf drizzle && drizzle-kit generate:mysql && drizzle-kit push:mysql",
 		"db:push": "drizzle-kit push:mysql",
-		"db:generate": "drizzle-kit generate:mysql",
+		"db:generate": "drizzle-kit generate:mysql && drizzle-kit push:mysql",
 		"db:live": "pnpm drizzle-kit studio --port 7777",
 		"co": "sui-mono commit",
 		"prepare": "husky install"
@@ -49,6 +49,7 @@
 		"@tabler/icons-react": "^2.40.0",
 		"@tanstack/react-query": "4.36.1",
 		"@tanstack/react-query-devtools": "4.36.1",
+		"@tanstack/react-table": "^8.10.7",
 		"@trpc/client": "^10.43.3",
 		"@trpc/react-query": "^10.43.3",
 		"@trpc/server": "^10.43.3",

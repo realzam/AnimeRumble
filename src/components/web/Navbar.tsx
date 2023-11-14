@@ -6,6 +6,7 @@ import { getAuthSession } from '@/lib/nextauth';
 import animeRumbleRoutes from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import AnimeRumbleIcon from '@web/AnimeRumbleIcon';
+import Link from '@web/Link';
 
 import NavbarSession from './NavbarSession';
 import ToggleThemeButton from './ToggleThemeButton';
@@ -25,7 +26,7 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 				{...props}
 			>
 				<div className='container flex h-14 items-center'>
-					<div className='mr-4 flex '>
+					<div className='mr-4 flex shrink-0'>
 						<NextLink
 							className='mr-6 flex items-center space-x-2'
 							href={animeRumbleRoutes.home}
@@ -41,8 +42,17 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 							</span>
 						</NextLink>
 					</div>
+					<div className='hidden flex-1 justify-center sm:flex'>
+						<nav className='items-center space-x-6 text-lg font-medium'>
+							{session?.user.role === 'admin' && (
+								<Link href={animeRumbleRoutes.dashboard}>Dashboard</Link>
+							)}
+							<Link href={animeRumbleRoutes.activityBingo}>Bingo</Link>
+							<Link href={animeRumbleRoutes.activityLoteria}>Loteria</Link>
+						</nav>
+					</div>
 
-					<div className='flex flex-1 items-center justify-end space-x-2'>
+					<div className='flex shrink-0 items-center justify-end space-x-2'>
 						<NavbarSession initialSession={session} />
 						<ToggleThemeButton />
 					</div>

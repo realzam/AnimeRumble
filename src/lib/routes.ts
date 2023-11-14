@@ -1,16 +1,16 @@
 const animeRumbleRoutes = {
 	home: '/',
 	dashboard: '/dashboard',
-	createQuiz: '/create/quiz',
+	createQuiz: '/create/quiz/',
 	login: '/auth/login',
 	register: '/auth/register',
 	dashboardQuizzes: '/dashboard/quizzes',
 	dashboardBingo: '/dashboard/bingo',
-	dashboardLoteria: '/dashboard/bingo',
+	dashboardLoteria: '/dashboard/loteria',
 	dashboardConfig: '/dashboard/config',
 	activityQuizzes: '/',
-	activityBingo: '/',
-	activityLoteria: '/',
+	activityBingo: '/bingo',
+	activityLoteria: '/loteria',
 };
 
 export default animeRumbleRoutes;

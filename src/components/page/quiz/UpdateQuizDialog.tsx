@@ -3,6 +3,7 @@
 import { CreateQuizSchema } from '@/schema/quiz';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Show, useObservable } from '@legendapp/state/react';
+import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Pencil } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -109,7 +110,9 @@ const UpdateQuizDialog = ({ title, description }: Props) => {
 							/>
 						</div>
 
-						<UploadImage />
+						<AspectRatio ratio={16 / 9}>
+							<UploadImage />
+						</AspectRatio>
 					</div>
 					<DialogFooter>
 						<Button

@@ -19,6 +19,7 @@ export default withUt({
 			},
 		},
 		screens: {
+			'3xs': '300px',
 			'2xs': '360px',
 			xs: '425px',
 			...screens,

@@ -67,7 +67,7 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 			.then(() => {
 				props$.refetch();
 			});
-	}, 500);
+	}, 2000);
 	useUnmount(() => {
 		debounced.cancel();
 	});
@@ -99,7 +99,7 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 								variant: 'invisible',
 								className: 'flex h-full rounded-none  align-middle text-lg',
 							}),
-							colored && 'text-slate-100',
+							colored.get() ? 'text-slate-100' : 'caret-primary',
 						)
 					}
 					onChange={(e) => {

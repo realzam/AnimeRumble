@@ -5,6 +5,7 @@ import { type UploadFileResponse } from 'uploadthing/client';
 
 import useQuiz from '@/hooks/useQuiz';
 import { useUploadV2 } from '@/hooks/useUploadImage';
+import { AspectRatio } from '@ui/AspectRatio';
 
 const QuestionUploadImage = () => {
 	const { id, ui, trpcUtils, props$ } = useQuiz();
@@ -54,8 +55,10 @@ const QuestionUploadImage = () => {
 	});
 
 	return (
-		<div className='w-full'>
-			<UploadImage mode='auto' onRemoveImage={onRemoveImage} />
+		<div className='h-full w-full'>
+			<AspectRatio ratio={16 / 9}>
+				<UploadImage mode='auto' onRemoveImage={onRemoveImage} />
+			</AspectRatio>
 		</div>
 	);
 };
