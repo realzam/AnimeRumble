@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Image from 'next/image';
 
 import { type LoteriaCardDataType } from '@/types/loteriaQuery';
@@ -10,6 +11,10 @@ interface Props {
 }
 const LoteriaCardListItem = ({ card }: Props) => {
 	const { refForm } = useLoteria();
+	const fitClass = useMemo(
+		() => (card.fit === 'cover' ? 'object-cover' : 'object-fit'),
+		[card],
+	);
 	return (
 		<Card
 			onClick={() => {
@@ -23,7 +28,7 @@ const LoteriaCardListItem = ({ card }: Props) => {
 		>
 			<AspectRatio ratio={3 / 5}>
 				<div className='relative h-full overflow-hidden rounded-sm '>
-					<Image alt='up' src={card.img} className='object-fit' fill />
+					<Image alt='up' src={card.img} className={fitClass} fill />
 					<div className='absolute bottom-0 w-full bg-slate-900/60 text-center text-white'>
 						{`${card.index}. ${card.title}`}
 					</div>
