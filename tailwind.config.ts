@@ -117,12 +117,23 @@ export default withUt({
 						opacity: '0',
 					},
 				},
+				pulse2: {
+					'0%, 100%': {
+						transform: 'scale(1)',
+						'animation-timing-function': 'cubic-bezier(0, 0, 0.2, 1)',
+					},
+					'50%': {
+						transform: 'scale(0.95)',
+						'animation-timing-function': 'cubic-bezier(0.8, 0, 1, 1)',
+					},
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'show-overlay': 'show-overlay 0.6s',
 				'ping-slow': 'ping-slow 3s cubic-bezier(0, 0, 0.2, 1) 3s infinite',
+				pulse2: 'pulse2 2s 1',
 			},
 		},
 	},

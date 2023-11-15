@@ -110,9 +110,6 @@ dependencies:
   bcryptjs:
     specifier: ^2.4.3
     version: 2.4.3
-  better-sqlite3:
-    specifier: ^9.1.1
-    version: 9.1.1
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -127,7 +124,7 @@ dependencies:
     version: 16.3.1
   drizzle-orm:
     specifier: ^0.29.0
-    version: 0.29.0(@planetscale/database@1.11.0)(@types/better-sqlite3@7.6.7)(better-sqlite3@9.1.1)(mysql2@3.6.3)
+    version: 0.29.0(@planetscale/database@1.11.0)(mysql2@3.6.3)
   framer-motion:
     specifier: ^10.16.4
     version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
@@ -179,9 +176,6 @@ dependencies:
   zod:
     specifier: ^3.22.4
     version: 3.22.4
-  zustand:
-    specifier: ^4.4.6
-    version: 4.4.6(@types/react@18.2.37)(react@18.2.0)
 
 devDependencies:
   '@commitlint/cli':
@@ -199,9 +193,6 @@ devDependencies:
   '@types/bcryptjs':
     specifier: ^2.4.6
     version: 2.4.6
-  '@types/better-sqlite3':
-    specifier: ^7.6.7
-    version: 7.6.7
   '@types/crypto-js':
     specifier: ^4.2.1
     version: 4.2.1
@@ -2574,11 +2565,6 @@ packages:
     resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
     dev: true
 
-  /@types/better-sqlite3@7.6.7:
-    resolution: {integrity: sha512-+c2YGPWY5831v3uj2/X0HRTK94u1GXU3sCnLqu7AKlxlSfawswnAiJR//TFzSL5azWsLQkG/uS+YnnqHtuZxPw==}
-    dependencies:
-      '@types/node': 20.9.0
-
   /@types/crypto-js@4.2.1:
     resolution: {integrity: sha512-FSPGd9+OcSok3RsM0UZ/9fcvMOXJ1ENE/ZbLfOPlBWj7BgXtEAM8VYfTtT760GiLbQIMoVozwVuisjvsVwqYWw==}
     dev: true
@@ -2629,6 +2615,7 @@ packages:
     resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
 
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -3239,14 +3226,6 @@ packages:
     resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
     dev: false
 
-  /better-sqlite3@9.1.1:
-    resolution: {integrity: sha512-FhW7bS7cXwkB2SFnPJrSGPmQerVSCzwBgmQ1cIRcYKxLsyiKjljzCbyEqqhYXo5TTBqt5BISiBj2YE2Sy2ynaA==}
-    requiresBuild: true
-    dependencies:
-      bindings: 1.5.0
-      prebuild-install: 7.1.1
-    dev: false
-
   /big-integer@1.6.51:
     resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
     engines: {node: '>=0.6'}
@@ -3255,12 +3234,6 @@ packages:
   /binary-extensions@2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
-
-  /bindings@1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
-    dependencies:
-      file-uri-to-path: 1.0.0
-    dev: false
 
   /bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -4003,7 +3976,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /drizzle-orm@0.29.0(@planetscale/database@1.11.0)(@types/better-sqlite3@7.6.7)(better-sqlite3@9.1.1)(mysql2@3.6.3):
+  /drizzle-orm@0.29.0(@planetscale/database@1.11.0)(mysql2@3.6.3):
     resolution: {integrity: sha512-AC+CuW4GezVjsZDGU9u9B4HyikudOyYVhjm6he3Xn1D6Kky7bHGKob97MMX2piO+t9b6UuajLzlii/T/lu1qwA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -4066,8 +4039,6 @@ packages:
         optional: true
     dependencies:
       '@planetscale/database': 1.11.0
-      '@types/better-sqlite3': 7.6.7
-      better-sqlite3: 9.1.1
       mysql2: 3.6.3
     dev: false
 
@@ -4818,10 +4789,6 @@ packages:
     engines: {node: '>= 12'}
     dependencies:
       tslib: 2.6.2
-    dev: false
-
-  /file-uri-to-path@1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
     dev: false
 
   /fill-range@7.0.1:
@@ -7977,6 +7944,7 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
 
   /undici@5.27.2:
     resolution: {integrity: sha512-iS857PdOEy/y3wlM3yRp+6SNQQ6xU0mmZcwRSriqk+et/cwWAtwmIGf6WkoDN2EK/AMdCO/dfXzIwi+rFMrjjQ==}
@@ -8348,23 +8316,3 @@ packages:
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
-
-  /zustand@4.4.6(@types/react@18.2.37)(react@18.2.0):
-    resolution: {integrity: sha512-Rb16eW55gqL4W2XZpJh0fnrATxYEG3Apl2gfHTyDSE965x/zxslTikpNch0JgNjJA9zK6gEFW8Fl6d1rTZaqgg==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      '@types/react': '>=16.8'
-      immer: '>=9.0'
-      react: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
-    dependencies:
-      '@types/react': 18.2.37
-      react: 18.2.0
-      use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false

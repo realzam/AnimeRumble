@@ -11,7 +11,7 @@ import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
 import animeRumbleRoutes from '@/lib/routes';
-import { useUploadV2 } from '@/hooks/useUploadImage';
+import { useUploadImage } from '@/hooks/useUploadImage';
 import { AspectRatio } from '@ui/AspectRatio';
 import { Button } from '@ui/Button';
 import {
@@ -67,7 +67,7 @@ const CreateQuizButton = () => {
 		);
 	};
 
-	const { UploadImage, startUpload } = useUploadV2({
+	const { UploadImage, startUpload } = useUploadImage({
 		onClientUploadComplete,
 	});
 

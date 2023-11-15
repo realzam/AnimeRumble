@@ -4,7 +4,7 @@ import { useObserve } from '@legendapp/state/react';
 import { type UploadFileResponse } from 'uploadthing/client';
 
 import useQuiz from '@/hooks/useQuiz';
-import { useUploadV2 } from '@/hooks/useUploadImage';
+import { useUploadImage } from '@/hooks/useUploadImage';
 import { AspectRatio } from '@ui/AspectRatio';
 
 const QuestionUploadImage = () => {
@@ -45,7 +45,7 @@ const QuestionUploadImage = () => {
 		props$.refetch();
 	};
 
-	const { UploadImage, setInitialPreview } = useUploadV2({
+	const { UploadImage, setInitialPreview } = useUploadImage({
 		onClientUploadComplete,
 		initialPreview: ui.question.img.get(),
 	});

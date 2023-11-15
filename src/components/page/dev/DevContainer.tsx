@@ -2,11 +2,11 @@
 
 import { Memo } from '@legendapp/state/react';
 
-import { useUploadV2 } from '@/hooks/useUploadImage';
+import { useUploadImage } from '@/hooks/useUploadImage';
 import { Button } from '@/components/ui/Button';
 
 const DevContainer = () => {
-	const { UploadImage, startUpload } = useUploadV2();
+	const { UploadImage, startUpload } = useUploadImage();
 	return (
 		<div className='container'>
 			<div className='w-[400px]'>

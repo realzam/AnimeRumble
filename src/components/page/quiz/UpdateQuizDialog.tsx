@@ -11,7 +11,7 @@ import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
 // import useQuiz from '@/hooks/useQuiz';
-import { useUploadV2 } from '@/hooks/useUploadImage';
+import { useUploadImage } from '@/hooks/useUploadImage';
 import { Button } from '@ui/Button';
 import {
 	Dialog,
@@ -57,7 +57,7 @@ const UpdateQuizDialog = ({ title, description }: Props) => {
 		// }
 	};
 
-	const { UploadImage, startUpload } = useUploadV2({
+	const { UploadImage, startUpload } = useUploadImage({
 		onClientUploadComplete,
 	});
 

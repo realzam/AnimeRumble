@@ -41,9 +41,20 @@ const useUP = () => useContext(UploadContext)!;
 interface UploadImageProps {
 	mode?: 'manual' | 'auto';
 	onRemoveImage?: () => void;
+	className?: string;
+	classNameImage?: string;
+	errorMessage?: string;
+	error?: boolean;
 }
 
-const UploadImage = ({ mode = 'manual', onRemoveImage }: UploadImageProps) => {
+const UploadImage = ({
+	mode = 'manual',
+	onRemoveImage,
+	className,
+	errorMessage,
+	error,
+	classNameImage,
+}: UploadImageProps) => {
 	const { files, imgUrl, startUpload, isUploading } = useUP();
 	const onDrop = (acceptedFiles: FileWithPath[]) => {
 		files.set(acceptedFiles);
@@ -68,26 +79,35 @@ const UploadImage = ({ mode = 'manual', onRemoveImage }: UploadImageProps) => {
 			<Show if={showUp}>
 				<Card
 					className={cn(
-						'flex h-full w-full flex-col items-center justify-center border-2 border-dashed px-6 py-10 text-center transition-colors duration-300',
+						'flex h-full w-full flex-col items-center justify-center border-2 border-dashed px-6 py-10 text-center text-primary transition-colors duration-300 dark:text-primary-light',
 						isDragActive && 'border-primary bg-primary/5',
+						className,
+						error && 'animate-pulse2 rounded-md border-destructive',
 					)}
 					{...getRootProps()}
 				>
 					<UploadCloud size={44} />
 					<label
 						htmlFor='file-upload'
-						className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
+						className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
 					>
-						Elegir imagen o arrastrar y soltar.V2
+						Elegir imagen o arrastrar y soltar
 					</label>
 					<input className='sr-only' {...getInputProps()} />
 					<div className='m-0 h-[1.25rem] text-xs leading-5 text-gray-600'>
 						Image (4MB)
 					</div>
+					{errorMessage && (
+						<div className='m-3 h-[1.25rem] animate-pulse text-base leading-5 text-destructive'>
+							{errorMessage}
+						</div>
+					)}
 				</Card>
 			</Show>
 			<Show if={showPreview}>
-				<Card className='relative h-full w-full overflow-hidden'>
+				<Card
+					className={cn('relative h-full w-full overflow-hidden', className)}
+				>
 					<div
 						{...getRootProps()}
 						onClick={(e) => {
@@ -104,7 +124,7 @@ const UploadImage = ({ mode = 'manual', onRemoveImage }: UploadImageProps) => {
 								<Image
 									alt='up'
 									src={imgUrl.get()}
-									className='object-cover'
+									className={classNameImage || 'object-cover'}
 									fill
 								/>
 							)}
@@ -154,10 +174,11 @@ interface HookProps {
 	initialPreview?: string;
 }
 
-export const useUploadV2 = (props?: HookProps) => {
+export const useUploadImage = (props?: HookProps) => {
 	const files = useObservable<File[]>([]);
 	const imgUrl = useObservable(props?.initialPreview || '');
 	const isUploading = useObservable(false);
+	const hasFiles = useSelector(() => files.get().length > 0);
 
 	const { startUpload: startUploadThing } = useUploadThing('imageUploader', {
 		onUploadBegin: () => {
@@ -206,5 +227,6 @@ export const useUploadV2 = (props?: HookProps) => {
 		UploadImage: Component,
 		clearState,
 		setInitialPreview: imgUrl.set,
+		hasFiles,
 	};
 };

@@ -1,7 +1,10 @@
+import { serverClient } from '@/trpc/client/serverClient';
+
 import DashboardLoteriaContainer from '@/components/page/dashboard/loteria/DashboardLoteriaContainer';
 import Sidebar from '@/components/page/dashboard/Sidebar';
 
 const DashboardPage = async () => {
+	const cards = await serverClient.loteria.getCards();
 	return (
 		<>
 			<div className='grid lg:grid-cols-5'>
@@ -9,7 +12,7 @@ const DashboardPage = async () => {
 					<Sidebar active='loteria' />
 				</div>
 				<div className='col-span-3 lg:col-span-4 lg:border-l'>
-					<DashboardLoteriaContainer />
+					<DashboardLoteriaContainer cards={cards} />
 				</div>
 			</div>
 		</>

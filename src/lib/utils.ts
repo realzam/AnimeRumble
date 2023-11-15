@@ -38,3 +38,7 @@ export function comparePassword(password: string, compare: string) {
 	);
 	return bcrypt.compareSync(pass, compare);
 }
+
+export function capitalized(word: string) {
+	return word.charAt(0).toUpperCase() + word.slice(1);
+}
