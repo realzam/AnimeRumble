@@ -4,13 +4,11 @@ import { type UseBaseQueryResult } from '@tanstack/react-query';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 
-// export interface UiType {
-// 	questionId: string;
-// 	question: QuestionType;
-// 	isDragging: boolean;
-// 	scrollToQuestion: string;
-// 	scroll: boolean;
-// }
+export interface UiType {
+	page: number;
+	totalPages: number;
+	CardsByPage: number;
+}
 
 type QQ = UseBaseQueryResult<LoteriaCardsDataType, unknown>;
 interface State {
@@ -18,7 +16,7 @@ interface State {
 	cards: ObservableObject<LoteriaCardsDataType>;
 	props$: ObservableObject<Omit<QQ, 'data'>>;
 	refForm: React.MutableRefObject<HTMLDivElement | null>;
-	// ui: ObservableObject<UiType>;
+	ui: ObservableObject<UiType>;
 	// setQuestionUi: (id: string) => void;
 	// setQuestionUiAfterDelete: () => void;
 }

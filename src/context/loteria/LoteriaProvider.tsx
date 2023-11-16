@@ -7,7 +7,7 @@ import { getQueryKey } from '@trpc/react-query';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 
-import { LoteriaContex } from './LoteriaContex';
+import { LoteriaContex, type UiType } from './LoteriaContex';
 
 interface Props {
 	initialCards: LoteriaCardsDataType;
@@ -17,6 +17,11 @@ interface Props {
 type QQ = UseBaseQueryResult<LoteriaCardsDataType, unknown>;
 
 const LoteriaProvider = ({ children, initialCards }: Props) => {
+	const ui = useObservable<UiType>({
+		CardsByPage: 8,
+		page: 1,
+		totalPages: Math.ceil(initialCards.length / 8),
+	});
 	const refForm = useRef<HTMLDivElement | null>(null);
 	const utils = trpc.useUtils();
 	const cards = useObservable(initialCards);
@@ -43,6 +48,15 @@ const LoteriaProvider = ({ children, initialCards }: Props) => {
 		}
 		props$.set(opt);
 	});
+	useObserve(() => {
+		console.log('useObserve recalcular pagination');
+
+		ui.set((u) => ({
+			...u,
+			page: 1,
+			totalPages: Math.ceil(cards.get().length / ui.CardsByPage.get()),
+		}));
+	});
 
 	return (
 		<LoteriaContex.Provider
@@ -50,6 +64,7 @@ const LoteriaProvider = ({ children, initialCards }: Props) => {
 				cards,
 				props$,
 				refForm,
+				ui,
 			}}
 		>
 			{children}
