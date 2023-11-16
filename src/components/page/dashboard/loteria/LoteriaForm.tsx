@@ -101,10 +101,18 @@ const LoteriaForm = () => {
 									}}
 								>
 									<TabsList>
-										<TabsTrigger className='px-3 py-1' value='cover'>
+										<TabsTrigger
+											disabled={isSubmitting.get()}
+											className='px-3 py-1'
+											value='cover'
+										>
 											Cover
 										</TabsTrigger>
-										<TabsTrigger className='px-3 py-1' value='fit'>
+										<TabsTrigger
+											disabled={isSubmitting.get()}
+											className='px-3 py-1'
+											value='fit'
+										>
 											Fit
 										</TabsTrigger>
 									</TabsList>
@@ -122,13 +130,18 @@ const LoteriaForm = () => {
 						<div className='grid w-full items-center gap-4'>
 							<div className='flex flex-col space-y-1.5'>
 								<Label htmlFor='bingo-description'>Descripcion</Label>
-								<Input
-									id='loteria-title'
-									placeholder='e.g. El agua'
-									error={!!errors.title}
-									errorMessage={errors.title?.message}
-									{...register('title')}
-								/>
+								<Computed>
+									{() => (
+										<Input
+											id='loteria-title'
+											placeholder='e.g. El agua'
+											error={!!errors.title}
+											errorMessage={errors.title?.message}
+											disabled={isSubmitting.get()}
+											{...register('title')}
+										/>
+									)}
+								</Computed>
 							</div>
 						</div>
 					</CardContent>
