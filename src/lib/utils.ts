@@ -42,3 +42,14 @@ export function comparePassword(password: string, compare: string) {
 export function capitalized(word: string) {
 	return word.charAt(0).toUpperCase() + word.slice(1);
 }
+
+export function generarNumerosAleatorios(n: number, min: number, max: number) {
+	const numerosAleatorios = new Set<number>();
+
+	while (numerosAleatorios.size < n) {
+		const numeroAleatorio = Math.floor(Math.random() * (max - min + 1)) + min;
+		numerosAleatorios.add(numeroAleatorio);
+	}
+
+	return Array.from(numerosAleatorios);
+}

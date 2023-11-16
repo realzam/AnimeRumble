@@ -9,6 +9,7 @@ import { customAlphabet, urlAlphabet } from 'nanoid';
 import { UTApi } from 'uploadthing/server';
 
 import { db } from '@/lib/db';
+import { generarNumerosAleatorios } from '@/lib/utils';
 
 const utapi = new UTApi({ apiKey: env.UPLOADTHING_SECRET });
 export const loteriaRouter = router({
@@ -38,4 +39,12 @@ export const loteriaRouter = router({
 			});
 			return card!;
 		}),
+	getRandomCards: publicProcedure.query(async () => {
+		const cards = await db.query.loteriaCards.findMany({
+			orderBy: asc(loteriaCards.index),
+		});
+		const random = generarNumerosAleatorios(20, 1, cards.length);
+
+		return random.map((i) => cards[i - 1]);
+	}),
 });
