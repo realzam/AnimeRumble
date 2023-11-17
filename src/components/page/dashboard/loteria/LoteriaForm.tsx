@@ -77,8 +77,8 @@ const LoteriaForm = () => {
 		startUpload();
 	};
 	return (
-		<form onSubmit={handleSubmit(submit)}>
-			<Card className='mx-auto grid w-[80%] grid-cols-4' ref={refForm}>
+		<form onSubmit={handleSubmit(submit)} className='h-full'>
+			<Card className='mx-auto grid h-full w-[550px] grid-cols-4' ref={refForm}>
 				<div className='col-span-2 p-4'>
 					<AspectRatio ratio={3 / 5}>
 						<UploadImage

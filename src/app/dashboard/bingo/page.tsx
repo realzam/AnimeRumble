@@ -1,7 +1,10 @@
+import { serverClient } from '@/trpc/client/serverClient';
+
 import DashboardBingoContainer from '@/components/page/dashboard/bingo/DashboardBingoContainer';
 import Sidebar from '@/components/page/dashboard/Sidebar';
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
+	const reactives = await serverClient.bingo.getReactives();
 	return (
 		<>
 			<div className='grid lg:grid-cols-5'>
@@ -9,7 +12,7 @@ const DashboardPage = () => {
 					<Sidebar active='bingo' />
 				</div>
 				<div className='col-span-3 lg:col-span-4 lg:border-l'>
-					<DashboardBingoContainer />
+					<DashboardBingoContainer reactives={reactives} />
 				</div>
 			</div>
 		</>

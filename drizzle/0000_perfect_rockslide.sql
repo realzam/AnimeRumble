@@ -1,7 +1,8 @@
 CREATE TABLE `bingoReactives` (
 	`id` varchar(30) NOT NULL,
 	`description` varchar(250) NOT NULL,
-	`respuesta` varchar(50) NOT NULL,
+	`respuesta` varchar(250) NOT NULL,
+	`index` smallint NOT NULL,
 	CONSTRAINT `bingoReactives_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

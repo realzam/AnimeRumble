@@ -21,7 +21,7 @@ const LoteriaCardList = () => {
 			),
 	);
 	return (
-		<div className='my-5 '>
+		<div className='my-5'>
 			<CardTitle>Cartas de loteria</CardTitle>
 			<div className='mt-5'>
 				<ListPagination />

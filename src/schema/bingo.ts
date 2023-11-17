@@ -5,8 +5,8 @@ import { zodCustomErrorMap } from '@/lib/zodCustomErrorMap';
 z.setErrorMap(zodCustomErrorMap);
 
 const AddBingoReactiveSchema = z.object({
-	description: z.string().min(1),
-	response: z.string().min(1),
+	description: z.string().min(1).trim(),
+	response: z.string().min(1).trim(),
 });
 
 export { AddBingoReactiveSchema };

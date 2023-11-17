@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "49862117-f588-4776-a09d-896b8be96560",
+  "id": "222b0eb8-ed7d-4aca-afdf-44d2839ed8ae",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -23,7 +23,14 @@
         },
         "respuesta": {
           "name": "respuesta",
-          "type": "varchar(50)",
+          "type": "varchar(250)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "index": {
+          "name": "index",
+          "type": "smallint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

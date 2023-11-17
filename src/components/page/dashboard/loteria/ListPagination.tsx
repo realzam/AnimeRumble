@@ -15,13 +15,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@ui/Select';
-import {
-	Tooltip,
-	TooltipArrow,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@ui/Tooltip';
 
 const ListPagination = () => {
 	const { ui } = useLoteria();
@@ -57,83 +50,50 @@ const ListPagination = () => {
 				<div className='flex w-[100px] items-center justify-center text-sm font-medium'>
 					Página <Memo>{ui.page}</Memo> de <Memo>{ui.totalPages}</Memo>
 				</div>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger>
-							<Button
-								variant='outline'
-								className='h-8 w-8 p-0'
-								onClick={() => {
-									ui.page.set(1);
-								}}
-								disabled={disableRest}
-							>
-								<DoubleArrowLeftIcon />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Ir al inicio</p>
-							<TooltipArrow />
-						</TooltipContent>
-					</Tooltip>
 
-					<Tooltip>
-						<TooltipTrigger>
-							<Button
-								variant='outline'
-								className='h-8 w-8 p-0'
-								onClick={() => {
-									ui.page.set((v) => Math.max(1, v - 1));
-								}}
-								disabled={disableRest}
-							>
-								<ChevronLeftIcon />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Atras</p>
-							<TooltipArrow />
-						</TooltipContent>
-					</Tooltip>
+				<Button
+					variant='outline'
+					className='h-8 w-8 p-0'
+					onClick={() => {
+						ui.page.set(1);
+					}}
+					disabled={disableRest}
+				>
+					<DoubleArrowLeftIcon />
+				</Button>
 
-					<Tooltip>
-						<TooltipTrigger>
-							<Button
-								variant='outline'
-								className='h-8 w-8 p-0'
-								onClick={() => {
-									ui.page.set((v) => Math.min(ui.totalPages.get(), v + 1));
-								}}
-								disabled={disableAdd}
-							>
-								<ChevronRightIcon />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Siguiente</p>
-							<TooltipArrow />
-						</TooltipContent>
-					</Tooltip>
+				<Button
+					variant='outline'
+					className='h-8 w-8 p-0'
+					onClick={() => {
+						ui.page.set((v) => Math.max(1, v - 1));
+					}}
+					disabled={disableRest}
+				>
+					<ChevronLeftIcon />
+				</Button>
 
-					<Tooltip>
-						<TooltipTrigger>
-							<Button
-								variant='outline'
-								className='h-8 w-8 p-0'
-								onClick={() => {
-									ui.page.set(ui.totalPages.get());
-								}}
-								disabled={disableAdd}
-							>
-								<DoubleArrowRightIcon />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							<p>Ir al final</p>
-							<TooltipArrow />
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
+				<Button
+					variant='outline'
+					className='h-8 w-8 p-0'
+					onClick={() => {
+						ui.page.set((v) => Math.min(ui.totalPages.get(), v + 1));
+					}}
+					disabled={disableAdd}
+				>
+					<ChevronRightIcon />
+				</Button>
+
+				<Button
+					variant='outline'
+					className='h-8 w-8 p-0'
+					onClick={() => {
+						ui.page.set(ui.totalPages.get());
+					}}
+					disabled={disableAdd}
+				>
+					<DoubleArrowRightIcon />
+				</Button>
 			</div>
 		</div>
 	);
