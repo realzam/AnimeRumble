@@ -42,45 +42,43 @@ const BingoForm = () => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(submit)} className='h-full'>
-			<Card>
+		<Card>
+			<form onSubmit={handleSubmit(submit)} className='h-full'>
 				<CardHeader>
 					<CardTitle>Crear pregunta</CardTitle>
 					<CardDescription>Reactvos para la actividad de bingo</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form>
-						<div className='grid w-full items-center gap-4'>
-							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='bingo-description'>Descripcion</Label>
-								<Input
-									id='bingo-description'
-									placeholder='e.g. Historientas de origen japonés ...'
-									error={!!errors.description}
-									errorMessage={errors.description?.message}
-									{...register('description')}
-								/>
-							</div>
-							<div className='flex flex-col space-y-1.5'>
-								<Label htmlFor='bingo-response'>Respuesta</Label>
-								<Input
-									id='bingo-response'
-									placeholder='...Manga'
-									error={!!errors.response}
-									errorMessage={errors.response?.message}
-									{...register('response')}
-								/>
-							</div>
+					<div className='grid w-full items-center gap-4'>
+						<div className='flex flex-col space-y-1.5'>
+							<Label htmlFor='bingo-description'>Descripcion</Label>
+							<Input
+								id='bingo-description'
+								placeholder='e.g. Historientas de origen japonés ...'
+								error={!!errors.description}
+								errorMessage={errors.description?.message}
+								{...register('description')}
+							/>
 						</div>
-					</form>
+						<div className='flex flex-col space-y-1.5'>
+							<Label htmlFor='bingo-response'>Respuesta</Label>
+							<Input
+								id='bingo-response'
+								placeholder='...Manga'
+								error={!!errors.response}
+								errorMessage={errors.response?.message}
+								{...register('response')}
+							/>
+						</div>
+					</div>
 				</CardContent>
 				<CardFooter className='flex justify-end'>
 					<Button variant='gradient' type='submit'>
 						agregar
 					</Button>
 				</CardFooter>
-			</Card>
-		</form>
+			</form>
+		</Card>
 	);
 };
 

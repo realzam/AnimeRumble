@@ -1,16 +1,24 @@
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AlertCircle } from 'lucide-react';
+import { trpc } from '@/trpc/client/client';
+import * as Popover from '@radix-ui/react-popover';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import moment from 'moment';
 
-import { type QuestionType, type QuizDataType } from '@/types/quizQuery';
+import { type QuizDataType } from '@/types/quizQuery';
 import animeRumbleRoutes from '@/lib/routes';
-import { cn } from '@/lib/utils';
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from '@ui/Accordion';
+	actualizarHora,
+	cn,
+	getTimestampFormDate,
+	horasFaltantesHastaFinDelDia,
+} from '@/lib/utils';
+import { Accordion } from '@ui/Accordion';
 import { Button } from '@ui/Button';
+import { Calendar } from '@ui/Calendar';
 import {
 	Dialog,
 	DialogContent,
@@ -20,22 +28,41 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@ui/Dialog';
-import { AspectRatio } from '@/components/ui/AspectRatio';
-import { Badge } from '@/components/ui/Badge';
+import { CardTitle } from '@/components/ui/Card';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/Select';
+
+import AsignateIncorrectQuestionItem from './AsignateIncorrectQuestionItem';
+import AsignateValidQuestionItem from './AsignateValidQuestionItem';
 
 interface Props {
 	quiz: QuizDataType;
 	refetch: () => void;
 }
 
-interface PropsItem {
-	quizID: string;
-	question: QuestionType;
-	index: number;
-}
-
 const AssignateQuiz = ({ refetch, quiz }: Props) => {
 	const router = useRouter();
+	const [date, setDate] = useState<Date>();
+	const [hour, setHour] = useState<string>();
+	const [errorDate, setErrorDate] = useState<string>('');
+	const [errorHour, setErrorHour] = useState<string>('');
+	const tags = useMemo(() => {
+		if (date) {
+			return horasFaltantesHastaFinDelDia(date);
+		}
+		return [];
+	}, [date]);
+
+	const asignate = trpc.quizz.asignateQuiz.useMutation();
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -55,18 +82,126 @@ const AssignateQuiz = ({ refetch, quiz }: Props) => {
 						Informacion de las preguntas que estaran en el quiz
 					</DialogDescription>
 				</DialogHeader>
+
+				<div className='flex items-start space-x-2'>
+					<CardTitle
+						className={cn('mt-3', errorDate !== '' && 'text-destructive')}
+					>
+						Fecha:
+					</CardTitle>
+
+					<div>
+						<Popover.Root>
+							<Popover.Trigger>
+								<Button
+									variant='outline'
+									className={cn(
+										'w-[280px] justify-start text-left font-normal',
+										!date && 'text-muted-foreground',
+										errorDate !== '' && 'ring-1 ring-destructive',
+									)}
+								>
+									<CalendarIcon className='mr-2 h-4 w-4' />
+									{date ? (
+										format(date, 'PPP', {
+											locale: es,
+										})
+									) : (
+										<span>Seleccionar fecha</span>
+									)}
+								</Button>
+							</Popover.Trigger>
+							<Popover.Content
+								align='center'
+								sideOffset={4}
+								className='mt-2 w-auto rounded-md border bg-popover p-0'
+							>
+								<AnimatePresence>
+									<motion.div
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										exit={{ opacity: 0 }}
+										transition={{ duration: 0.3 }}
+									>
+										<Calendar
+											locale={es}
+											fromDate={moment().toDate()}
+											toDate={moment().add(2, 'M').toDate()}
+											mode='single'
+											selected={date}
+											onSelect={(d) => {
+												setDate(d);
+												if (d) {
+													setErrorDate('');
+													const horasRestantes =
+														horasFaltantesHastaFinDelDia(d);
+													if (hour && !horasRestantes.includes(hour)) {
+														setHour(undefined);
+													}
+												} else {
+													setErrorDate('Es necesario seleccionar un día');
+													setHour(undefined);
+												}
+											}}
+											initialFocus
+										/>
+									</motion.div>
+								</AnimatePresence>
+							</Popover.Content>
+						</Popover.Root>
+						{errorDate && <div className='text-destructive'>{errorDate}</div>}
+					</div>
+				</div>
+				<div className='flex items-start space-x-2'>
+					<CardTitle
+						className={cn('mt-3', errorHour !== '' && 'text-destructive')}
+					>
+						Hora:
+					</CardTitle>
+					<div>
+						<Select
+							onValueChange={(v) => {
+								setHour(v);
+								setErrorHour('');
+							}}
+							value={hour}
+						>
+							<SelectTrigger
+								className={cn(
+									'w-[180px]',
+									errorHour !== '' && 'ring-1 ring-destructive',
+								)}
+							>
+								<SelectValue placeholder='Selecccionar hora' />
+							</SelectTrigger>
+							<SelectContent className='max-h-56 w-auto'>
+								<ScrollArea className={tags.length > 5 ? 'h-56' : ''}>
+									<SelectGroup>
+										<SelectLabel>Hora</SelectLabel>
+										{tags.map((tag) => (
+											<SelectItem key={tag} value={tag}>
+												{tag}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</ScrollArea>
+							</SelectContent>
+						</Select>
+						{errorHour && <div className='text-destructive'>{errorHour}</div>}
+					</div>
+				</div>
+
 				<Accordion type='single' collapsible>
 					{quiz.questions.map((q, index) =>
-						// <div key={q.id}>{q.question}</div>
 						q.hasError ? (
-							<InvalidQuestionItem
+							<AsignateIncorrectQuestionItem
 								key={q.id}
 								question={q}
 								index={index}
 								quizID={quiz.id}
 							/>
 						) : (
-							<ValidQuestionItem
+							<AsignateValidQuestionItem
 								key={q.id}
 								question={q}
 								index={index}
@@ -93,123 +228,34 @@ const AssignateQuiz = ({ refetch, quiz }: Props) => {
 							Arreglar
 						</Button>
 					) : (
-						<Button variant='gradient' type='submit'>
+						<Button
+							variant='gradient'
+							type='submit'
+							onClick={async () => {
+								if (tags.length == 0) {
+									setDate(undefined);
+									setErrorHour('Es necesario seleccionar una hora');
+								}
+								if (!date) {
+									setErrorDate('Es necesario seleccionar un día');
+									return;
+								}
+								if (!hour) {
+									setErrorHour('Es necesario seleccionar una hora');
+									return;
+								}
+								await asignate.mutate({
+									quizId: quiz.id,
+									date: getTimestampFormDate(actualizarHora(date, hour)),
+								});
+							}}
+						>
 							Asignar
 						</Button>
 					)}
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
-	);
-};
-
-const ValidQuestionItem = ({ question: q, index, quizID }: PropsItem) => {
-	const router = useRouter();
-	return (
-		<AccordionItem value={q.id}>
-			<AccordionTrigger>
-				<div className='flex items-center'>
-					<div>{`${index + 1}.-`}</div>
-					<div className='ml-1 text-base font-bold'>{q.question}</div>
-				</div>
-			</AccordionTrigger>
-			<AccordionContent className='flex flex-col'>
-				<div className='my-2 flex'>
-					<div className='mr-2 w-48 shrink-0'>
-						<AspectRatio ratio={16 / 9}>
-							<div className='h-full w-full bg-blue-500'></div>
-						</AspectRatio>
-					</div>
-					<div className='flex flex-col justify-between'>
-						<Badge variant='secondary' className='w-fit'>
-							{q.questionType == 'Multiple' ? 'Muiltiple' : 'Verdadero o Falso'}
-						</Badge>
-						<Button
-							variant='outline'
-							className='w-fit'
-							onClick={() => {
-								router.push(
-									animeRumbleRoutes.createQuiz + quizID + '?index=' + index,
-								);
-							}}
-						>
-							Modificar
-						</Button>
-					</div>
-				</div>
-				<div className='flex flex-col'>
-					{q.questionType === 'Multiple' ? (
-						<>
-							<div>Respuestas</div>
-							{q.answers.map((ans, i) => (
-								<div
-									key={`${q.id}-answers-${i}`}
-									className={cn(
-										'm-1',
-										q.correctAnswers[i] && 'text-base font-bold text-green-800',
-									)}
-								>
-									{ans !== '' ? `${i + 1}.- ${ans}` : ''}
-								</div>
-							))}
-						</>
-					) : (
-						<div className='flex items-center'>
-							<div>Respuesta:</div>
-							<div className='ml-1 text-base font-bold text-green-800'>
-								{q.correctAnswerTF ? 'Verdadero' : 'Falso'}
-							</div>
-						</div>
-					)}
-				</div>
-			</AccordionContent>
-		</AccordionItem>
-	);
-};
-const InvalidQuestionItem = ({ question: q, index, quizID }: PropsItem) => {
-	const router = useRouter();
-	return (
-		<AccordionItem value={q.id}>
-			<AccordionTrigger className='text-destructive'>
-				<div className='flex items-center'>
-					<AlertCircle className='mr-1 text-destructive' />
-					<div>{`${index + 1}.-`}</div>
-					<div className='ml-1 text-base font-bold'>{q.question}</div>
-				</div>
-			</AccordionTrigger>
-			<AccordionContent className='flex flex-col'>
-				<div className='my-2 flex'>
-					<div className='mr-2 w-48 shrink-0'>
-						<AspectRatio ratio={16 / 9}>
-							<div className='h-full w-full bg-blue-500'></div>
-						</AspectRatio>
-					</div>
-					<div className='flex flex-col justify-between'>
-						<Badge className='w-fit' variant='secondary'>
-							{q.questionType == 'Multiple' ? 'Muiltiple' : 'Verdadero o Falso'}
-						</Badge>
-						<Button
-							variant='outline'
-							className='w-fit border-destructive hover:bg-destructive/20'
-							onClick={() => {
-								router.push(
-									animeRumbleRoutes.createQuiz + quizID + '?index=' + index,
-								);
-							}}
-						>
-							Arreglar
-						</Button>
-					</div>
-				</div>
-				<div className='flex flex-col'>
-					{q.errors.map((e, i) => (
-						<div key={`${q.id}-error-${i}`} className='m-1 text-destructive'>
-							{e}
-						</div>
-					))}
-				</div>
-			</AccordionContent>
-		</AccordionItem>
 	);
 };
 

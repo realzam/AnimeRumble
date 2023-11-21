@@ -16,6 +16,20 @@ CREATE TABLE `loteriaCards` (
 	CONSTRAINT `loteriaCards_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `answers` (
+	`id` varchar(255) NOT NULL,
+	`user` varchar(255) NOT NULL,
+	`quizId` varchar(30) NOT NULL,
+	`questionId` varchar(30) NOT NULL,
+	`time` tinyint NOT NULL,
+	`points` smallint NOT NULL,
+	`isCorrect` boolean NOT NULL,
+	`questionType` varchar(8) NOT NULL DEFAULT 'Multiple',
+	`answer` tinyint,
+	`answerTF` boolean,
+	CONSTRAINT `answers_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `questions` (
 	`quizId` varchar(30) NOT NULL,
 	`position` tinyint NOT NULL,
@@ -42,6 +56,7 @@ CREATE TABLE `quizzes` (
 	`img` varchar(255),
 	`imgKey` varchar(50),
 	`state` varchar(8) NOT NULL,
+	`endQuiz` timestamp,
 	CONSTRAINT `quizzes_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

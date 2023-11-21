@@ -3,7 +3,7 @@
 import { Memo } from '@legendapp/state/react';
 
 import { useUploadImage } from '@/hooks/useUploadImage';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@ui/Button';
 
 const DevContainer = () => {
 	const { UploadImage, startUpload } = useUploadImage();

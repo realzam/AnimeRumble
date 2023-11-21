@@ -1,5 +1,6 @@
 'use client';
 
+import { trpc } from '@/trpc/client/client';
 import { Memo, useObservable } from '@legendapp/state/react';
 
 import { sleep } from '@/lib/utils';
@@ -10,7 +11,8 @@ import ButtonGradientLoading from '@web/ButtonGradientLoading';
 import UpdateQuizDialog from './UpdateQuizDialog';
 
 const QuizPageSideBarHeader = () => {
-	const { quiz, trpcUtils, props$, id } = useQuiz();
+	const { quiz, props$, id, setQuestionUi, ui } = useQuiz();
+	const addQuestion = trpc.quizz.addQuestion.useMutation();
 	const disableButton = useObservable(false);
 	return (
 		<CardHeader>
@@ -30,13 +32,21 @@ const QuizPageSideBarHeader = () => {
 				isLoading={disableButton}
 				onClick={async () => {
 					disableButton.set(true);
-					await sleep(200);
-					trpcUtils.client.quizz.addQuestion
-						.mutate({
-							id,
-						})
-						.then(() => props$.get().refetch())
-						.then(() => disableButton.set(false));
+					await addQuestion.mutate(
+						{ id },
+						{
+							onSettled: async (q) => {
+								if (q) {
+									ui.scroll.set(true);
+									ui.scrollToQuestion.set(q.id);
+									await props$.refetch();
+									await sleep(200);
+									setQuestionUi(q.id);
+								}
+								disableButton.set(false);
+							},
+						},
+					);
 				}}
 			>
 				Agregar pregunta

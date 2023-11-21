@@ -23,8 +23,8 @@ import {
 
 import { useUploadThing } from '@/lib/uploadthing';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Button } from '@ui/Button';
+import { Card } from '@ui/Card';
 import ComfirmDeleteAlertDialog from '@/components/web/ComfirmDeleteAlertDialog';
 
 interface ContextValue {

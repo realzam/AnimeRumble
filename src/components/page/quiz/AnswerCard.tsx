@@ -41,7 +41,7 @@ const ReactiveCard = reactive(Card);
 const ReactiveCheckbox = reactive(Checkbox);
 
 const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
-	const { ui, trpcUtils, id, props$ } = useQuiz();
+	const { ui, trpcUtils, id, quizDebounced } = useQuiz();
 	const asnwer = useObservable(() => ui.question.get().answers[index]);
 	const checked = useObservable(() => ui.question.get().correctAnswers[index]);
 	const colored = useComputed(() => asnwer.get().length > 0);
@@ -65,9 +65,9 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 				},
 			})
 			.then(() => {
-				props$.refetch();
+				quizDebounced();
 			});
-	}, 2000);
+	}, 500);
 	useUnmount(() => {
 		debounced.cancel();
 	});
@@ -125,7 +125,7 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 									},
 								})
 								.then(() => {
-									props$.refetch();
+									quizDebounced.flush();
 								});
 						}}
 					/>

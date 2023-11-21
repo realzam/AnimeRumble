@@ -61,6 +61,22 @@ const ShortQuestionsSchema = z.object({
 	newPosition: z.number().nonnegative(),
 });
 
+const CustomDateSchema = z.string().refine(
+	(dateString) => {
+		// Puedes usar una expresión regular para validar el formato de la cadena de fecha
+		const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+		return regex.test(dateString);
+	},
+	{
+		message: 'La cadena de fecha debe tener el formato "YYYY-MM-DD HH:mm:ss"',
+	},
+);
+
+const AsignateQuizSchema = z.object({
+	quizId: z.string().min(1),
+	date: CustomDateSchema,
+});
+
 export {
 	CreateQuizSchema,
 	GetQuizSchema,
@@ -68,4 +84,5 @@ export {
 	DeleteQuestionSchema,
 	ShortQuestionsSchema,
 	ModifiedQuestionSchema,
+	AsignateQuizSchema,
 };

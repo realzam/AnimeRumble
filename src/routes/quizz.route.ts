@@ -3,6 +3,7 @@
 import { env } from '@/env.mjs';
 import * as schema from '@/models/quizzes';
 import {
+	AsignateQuizSchema,
 	CreateQuizSchema,
 	DeleteQuestionSchema,
 	GetQuizSchema,
@@ -10,7 +11,7 @@ import {
 	ShortQuestionsSchema,
 	UpdateQuizSchema,
 } from '@/schema/quiz';
-import { publicProcedure, router } from '@/trpc/server/trpc';
+import { publicProcedure, router, userProcedure } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { and, asc, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { customAlphabet, urlAlphabet } from 'nanoid';
@@ -102,6 +103,28 @@ export const quizRouter = router({
 
 		return quiz[0];
 	}),
+	getQuizPlay: userProcedure.input(GetQuizSchema).query(async (opts) => {
+		const { input } = opts;
+		const quiz = await db.query.quizzes.findMany({
+			with: {
+				questions: {
+					columns: {
+						quizId: false,
+					},
+					orderBy: [asc(schema.questions.position)],
+				},
+			},
+			where: eq(schema.quizzes.id, input.id),
+		});
+		if (quiz.length === 0) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'No existe el quiz',
+			});
+		}
+
+		return quiz[0];
+	}),
 	deleteQuizz: publicProcedure.input(GetQuizSchema).mutation(async (opts) => {
 		const { input } = opts;
 
@@ -154,16 +177,10 @@ export const quizRouter = router({
 			],
 		});
 
-		return await db.query.quizzes.findFirst({
-			with: {
-				questions: {
-					columns: {
-						quizId: false,
-					},
-				},
-			},
-			where: eq(schema.quizzes.id, idQuestion),
-		})!;
+		const res = (await db.query.questions.findFirst({
+			where: eq(schema.questions.id, idQuestion),
+		}))!;
+		return res;
 	}),
 	updateQuestion: publicProcedure
 		.input(UpdateQuizSchema)
@@ -349,6 +366,56 @@ export const quizRouter = router({
 				}
 			}
 		}),
+	asignateQuiz: publicProcedure
+		.input(AsignateQuizSchema)
+		.mutation(async (opts) => {
+			const { input } = opts;
+
+			const { quizId, date } = input;
+			const quiz = await db.query.quizzes.findFirst({
+				where: and(eq(schema.quizzes.id, quizId)),
+				with: {
+					questions: {
+						columns: {
+							quizId: false,
+						},
+						orderBy: [asc(schema.questions.position)],
+					},
+				},
+			});
+			if (!quiz) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'No existe el quiz',
+				});
+			}
+			if (quiz.questions.some((q) => q.hasError)) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'El quiz tiene errores',
+				});
+			}
+			await db
+				.update(schema.quizzes)
+				.set({
+					state: 'active',
+					endQuiz: date,
+				})
+				.where(eq(schema.quizzes.id, quizId));
+		}),
+
+	getListQuizzesPlayer: publicProcedure.query(async () => {
+		return await db.query.quizzes.findMany({
+			where: eq(schema.quizzes.state, 'active'),
+			with: {
+				questions: {
+					columns: {
+						id: true,
+					},
+				},
+			},
+		});
+	}),
 });
 
 const arrayMove = <T>(array: T[], from: number, to: number): T[] => {

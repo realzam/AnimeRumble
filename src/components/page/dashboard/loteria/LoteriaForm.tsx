@@ -20,7 +20,7 @@ import {
 } from '@ui/Card';
 import { Input } from '@ui/Input';
 import { Label } from '@ui/Label';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { Tabs, TabsList, TabsTrigger } from '@ui/Tabs';
 import ButtonGradientLoading from '@/components/web/ButtonGradientLoading';
 
 const LoteriaForm = () => {

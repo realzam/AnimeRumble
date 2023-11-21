@@ -67,13 +67,28 @@ const CreateQuizButton = () => {
 		);
 	};
 
-	const { UploadImage, startUpload } = useUploadImage({
+	const { UploadImage, startUpload, hasFiles } = useUploadImage({
 		onClientUploadComplete,
 	});
 
-	const onSubmit = () => {
+	const onSubmit = (values: z.infer<typeof CreateQuizSchema>) => {
 		isSubmitting.set(true);
-		startUpload();
+		if (hasFiles) {
+			startUpload();
+			return;
+		}
+
+		const { img: _, ...v } = values;
+		createQuiz.mutate(
+			{
+				...v,
+			},
+			{
+				onSuccess: (v) => {
+					router.push(animeRumbleRoutes.createQuiz + v.quiz.id);
+				},
+			},
+		);
 	};
 	return (
 		<Dialog>

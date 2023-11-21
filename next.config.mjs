@@ -37,6 +37,16 @@ const nextConfig = {
 				destination: '/dashboard/quizzes',
 				permanent: true,
 			},
+			{
+				source: '/play',
+				destination: '/quiz',
+				permanent: true,
+			},
+			{
+				source: '/play/quiz',
+				destination: '/quiz',
+				permanent: true,
+			},
 		];
 	},
 };

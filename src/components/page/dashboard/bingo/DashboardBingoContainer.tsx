@@ -3,8 +3,7 @@
 import BingoProvider from '@/context/bingo/BingoProvider';
 
 import { type BingoReactivesDataType } from '@/types/bingoQuery';
-import { CardTitle } from '@ui/Card';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { ScrollArea } from '@ui/ScrollArea';
 
 import BingoForm from './BingoForm';
 import BingoTable from './BingoTable';
@@ -20,10 +19,7 @@ const DashboardBingoContainer = ({ reactives }: Props) => {
 					<div className='mx-auto mt-9 w-[70%]'>
 						<div className='flex flex-col'>
 							<BingoForm />
-							<div className='mt-5 '>
-								<CardTitle>Reactivos de bingo</CardTitle>
-								<BingoTable />
-							</div>
+							<BingoTable />
 						</div>
 					</div>
 				</ScrollArea>

@@ -3,9 +3,13 @@ import {
 	boolean,
 	json,
 	mysqlTable,
+	smallint,
+	timestamp,
 	tinyint,
 	varchar,
 } from 'drizzle-orm/mysql-core';
+
+import { users } from './users';
 
 export const quizzes = mysqlTable('quizzes', {
 	id: varchar('id', { length: 30 }).primaryKey().notNull(),
@@ -17,6 +21,7 @@ export const quizzes = mysqlTable('quizzes', {
 		length: 8,
 		enum: ['active', 'finished', 'draft'],
 	}).notNull(),
+	endQuiz: timestamp('endQuiz', { mode: 'string' }),
 });
 
 export const questions = mysqlTable('questions', {
@@ -57,5 +62,35 @@ export const questionsRelations = relations(questions, ({ one }) => ({
 	quiz: one(quizzes, {
 		fields: [questions.quizId],
 		references: [quizzes.id],
+	}),
+}));
+
+export const answers = mysqlTable('answers', {
+	id: varchar('id', { length: 255 }).primaryKey().notNull(),
+	user: varchar('user', { length: 255 }).notNull(),
+	quizId: varchar('quizId', { length: 30 }).notNull(),
+	questionId: varchar('questionId', { length: 30 }).notNull(),
+	time: tinyint('time').notNull(),
+	points: smallint('points').notNull(),
+	isCorrect: boolean('isCorrect').notNull(),
+	questionType: varchar('questionType', { length: 8, enum: ['Multiple', 'TF'] })
+		.default('Multiple')
+		.notNull(),
+	answer: tinyint('answer'),
+	answerTF: boolean('answerTF'),
+});
+
+export const answersRelations = relations(answers, ({ one }) => ({
+	user: one(users, {
+		fields: [answers.user],
+		references: [users.id],
+	}),
+	quizId: one(quizzes, {
+		fields: [answers.quizId],
+		references: [quizzes.id],
+	}),
+	questionId: one(questions, {
+		fields: [answers.questionId],
+		references: [questions.id],
 	}),
 }));

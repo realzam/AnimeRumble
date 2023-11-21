@@ -7,9 +7,7 @@ import { type UseBaseQueryResult } from '@tanstack/react-query';
 import { type BingoReactivesDataType } from '@/types/bingoQuery';
 
 // export interface UiType {
-// 	page: number;
-// 	totalPages: number;
-// 	CardsByPage: number;
+// 	ractivesMarked: boolean[];
 // }
 
 type QQ = UseBaseQueryResult<BingoReactivesDataType, unknown>;

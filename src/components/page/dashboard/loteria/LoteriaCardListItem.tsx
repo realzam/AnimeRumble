@@ -3,8 +3,8 @@ import Image from 'next/image';
 
 import { type LoteriaCardDataType } from '@/types/loteriaQuery';
 import useLoteria from '@/hooks/useLoteria';
-import { AspectRatio } from '@/components/ui/AspectRatio';
-import { Card } from '@/components/ui/Card';
+import { AspectRatio } from '@ui/AspectRatio';
+import { Card } from '@ui/Card';
 
 interface Props {
 	card: LoteriaCardDataType;

@@ -22,7 +22,7 @@ import {
 import { Computed, For, useSelector } from '@legendapp/state/react';
 
 import useQuiz from '@/hooks/useQuiz';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { ScrollArea } from '@ui/ScrollArea';
 
 import QuestionItemList from './QuestionItemList';
 

@@ -4,6 +4,7 @@ import { useObservable, useObserve } from '@legendapp/state/react';
 import { useObservableQuery } from '@legendapp/state/react-hooks/useObservableQuery';
 import { type UseBaseQueryResult } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { type QuizDataType } from '@/types/quizQuery';
 
@@ -47,7 +48,13 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 		return opt;
 	});
 
+	const quizDebounced = useDebouncedCallback(() => {
+		console.log('Global dobunce');
+		props$.get().refetch();
+	}, 8000);
+
 	const setQuestionUi = (id: string) => {
+		quizDebounced.flush();
 		const question = quiz.questions.get().find((q) => q.id === id);
 		if (question) {
 			ui.set((v) => ({
@@ -97,6 +104,7 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 				quiz,
 				props$,
 				ui,
+				quizDebounced,
 				setQuestionUi,
 				setQuestionUiAfterDelete,
 			}}

@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { type ObservableObject } from '@legendapp/state';
 import { type UseBaseQueryResult } from '@tanstack/react-query';
+import { type DebouncedState } from 'use-debounce';
 
 import { type QuestionType, type QuizDataType } from '@/types/quizQuery';
 
@@ -19,6 +20,7 @@ interface State {
 	quiz: ObservableObject<QuizDataType>;
 	props$: ObservableObject<Omit<QQ, 'data'>>;
 	ui: ObservableObject<UiType>;
+	quizDebounced: DebouncedState<() => Promise<void>>;
 	setQuestionUi: (id: string) => void;
 	setQuestionUiAfterDelete: () => void;
 }

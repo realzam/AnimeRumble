@@ -18,7 +18,7 @@ import {
 
 enableReactComponents();
 const QuizQuestionInput = () => {
-	const { id, props$, ui, trpcUtils } = useQuiz();
+	const { id, quizDebounced, ui, trpcUtils } = useQuiz();
 	const showError = useSelector(() => ui.question.errors[0].get() !== '');
 
 	const value = useObservable(() => ui.question.question.get());
@@ -27,13 +27,12 @@ const QuizQuestionInput = () => {
 	});
 
 	const debounced = useDebouncedCallback(async () => {
-		trpcUtils.client.quizz.updateQuestion
-			.mutate({
-				quizId: id,
-				questionId: ui.question.id.get(),
-				question: value.get(),
-			})
-			.then(() => props$.get().refetch());
+		await trpcUtils.client.quizz.updateQuestion.mutate({
+			quizId: id,
+			questionId: ui.question.id.get(),
+			question: value.get(),
+		});
+		quizDebounced();
 	}, 2000);
 
 	return (

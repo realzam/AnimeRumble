@@ -8,9 +8,10 @@ const animeRumbleRoutes = {
 	dashboardBingo: '/dashboard/bingo',
 	dashboardLoteria: '/dashboard/loteria',
 	dashboardConfig: '/dashboard/config',
-	activityQuizzes: '/',
+	activityQuizzes: '/quiz',
 	activityBingo: '/bingo',
 	activityLoteria: '/loteria',
+	playQuiz: '/play/quiz',
 };
 
 export default animeRumbleRoutes;

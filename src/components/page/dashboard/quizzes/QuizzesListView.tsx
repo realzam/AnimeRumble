@@ -9,10 +9,10 @@ import { Pencil } from 'lucide-react';
 
 import animeRumbleRoutes from '@/lib/routes';
 import { AspectRatio } from '@ui/AspectRatio';
+import { Badge } from '@ui/Badge';
+import { Button } from '@ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/Card';
 import { ScrollArea } from '@ui/ScrollArea';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 
 import AssignateQuiz from '../../quiz/AssignateQuiz';
 import DeleteQuizAlertDialog from './DeleteQuizAlertDialog';
