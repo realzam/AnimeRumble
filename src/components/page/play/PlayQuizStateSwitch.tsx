@@ -7,6 +7,7 @@ import usePlayQuiz from '@/hooks/usePlayQuiz';
 import PlayQuizQuestionContainer from './PlayQuizQuestionContainer';
 import PlayQuizShowPrelude from './PlayQuizShowPrelude';
 import PlayQuizShowQuestion from './PlayQuizShowQuestion';
+import PlayQuizStadistics from './PlayQuizStadistics';
 import PlayQuizStart from './PlayQuizStart';
 
 const PlayQuizStateSwitch = () => {
@@ -20,7 +21,7 @@ const PlayQuizStateSwitch = () => {
 					showPrelude: () => <PlayQuizShowPrelude />,
 					showQuestion: () => <PlayQuizShowQuestion />,
 					showFullUI: () => <PlayQuizQuestionContainer />,
-					showEnd: () => <>end podio</>,
+					showEnd: () => <PlayQuizStadistics />,
 					default: () => <div>Error</div>,
 				}}
 			</Switch>

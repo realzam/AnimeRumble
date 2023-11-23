@@ -36,7 +36,7 @@ export const questions = mysqlTable('questions', {
 		length: 2,
 		enum: ['5', '10', '15', '20', '30', '45', '60', '90'],
 	})
-		.default('20')
+		.default('10')
 		.notNull(),
 	points: varchar('points', {
 		length: 7,
@@ -70,14 +70,12 @@ export const answers = mysqlTable('answers', {
 	user: varchar('user', { length: 255 }).notNull(),
 	quizId: varchar('quizId', { length: 30 }).notNull(),
 	questionId: varchar('questionId', { length: 30 }).notNull(),
-	time: tinyint('time').notNull(),
+	time: varchar('time', { length: 8 }).notNull(),
 	points: smallint('points').notNull(),
 	isCorrect: boolean('isCorrect').notNull(),
-	questionType: varchar('questionType', { length: 8, enum: ['Multiple', 'TF'] })
-		.default('Multiple')
-		.notNull(),
 	answer: tinyint('answer'),
 	answerTF: boolean('answerTF'),
+	order: tinyint('order').notNull(),
 });
 
 export const answersRelations = relations(answers, ({ one }) => ({

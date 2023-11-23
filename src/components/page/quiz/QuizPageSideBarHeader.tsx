@@ -6,8 +6,9 @@ import { Memo, useObservable } from '@legendapp/state/react';
 import { sleep } from '@/lib/utils';
 import useQuiz from '@/hooks/useQuiz';
 import { CardDescription, CardHeader, CardTitle } from '@ui/Card';
-import ButtonGradientLoading from '@web/ButtonGradientLoading';
+import { Button } from '@/components/ui/Button';
 
+import AssignateQuiz from './AssignateQuiz';
 import UpdateQuizDialog from './UpdateQuizDialog';
 
 const QuizPageSideBarHeader = () => {
@@ -28,8 +29,11 @@ const QuizPageSideBarHeader = () => {
 			<CardDescription>
 				<Memo>{quiz.description}</Memo>
 			</CardDescription>
-			<ButtonGradientLoading
-				isLoading={disableButton}
+			<AssignateQuiz quiz={quiz.get()} refetch={() => {}} />
+
+			<Button
+				disabled={disableButton.get()}
+				variant='secondary'
 				onClick={async () => {
 					disableButton.set(true);
 					await addQuestion.mutate(
@@ -50,7 +54,7 @@ const QuizPageSideBarHeader = () => {
 				}}
 			>
 				Agregar pregunta
-			</ButtonGradientLoading>
+			</Button>
 		</CardHeader>
 	);
 };

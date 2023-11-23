@@ -6,10 +6,11 @@ import PlayQuizStateSwitch from './PlayQuizStateSwitch';
 
 interface Props {
 	quiz: QuizDataType;
+	user: string;
 }
-const PlayQuizContainer = ({ quiz }: Props) => {
+const PlayQuizContainer = ({ quiz, user }: Props) => {
 	return (
-		<PlayQuizProvider initialQuiz={quiz}>
+		<PlayQuizProvider initialQuiz={quiz} user={user}>
 			<PlayQuizStateSwitch />
 		</PlayQuizProvider>
 	);

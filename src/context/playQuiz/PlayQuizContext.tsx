@@ -6,7 +6,9 @@ import {
 	type ObservablePrimitive,
 } from '@legendapp/state';
 
-import { type QuizDataType } from '@/types/quizQuery';
+// import { type UseBaseQueryResult } from '@tanstack/react-query';
+
+import { type AnserUserDataType, type QuizDataType } from '@/types/quizQuery';
 
 export type StatesPlayQuiz =
 	| 'showStart'
@@ -20,8 +22,12 @@ interface State {
 	showCorrectAnswer: ObservablePrimitive<boolean>;
 	isCorrectAnswer: ObservablePrimitive<boolean>;
 	stateQuiz: ObservablePrimitive<StatesPlayQuiz>;
-	questions: ObservableObject<QuizDataType['questions']>;
+	questions: QuizDataType['questions'];
 	question: QuizDataType['questions'][0];
+	time: ObservablePrimitive<number>;
+	points: ObservablePrimitive<number>;
+	timeInt: number;
+	answersUser: ObservableObject<AnserUserDataType>;
 	nextQuestion: () => void;
 	startQuiz: () => void;
 	answer: (index: number) => Promise<void>;

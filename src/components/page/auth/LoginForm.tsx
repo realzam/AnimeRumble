@@ -38,7 +38,7 @@ const LoginForm = () => {
 
 	useEffect(() => {
 		if (session.status == 'authenticated') {
-			let callbackUrl = searchParams.get('callbackUrl');
+			let callbackUrl = searchParams?.get('callbackUrl');
 			if (!callbackUrl) {
 				callbackUrl =
 					session.data.user.role == 'admin'

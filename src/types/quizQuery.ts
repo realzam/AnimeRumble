@@ -9,3 +9,7 @@ export type QuestionType = QuizDataType['questions'][0];
 export type QuizzesPlayerDataType = Awaited<
 	ReturnType<typeof serverClient.quizz.getListQuizzesPlayer>
 >;
+
+export type AnserUserDataType = Awaited<
+	ReturnType<typeof serverClient.quizz.getAnswerUser>
+>;

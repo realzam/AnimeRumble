@@ -4,25 +4,129 @@ import { env } from '@/env.mjs';
 import * as schema from '@/models/quizzes';
 import {
 	AsignateQuizSchema,
+	AsnwerQuizSchema,
 	CreateQuizSchema,
+	CreateQuizSchemaAI,
 	DeleteQuestionSchema,
+	GetAsnwersUser,
 	GetQuizSchema,
 	ModifiedQuestionSchema,
 	ShortQuestionsSchema,
 	UpdateQuizSchema,
 } from '@/schema/quiz';
-import { publicProcedure, router, userProcedure } from '@/trpc/server/trpc';
+import {
+	adminProcedure,
+	publicProcedure,
+	router,
+	userProcedure,
+} from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { and, asc, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { customAlphabet, urlAlphabet } from 'nanoid';
 import { UTApi } from 'uploadthing/server';
+import { z } from 'zod';
 
 import { type QuestionType } from '@/types/quizQuery';
 import { db } from '@/lib/db';
+import { strict_output } from '@/lib/gtp';
 
 const utapi = new UTApi({ apiKey: env.UPLOADTHING_SECRET });
 
 export const quizRouter = router({
+	createQuizFromIA: publicProcedure
+		.input(CreateQuizSchemaAI)
+		.mutation(async (opts) => {
+			const { topic } = opts.input;
+			const QuizAI = z.object({
+				title: z.string().min(1),
+				description: z.string().min(1),
+				questions: z
+					.object({
+						question: z.string().min(1),
+						questionType: z.enum(['Multiple', 'TF']),
+						answers: z.string().array().optional(),
+						correctAnswer: z.union([z.boolean(), z.string()]),
+					})
+					.array(),
+			});
+			let quizAI: z.infer<typeof QuizAI> = {} as z.infer<typeof QuizAI>;
+			for (let t = 0; t < 3; t++) {
+				try {
+					const res = await strict_output(topic);
+					const resParse = JSON.parse(res);
+					quizAI = QuizAI.parse(resParse);
+					break;
+				} catch (error) {
+					console.log(error);
+					if (t === 2) {
+						throw new TRPCError({
+							code: 'BAD_REQUEST',
+							message: 'error al generar quiz',
+						});
+					}
+				}
+			}
+
+			const { title, description, questions } = quizAI;
+			const nanoid = customAlphabet(urlAlphabet, 15);
+
+			const idQuiz = nanoid();
+			await db.insert(schema.quizzes).values({
+				id: idQuiz,
+				state: 'draft',
+				title,
+				description,
+			});
+
+			for (let i = 0; i < questions.length; i++) {
+				const { question, answers, questionType, correctAnswer } = questions[i];
+				const idQuestion = nanoid();
+
+				let ans = ['', '', '', ''];
+				const correctAns = [false, false, false, false];
+				let correctAnsTF = undefined;
+
+				if (questionType === 'Multiple') {
+					if (answers && ans.length === 4) {
+						const ok = answers.findIndex(
+							(a) => a === (correctAnswer as string),
+						);
+						if (ok !== -1) {
+							ans = answers;
+							correctAns[ok] = true;
+						}
+					}
+				} else {
+					if (typeof correctAnswer == 'boolean') {
+						correctAnsTF = correctAnswer;
+					}
+				}
+
+				const [hasError, errors] = validateQuestion({
+					question,
+					questionType,
+					correctAnswers: correctAns,
+					answers: ans,
+					correctAnswerTF: correctAnsTF === undefined ? null : correctAnsTF,
+				});
+
+				await db.insert(schema.questions).values({
+					id: idQuestion,
+					quizId: idQuiz,
+					questionType,
+					question,
+					answers: ans,
+					correctAnswers: correctAns,
+					correctAnswerTF: correctAnsTF,
+					position: i,
+					errors,
+					hasError,
+					modified: true,
+				});
+			}
+			return { idQuiz };
+		}),
+
 	createQuizz: publicProcedure
 		.input(CreateQuizSchema)
 		.mutation(async (opts) => {
@@ -403,7 +507,6 @@ export const quizRouter = router({
 				})
 				.where(eq(schema.quizzes.id, quizId));
 		}),
-
 	getListQuizzesPlayer: publicProcedure.query(async () => {
 		return await db.query.quizzes.findMany({
 			where: eq(schema.quizzes.state, 'active'),
@@ -414,6 +517,83 @@ export const quizRouter = router({
 					},
 				},
 			},
+		});
+	}),
+	answerQuiz: userProcedure.input(AsnwerQuizSchema).mutation(async (opts) => {
+		const { questionId, quizId, time, answer } = opts.input;
+		const userID = opts.ctx.session.user.id;
+		const nanoid = customAlphabet(urlAlphabet, 15);
+		const idAns = nanoid();
+
+		const quiz = await db.query.quizzes.findFirst({
+			where: eq(schema.quizzes.id, quizId),
+			with: {
+				questions: true,
+			},
+		});
+
+		if (!quiz) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'No existe el quiz',
+			});
+		}
+
+		const question = await db.query.questions.findFirst({
+			where: eq(schema.questions.id, questionId),
+		});
+
+		if (!question) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'No existe el quiz',
+			});
+		}
+		const order = quiz.questions.findIndex((q) => q.id === questionId);
+		let isCorrect = false;
+		if (answer !== -1) {
+			if (question.questionType === 'Multiple') {
+				isCorrect = question.correctAnswers[answer];
+			} else {
+				isCorrect =
+					(answer === 1 && !!question.correctAnswerTF) ||
+					(answer === 0 && !question.correctAnswerTF);
+			}
+		}
+		const timeInt = parseInt(question.time) * 100;
+		const m = -900 * (time / timeInt);
+		let points = Math.max(100, Math.ceil(m + 1000));
+
+		if (question.points === 'double') {
+			points *= 2;
+		} else if (question.points === 'none') {
+			points = 0;
+		}
+		if (answer !== -1) {
+			points = 0;
+		}
+
+		await db.insert(schema.answers).values({
+			id: idAns,
+			quizId,
+			questionId,
+			user: userID,
+			time: `${(time / 100).toFixed(2)}s`,
+			points,
+			isCorrect,
+			order,
+		});
+		return { ok: true };
+	}),
+
+	getAnswerUser: adminProcedure.input(GetAsnwersUser).query(async (opts) => {
+		const { quizId, user } = opts.input;
+		return db.query.answers.findMany({
+			where: and(
+				eq(schema.answers.user, user),
+				eq(schema.answers.quizId, quizId),
+			),
+			orderBy: [asc(schema.answers.order)],
 		});
 	}),
 });
@@ -429,7 +609,18 @@ const arrayMove = <T>(array: T[], from: number, to: number): T[] => {
 	return newArray;
 };
 
-const validateQuestion = (q: QuestionType): [boolean, string[]] => {
+const validateQuestion = (
+	q:
+		| QuestionType
+		| Pick<
+				QuestionType,
+				| 'question'
+				| 'questionType'
+				| 'correctAnswers'
+				| 'answers'
+				| 'correctAnswerTF'
+		  >,
+): [boolean, string[]] => {
 	let hasError = false;
 	const errors: string[] = ['', '', ''];
 
@@ -441,7 +632,8 @@ const validateQuestion = (q: QuestionType): [boolean, string[]] => {
 	let hasCorrectAnswer = false;
 
 	if (q.questionType === 'TF') {
-		hasCorrectAnswer = q.correctAnswerTF !== null;
+		hasCorrectAnswer =
+			q.correctAnswerTF !== null || q.correctAnswerTF !== undefined;
 		if (!hasCorrectAnswer) {
 			hasError = true;
 			errors[2] = 'Es necesaria seleccionar la respuesta correcta';

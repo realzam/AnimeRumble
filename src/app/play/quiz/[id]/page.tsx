@@ -35,7 +35,9 @@ const PlayQuizPage = async ({ params }: { params: { id: string } }) => {
 	const res = await getData(session, params.id);
 	const [code, data] = res;
 	if (!code) {
-		return <PlayQuizContainer quiz={data} />;
+		console.log('PlayQuizPage render', data);
+
+		return <PlayQuizContainer quiz={data} user={session.user.id} />;
 	}
 	if (code === 'UNAUTHORIZED') {
 		redirect(animeRumbleRoutes.login + '/?callbackUrl=/quiz');

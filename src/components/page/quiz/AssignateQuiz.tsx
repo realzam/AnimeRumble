@@ -75,185 +75,196 @@ const AssignateQuiz = ({ refetch, quiz }: Props) => {
 					Asignar
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='sm:max-w-[425px]'>
+			<DialogContent
+				className={cn(
+					'sm:max-w-[425px]',
+					quiz.questions.length > 4 && 'h-[500px]',
+				)}
+			>
 				<DialogHeader>
 					<DialogTitle>Resumen</DialogTitle>
 					<DialogDescription>
 						Informacion de las preguntas que estaran en el quiz
 					</DialogDescription>
 				</DialogHeader>
+				<ScrollArea type='always' className='pr-1'>
+					<div className='flex items-start space-x-2'>
+						<CardTitle
+							className={cn('mt-3', errorDate !== '' && 'text-destructive')}
+						>
+							Fecha:
+						</CardTitle>
 
-				<div className='flex items-start space-x-2'>
-					<CardTitle
-						className={cn('mt-3', errorDate !== '' && 'text-destructive')}
-					>
-						Fecha:
-					</CardTitle>
-
-					<div>
-						<Popover.Root>
-							<Popover.Trigger>
-								<Button
-									variant='outline'
-									className={cn(
-										'w-[280px] justify-start text-left font-normal',
-										!date && 'text-muted-foreground',
-										errorDate !== '' && 'ring-1 ring-destructive',
-									)}
-								>
-									<CalendarIcon className='mr-2 h-4 w-4' />
-									{date ? (
-										format(date, 'PPP', {
-											locale: es,
-										})
-									) : (
-										<span>Seleccionar fecha</span>
-									)}
-								</Button>
-							</Popover.Trigger>
-							<Popover.Content
-								align='center'
-								sideOffset={4}
-								className='mt-2 w-auto rounded-md border bg-popover p-0'
-							>
-								<AnimatePresence>
-									<motion.div
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-										transition={{ duration: 0.3 }}
+						<div>
+							<Popover.Root>
+								<Popover.Trigger>
+									<Button
+										variant='outline'
+										className={cn(
+											'w-[280px] justify-start text-left font-normal',
+											!date && 'text-muted-foreground',
+											errorDate !== '' && 'ring-1 ring-destructive',
+										)}
 									>
-										<Calendar
-											locale={es}
-											fromDate={moment().toDate()}
-											toDate={moment().add(2, 'M').toDate()}
-											mode='single'
-											selected={date}
-											onSelect={(d) => {
-												setDate(d);
-												if (d) {
-													setErrorDate('');
-													const horasRestantes =
-														horasFaltantesHastaFinDelDia(d);
-													if (hour && !horasRestantes.includes(hour)) {
+										<CalendarIcon className='mr-2 h-4 w-4' />
+										{date ? (
+											format(date, 'PPP', {
+												locale: es,
+											})
+										) : (
+											<span>Seleccionar fecha</span>
+										)}
+									</Button>
+								</Popover.Trigger>
+								<Popover.Content
+									align='center'
+									sideOffset={4}
+									className='mt-2 w-auto rounded-md border bg-popover p-0'
+								>
+									<AnimatePresence>
+										<motion.div
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ duration: 0.3 }}
+										>
+											<Calendar
+												locale={es}
+												fromDate={moment().toDate()}
+												toDate={moment().add(2, 'M').toDate()}
+												mode='single'
+												selected={date}
+												onSelect={(d) => {
+													setDate(d);
+													if (d) {
+														setErrorDate('');
+														const horasRestantes =
+															horasFaltantesHastaFinDelDia(d);
+														if (hour && !horasRestantes.includes(hour)) {
+															setHour(undefined);
+														}
+													} else {
+														setErrorDate('Es necesario seleccionar un día');
 														setHour(undefined);
 													}
-												} else {
-													setErrorDate('Es necesario seleccionar un día');
-													setHour(undefined);
-												}
-											}}
-											initialFocus
-										/>
-									</motion.div>
-								</AnimatePresence>
-							</Popover.Content>
-						</Popover.Root>
-						{errorDate && <div className='text-destructive'>{errorDate}</div>}
+												}}
+												initialFocus
+											/>
+										</motion.div>
+									</AnimatePresence>
+								</Popover.Content>
+							</Popover.Root>
+							{errorDate && <div className='text-destructive'>{errorDate}</div>}
+						</div>
 					</div>
-				</div>
-				<div className='flex items-start space-x-2'>
-					<CardTitle
-						className={cn('mt-3', errorHour !== '' && 'text-destructive')}
-					>
-						Hora:
-					</CardTitle>
-					<div>
-						<Select
-							onValueChange={(v) => {
-								setHour(v);
-								setErrorHour('');
-							}}
-							value={hour}
+					<div className='my-3 flex items-start space-x-2'>
+						<CardTitle
+							className={cn('mt-3', errorHour !== '' && 'text-destructive')}
 						>
-							<SelectTrigger
-								className={cn(
-									'w-[180px]',
-									errorHour !== '' && 'ring-1 ring-destructive',
-								)}
+							Hora:
+						</CardTitle>
+						<div>
+							<Select
+								onValueChange={(v) => {
+									setHour(v);
+									setErrorHour('');
+								}}
+								value={hour}
 							>
-								<SelectValue placeholder='Selecccionar hora' />
-							</SelectTrigger>
-							<SelectContent className='max-h-56 w-auto'>
-								<ScrollArea className={tags.length > 5 ? 'h-56' : ''}>
-									<SelectGroup>
-										<SelectLabel>Hora</SelectLabel>
-										{tags.map((tag) => (
-											<SelectItem key={tag} value={tag}>
-												{tag}
-											</SelectItem>
-										))}
-									</SelectGroup>
-								</ScrollArea>
-							</SelectContent>
-						</Select>
-						{errorHour && <div className='text-destructive'>{errorHour}</div>}
+								<SelectTrigger
+									className={cn(
+										'w-[180px]',
+										errorHour !== '' && 'ring-1 ring-destructive',
+									)}
+								>
+									<SelectValue placeholder='Selecccionar hora' />
+								</SelectTrigger>
+								<SelectContent className='max-h-56 w-auto'>
+									<ScrollArea className={tags.length > 5 ? 'h-56' : ''}>
+										<SelectGroup>
+											<SelectLabel>Hora</SelectLabel>
+											{tags.map((tag) => (
+												<SelectItem key={tag} value={tag}>
+													{tag}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</ScrollArea>
+								</SelectContent>
+							</Select>
+							{errorHour && <div className='text-destructive'>{errorHour}</div>}
+						</div>
 					</div>
-				</div>
 
-				<Accordion type='single' collapsible>
-					{quiz.questions.map((q, index) =>
-						q.hasError ? (
-							<AsignateIncorrectQuestionItem
-								key={q.id}
-								question={q}
-								index={index}
-								quizID={quiz.id}
-							/>
+					<Accordion type='single' collapsible>
+						{quiz.questions.map((q, index) =>
+							q.hasError ? (
+								<AsignateIncorrectQuestionItem
+									key={q.id}
+									question={q}
+									index={index}
+									quizID={quiz.id}
+								/>
+							) : (
+								<AsignateValidQuestionItem
+									key={q.id}
+									question={q}
+									index={index}
+									quizID={quiz.id}
+								/>
+							),
+						)}
+					</Accordion>
+
+					<DialogFooter>
+						{quiz.questions.some((q) => q.hasError) ? (
+							<Button
+								variant='destructive'
+								type='submit'
+								onClick={() => {
+									router.push(
+										animeRumbleRoutes.createQuiz +
+											quiz.id +
+											'?index=' +
+											quiz.questions.findIndex((q) => q.hasError),
+									);
+								}}
+							>
+								Arreglar
+							</Button>
 						) : (
-							<AsignateValidQuestionItem
-								key={q.id}
-								question={q}
-								index={index}
-								quizID={quiz.id}
-							/>
-						),
-					)}
-				</Accordion>
+							<Button
+								variant='gradient'
+								type='submit'
+								onClick={async () => {
+									console.log('send asignate0');
+									if (tags.length == 0) {
+										setDate(undefined);
+										setErrorHour('Es necesario seleccionar una hora');
+									}
+									console.log('send asignate1');
+									if (!date) {
+										setErrorDate('Es necesario seleccionar un día');
+										return;
+									}
+									console.log('send asignate2');
+									if (!hour) {
+										setErrorHour('Es necesario seleccionar una hora');
+										return;
+									}
+									console.log('send asignate3');
 
-				<DialogFooter>
-					{quiz.questions.some((q) => q.hasError) ? (
-						<Button
-							variant='destructive'
-							type='submit'
-							onClick={() => {
-								router.push(
-									animeRumbleRoutes.createQuiz +
-										quiz.id +
-										'?index=' +
-										quiz.questions.findIndex((q) => q.hasError),
-								);
-							}}
-						>
-							Arreglar
-						</Button>
-					) : (
-						<Button
-							variant='gradient'
-							type='submit'
-							onClick={async () => {
-								if (tags.length == 0) {
-									setDate(undefined);
-									setErrorHour('Es necesario seleccionar una hora');
-								}
-								if (!date) {
-									setErrorDate('Es necesario seleccionar un día');
-									return;
-								}
-								if (!hour) {
-									setErrorHour('Es necesario seleccionar una hora');
-									return;
-								}
-								await asignate.mutate({
-									quizId: quiz.id,
-									date: getTimestampFormDate(actualizarHora(date, hour)),
-								});
-							}}
-						>
-							Asignar
-						</Button>
-					)}
-				</DialogFooter>
+									await asignate.mutate({
+										quizId: quiz.id,
+										date: getTimestampFormDate(actualizarHora(date, hour)),
+									});
+								}}
+							>
+								Asignar
+							</Button>
+						)}
+					</DialogFooter>
+				</ScrollArea>
 			</DialogContent>
 		</Dialog>
 	);

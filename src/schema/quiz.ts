@@ -14,6 +14,10 @@ const CreateQuizSchema = z.object({
 		.optional(),
 });
 
+const CreateQuizSchemaAI = z.object({
+	topic: z.string().trim().min(1),
+});
+
 const GetQuizSchema = z.object({
 	id: z.string().min(1),
 });
@@ -77,6 +81,18 @@ const AsignateQuizSchema = z.object({
 	date: CustomDateSchema,
 });
 
+const AsnwerQuizSchema = z.object({
+	quizId: z.string().min(1),
+	questionId: z.string().min(1),
+	time: z.number().positive(),
+	answer: z.number().min(-1).max(4),
+});
+
+const GetAsnwersUser = z.object({
+	quizId: z.string().min(1),
+	user: z.string().min(1),
+});
+
 export {
 	CreateQuizSchema,
 	GetQuizSchema,
@@ -85,4 +101,7 @@ export {
 	ShortQuestionsSchema,
 	ModifiedQuestionSchema,
 	AsignateQuizSchema,
+	AsnwerQuizSchema,
+	GetAsnwersUser,
+	CreateQuizSchemaAI,
 };

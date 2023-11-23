@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5beea044-282b-4acd-898a-39218ff2eaaf",
+  "id": "1e61e70c-982a-4ac0-9e54-892a6365de55",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -140,7 +140,7 @@
         },
         "time": {
           "name": "time",
-          "type": "tinyint",
+          "type": "varchar(8)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -159,14 +159,6 @@
           "notNull": true,
           "autoincrement": false
         },
-        "questionType": {
-          "name": "questionType",
-          "type": "varchar(8)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'Multiple'"
-        },
         "answer": {
           "name": "answer",
           "type": "tinyint",
@@ -179,6 +171,13 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "tinyint",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -240,7 +239,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'20'"
+          "default": "'10'"
         },
         "points": {
           "name": "points",

@@ -5,6 +5,7 @@ import { type serverClient } from '@/trpc/client/serverClient';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/Tabs';
 
 import CreateQuizButton from './CreateQuizButton';
+import ExperimentalContainer from './ExperimentalContainer';
 import QuizzesListView from './QuizzesListView';
 
 interface Props {
@@ -21,10 +22,11 @@ const DashboardQuizzesContainer = ({ initialQuizzes }: Props) => {
 				className='flex h-full flex-col space-y-6 pr-5'
 			>
 				<div className='flex justify-between'>
-					<TabsList className='grid w-[400px] grid-cols-3'>
+					<TabsList className='grid w-[500px] grid-cols-4'>
 						<TabsTrigger value='draft'>Guardados</TabsTrigger>
 						<TabsTrigger value='active'>Activos</TabsTrigger>
 						<TabsTrigger value='finished'>Finalizados</TabsTrigger>
+						<TabsTrigger value='experimental'>Experimental</TabsTrigger>
 					</TabsList>
 					<CreateQuizButton />
 				</div>
@@ -36,6 +38,9 @@ const DashboardQuizzesContainer = ({ initialQuizzes }: Props) => {
 				</TabsContent>
 				<TabsContent value='finished' className='h-full overflow-hidden'>
 					<QuizzesListView initialQuizzes={initialQuizzes} type='finished' />
+				</TabsContent>
+				<TabsContent value='experimental' className='h-full overflow-hidden'>
+					<ExperimentalContainer />
 				</TabsContent>
 			</Tabs>
 		</div>

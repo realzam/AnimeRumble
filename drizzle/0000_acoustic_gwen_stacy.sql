@@ -21,12 +21,12 @@ CREATE TABLE `answers` (
 	`user` varchar(255) NOT NULL,
 	`quizId` varchar(30) NOT NULL,
 	`questionId` varchar(30) NOT NULL,
-	`time` tinyint NOT NULL,
+	`time` varchar(8) NOT NULL,
 	`points` smallint NOT NULL,
 	`isCorrect` boolean NOT NULL,
-	`questionType` varchar(8) NOT NULL DEFAULT 'Multiple',
 	`answer` tinyint,
 	`answerTF` boolean,
+	`order` tinyint NOT NULL,
 	CONSTRAINT `answers_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -36,7 +36,7 @@ CREATE TABLE `questions` (
 	`id` varchar(30) NOT NULL,
 	`question` varchar(100) NOT NULL DEFAULT '',
 	`questionType` varchar(8) NOT NULL DEFAULT 'Multiple',
-	`time` varchar(2) NOT NULL DEFAULT '20',
+	`time` varchar(2) NOT NULL DEFAULT '10',
 	`points` varchar(7) NOT NULL DEFAULT 'standar',
 	`answers` json NOT NULL,
 	`correctAnswers` json NOT NULL,

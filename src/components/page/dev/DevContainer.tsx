@@ -1,30 +1,33 @@
 'use client';
 
-import { Memo } from '@legendapp/state/react';
+import { trpc } from '@/trpc/client/client';
+import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
+import { Reactive, Show, useObservable } from '@legendapp/state/react';
 
-import { useUploadImage } from '@/hooks/useUploadImage';
-import { Button } from '@ui/Button';
+import { Spinner } from '@/components/web/Spinner';
 
+enableReactComponents();
 const DevContainer = () => {
-	const { UploadImage, startUpload } = useUploadImage();
+	const generateAIQuiz = trpc.quizz.createQuizFromIA.useMutation();
+	const value = useObservable('');
+	const creating = useObservable(false);
 	return (
-		<div className='container'>
-			<div className='w-[400px]'>
-				<UploadImage />
-			</div>
-			<Memo>
-				{() => (
-					<Button
-						onClick={() => {
-							console.log('Button on click');
-
-							startUpload();
-						}}
-					>
-						up
-					</Button>
-				)}
-			</Memo>
+		<div>
+			<Reactive.input $value={value} />
+			<button
+				onClick={() => {
+					creating.set(true);
+					generateAIQuiz.mutate({ topic: value.get() });
+					creating.set(false);
+				}}
+			>
+				generate
+			</button>
+			<Show if={creating}>
+				<div className='h-10 w-10'>
+					<Spinner />
+				</div>
+			</Show>
 		</div>
 	);
 };

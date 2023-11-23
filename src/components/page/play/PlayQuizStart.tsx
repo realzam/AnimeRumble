@@ -26,12 +26,12 @@ const PlayQuizStart = () => {
 	}, [interval]);
 
 	return (
-		<div className='flex h-[calc(100vh-3.5rem-1px)] flex-col items-center justify-center'>
+		<div className='flex h-[calc(100vh-3.5rem-1px)] select-none flex-col items-center justify-center'>
 			<Show
 				if={!started.get()}
 				else={
 					<>
-						<div className='animate-ping text-6xl animate-normal animate-duration-1000 animate-infinite'>
+						<div className='animate-ping select-none text-6xl animate-normal animate-duration-1000 animate-infinite'>
 							{time}
 						</div>
 					</>

@@ -12,7 +12,7 @@ interface Props {
 }
 const QuizPage = ({ initialQuiz }: Props) => {
 	const searchParams = useSearchParams();
-	const index = searchParams.get('index');
+	const index = searchParams?.get('index');
 	let indexNum = 0;
 	if (index) {
 		try {
