@@ -24,7 +24,7 @@ const circleColorsVariants = cva(
 );
 
 const overlayColorsVariants = cva(
-	'absolute z-0 h-28 w-28 origin-center rounded-full duration-500 ease-out group-hover:scale-[6]',
+	'absolute z-0 h-28 w-28 origin-center rounded-full duration-500 ease-out group-hover:scale-[6] sm:group-hover:scale-[7] md:group-hover:scale-[6]',
 	{
 		variants: {
 			color: {
@@ -64,7 +64,7 @@ const ActivityCard = ({ title, color, route, icon }: ActivityCardProps) => {
 							priority
 						/>
 					</div>
-					<span className='z-[100] mt-7 text-xl font-semibold tracking-widest group-hover:text-slate-100'>
+					<span className='z-[11] mt-7 text-xl font-semibold tracking-widest group-hover:text-slate-100'>
 						{title}
 					</span>
 				</Card>

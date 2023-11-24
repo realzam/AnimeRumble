@@ -112,3 +112,9 @@ export function actualizarHora(fecha: Date, hora: string): Date {
 export function getTimestampFormDate(fecha: Date) {
 	return moment(fecha).format('YYYY-MM-DD HH:mm:ss');
 }
+
+export function capitalizeWord(sentence: string) {
+	return sentence.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+		letter.toUpperCase(),
+	);
+}

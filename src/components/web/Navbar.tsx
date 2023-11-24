@@ -6,8 +6,9 @@ import { getAuthSession } from '@/lib/nextauth';
 import animeRumbleRoutes from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import AnimeRumbleIcon from '@web/AnimeRumbleIcon';
-import Link from '@web/Link';
 
+import NavbarLinks from './NavbarLinks';
+import NavbarLinksButton from './NavbarLinksButton';
 import NavbarSession from './NavbarSession';
 import ToggleThemeButton from './ToggleThemeButton';
 
@@ -25,11 +26,11 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 				)}
 				{...props}
 			>
-				<div className='container flex h-14 items-center'>
-					<div className='mr-4 flex shrink-0'>
+				<div className='container flex h-14'>
+					<div className='flex min-w-[180px] shrink-0 items-center'>
 						<NextLink
-							className='mr-6 flex items-center space-x-2'
 							href={animeRumbleRoutes.home}
+							className='flex w-full items-center space-x-2'
 						>
 							<AnimeRumbleIcon height={24} width={24} />
 							<span
@@ -42,18 +43,14 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 							</span>
 						</NextLink>
 					</div>
-					<div className='hidden flex-1 justify-center sm:flex'>
-						<nav className='items-center space-x-6 text-lg font-medium'>
-							{session?.user.role === 'admin' && (
-								<Link href={animeRumbleRoutes.dashboard}>Dashboard</Link>
-							)}
-							<Link href={animeRumbleRoutes.activityBingo}>Bingo</Link>
-							<Link href={animeRumbleRoutes.activityLoteria}>Loteria</Link>
-						</nav>
+					<div className='flex-1'>
+						<div className='hidden h-full w-full items-center justify-center space-x-6 text-lg font-medium md:flex'>
+							<NavbarLinks initialSession={session} />
+						</div>
 					</div>
-
-					<div className='flex shrink-0 items-center justify-end space-x-2'>
+					<div className='flex w-[180px] shrink-0 items-center justify-end space-x-2'>
 						<NavbarSession initialSession={session} />
+						<NavbarLinksButton initialSession={session} />
 						<ToggleThemeButton />
 					</div>
 				</div>

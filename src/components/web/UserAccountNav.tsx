@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import { type Session } from 'next-auth';
 
+import { capitalizeWord } from '@/lib/utils';
+import { Badge } from '@ui/Badge';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@ui/DropdownMenu';
@@ -25,16 +25,20 @@ const UserAccountNav = ({ user }: Props) => {
 			<DropdownMenuContent align='end'>
 				<div className='flex items-center justify-start gap-2 p-2'>
 					<div className='flex flex-col space-y-1'>
-						{user.name && <p className='font-medium'>{user.name}</p>}
+						{user.name && (
+							<div className='flex space-x-2'>
+								<p className='font-semibold'>{capitalizeWord(user.name)}</p>
+								<Badge>{user.role}</Badge>
+							</div>
+						)}
 						{user.email && (
-							<p className='w-[200px] truncate text-sm '>{user.email}</p>
+							<p className='max-w-[300px] truncate text-sm '>
+								{user.email.toLowerCase()}
+							</p>
 						)}
 					</div>
 				</div>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem asChild>
-					<Link href='/'>Meow</Link>
-				</DropdownMenuItem>
 				<UserAccountNavItemSignOut />
 			</DropdownMenuContent>
 		</DropdownMenu>

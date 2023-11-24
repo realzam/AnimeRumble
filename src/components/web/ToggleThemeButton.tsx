@@ -30,13 +30,13 @@ const ThemeToggle = React.forwardRef<
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
 					<DropdownMenuItem onClick={() => setTheme('light')}>
-						Light
+						Tema Claro
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => setTheme('dark')}>
-						Dark
+						Tema Oscuro
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => setTheme('system')}>
-						System
+						Sistema
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

@@ -6,6 +6,17 @@ interface Props {
 	user: Session['user'];
 }
 
+function obtenerIniciales(nombreCompleto: string | undefined | null): string {
+	if (!nombreCompleto) {
+		return 'SN';
+	}
+	const articulos = ['el', 'la', 'los', 'las', 'de', 'del'];
+	let palabras = nombreCompleto.split(' ');
+	palabras = palabras.filter((p) => !articulos.includes(p));
+	const iniciales = palabras.map((palabra) => palabra.charAt(0)).join('');
+	return iniciales.toUpperCase();
+}
+
 const UserAvatar = ({ user }: Props) => {
 	return (
 		<Avatar>
@@ -14,7 +25,9 @@ const UserAvatar = ({ user }: Props) => {
 				alt='profile picture'
 				referrerPolicy='no-referrer'
 			/>
-			<AvatarFallback>OM</AvatarFallback>
+			<AvatarFallback className='bg-primary text-primary-foreground'>
+				{obtenerIniciales(user.name)}
+			</AvatarFallback>
 		</Avatar>
 	);
 };
