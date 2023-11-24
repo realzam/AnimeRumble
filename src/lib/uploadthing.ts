@@ -5,4 +5,5 @@ import { generateReactHelpers } from '@uploadthing/react/hooks';
 export const { UploadButton, UploadDropzone, Uploader } =
 	generateComponents<OurFileRouter>();
 
-export const { uploadFiles, useUploadThing } = generateReactHelpers();
+export const { uploadFiles, useUploadThing } =
+	generateReactHelpers<OurFileRouter>();

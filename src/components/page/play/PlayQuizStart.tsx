@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Show, useObservable } from '@legendapp/state/react';
 
 import usePlayQuiz from '@/hooks/usePlayQuiz';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@ui/Button';
 
 const PlayQuizStart = () => {
 	const started = useObservable(false);

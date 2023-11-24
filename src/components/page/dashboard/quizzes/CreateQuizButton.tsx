@@ -7,11 +7,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Show, useObservable } from '@legendapp/state/react';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useForm } from 'react-hook-form';
-import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
 import animeRumbleRoutes from '@/lib/routes';
-import { useUploadImage } from '@/hooks/useUploadImage';
+import {
+	useUploadImage,
+	type TypeUploadthingResponse,
+} from '@/hooks/useUploadImage';
 import { AspectRatio } from '@ui/AspectRatio';
 import { Button } from '@ui/Button';
 import {
@@ -39,8 +41,7 @@ const CreateQuizButton = () => {
 	});
 	const isSubmitting = useObservable(false);
 
-	const onClientUploadComplete = (res?: UploadFileResponse[]) => {
-		res ??= [];
+	const onClientUploadComplete = (res: TypeUploadthingResponse) => {
 		isSubmitting.set(false);
 		let img:
 			| {

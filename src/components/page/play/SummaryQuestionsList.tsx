@@ -1,6 +1,7 @@
 'use client';
 
 import usePlayQuiz from '@/hooks/usePlayQuiz';
+import { Card } from '@ui/Card';
 import {
 	Table,
 	TableBody,
@@ -9,7 +10,6 @@ import {
 	TableHeader,
 	TableRow,
 } from '@ui/Table';
-import { Card } from '@/components/ui/Card';
 
 const SummaryQuestionsList = () => {
 	const { questions, answersUser } = usePlayQuiz();

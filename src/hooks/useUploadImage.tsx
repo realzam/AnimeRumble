@@ -15,6 +15,7 @@ import {
 } from '@legendapp/state/react';
 import { type FileWithPath } from '@uploadthing/react';
 import { useDropzone } from '@uploadthing/react/hooks';
+import { type UploadedFile } from '@uploadthing/shared';
 import { ArrowUpFromLine, UploadCloud, X } from 'lucide-react';
 import {
 	generateClientDropzoneAccept,
@@ -167,10 +168,9 @@ const UploadImage = ({
 	);
 };
 
+export type TypeUploadthingResponse = UploadFileResponse<UploadedFile>[];
 interface HookProps {
-	onClientUploadComplete?:
-		| ((res?: UploadFileResponse[] | undefined) => void)
-		| undefined;
+	onClientUploadComplete?: ((res: TypeUploadthingResponse) => void) | undefined;
 	initialPreview?: string;
 }
 

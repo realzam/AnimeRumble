@@ -4,11 +4,13 @@ import { trpc } from '@/trpc/client/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Computed, useObservable, useSelector } from '@legendapp/state/react';
 import { useForm } from 'react-hook-form';
-import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
 import useLoteria from '@/hooks/useLoteria';
-import { useUploadImage } from '@/hooks/useUploadImage';
+import {
+	useUploadImage,
+	type TypeUploadthingResponse,
+} from '@/hooks/useUploadImage';
 import { AspectRatio } from '@ui/AspectRatio';
 import {
 	Card,
@@ -42,9 +44,7 @@ const LoteriaForm = () => {
 		resolver: zodResolver(FormLoteriaCardSchema),
 	});
 
-	const onClientUploadComplete = async (res?: UploadFileResponse[]) => {
-		res ??= [];
-
+	const onClientUploadComplete = async (res: TypeUploadthingResponse) => {
 		if (res[0]) {
 			await addCard.mutate(
 				{

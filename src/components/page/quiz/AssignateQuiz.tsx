@@ -19,6 +19,7 @@ import {
 import { Accordion } from '@ui/Accordion';
 import { Button } from '@ui/Button';
 import { Calendar } from '@ui/Calendar';
+import { CardTitle } from '@ui/Card';
 import {
 	Dialog,
 	DialogContent,
@@ -28,8 +29,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@ui/Dialog';
-import { CardTitle } from '@/components/ui/Card';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { ScrollArea } from '@ui/ScrollArea';
 import {
 	Select,
 	SelectContent,
@@ -38,7 +38,7 @@ import {
 	SelectLabel,
 	SelectTrigger,
 	SelectValue,
-} from '@/components/ui/Select';
+} from '@ui/Select';
 
 import AsignateIncorrectQuestionItem from './AsignateIncorrectQuestionItem';
 import AsignateValidQuestionItem from './AsignateValidQuestionItem';

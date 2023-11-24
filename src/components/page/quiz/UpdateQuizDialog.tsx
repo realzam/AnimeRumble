@@ -7,11 +7,13 @@ import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Pencil } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { type UploadFileResponse } from 'uploadthing/client';
 import { type z } from 'zod';
 
 // import useQuiz from '@/hooks/useQuiz';
-import { useUploadImage } from '@/hooks/useUploadImage';
+import {
+	useUploadImage,
+	type TypeUploadthingResponse,
+} from '@/hooks/useUploadImage';
 import { Button } from '@ui/Button';
 import {
 	Dialog,
@@ -40,9 +42,8 @@ const UpdateQuizDialog = ({ title, description }: Props) => {
 
 	const isSubmitting = useObservable(false);
 
-	const onClientUploadComplete = (res?: UploadFileResponse[]) => {
-		res ??= [];
-		isSubmitting.set(false);
+	const onClientUploadComplete = (_: TypeUploadthingResponse) => {
+		// isSubmitting.set(false);
 		// let img:
 		// 	| {
 		// 			url: string;

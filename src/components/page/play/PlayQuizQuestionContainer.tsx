@@ -11,13 +11,13 @@ import {
 } from '@legendapp/state/react';
 
 import usePlayQuiz from '@/hooks/usePlayQuiz';
+import { Card } from '@ui/Card';
 import { Progress } from '@ui/Progress';
-import { Card } from '@/components/ui/Card';
 
 import { PlayerAnswerCard, PlayerAnswerTFCard } from './PlayerAnswerCard';
 
 const ReactiveProgress = reactive(Progress);
-// import { Card } from '@/components/ui/Card';
+// import { Card } from '@ui/Card';
 
 // import { PlayerAnswerCard } from './PlayerAnswerCard';
 

@@ -5,8 +5,8 @@ import { Memo, useObservable } from '@legendapp/state/react';
 
 import { sleep } from '@/lib/utils';
 import useQuiz from '@/hooks/useQuiz';
+import { Button } from '@ui/Button';
 import { CardDescription, CardHeader, CardTitle } from '@ui/Card';
-import { Button } from '@/components/ui/Button';
 
 import AssignateQuiz from './AssignateQuiz';
 import UpdateQuizDialog from './UpdateQuizDialog';

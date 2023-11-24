@@ -1,18 +1,18 @@
 'use client ';
 
 import { useObserve } from '@legendapp/state/react';
-import { type UploadFileResponse } from 'uploadthing/client';
 
 import useQuiz from '@/hooks/useQuiz';
-import { useUploadImage } from '@/hooks/useUploadImage';
+import {
+	useUploadImage,
+	type TypeUploadthingResponse,
+} from '@/hooks/useUploadImage';
 import { AspectRatio } from '@ui/AspectRatio';
 
 const QuestionUploadImage = () => {
 	const { id, ui, trpcUtils, props$ } = useQuiz();
 
-	const onClientUploadComplete = async (res?: UploadFileResponse[]) => {
-		res ??= [];
-
+	const onClientUploadComplete = async (res: TypeUploadthingResponse) => {
 		let img:
 			| {
 					url: string;

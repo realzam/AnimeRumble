@@ -6,14 +6,14 @@ import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 
 import { type QuizzesPlayerDataType } from '@/types/quizQuery';
 import animeRumbleRoutes from '@/lib/routes';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@ui/Button';
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardTitle,
-} from '@/components/ui/Card';
+} from '@ui/Card';
 
 interface Props {
 	quiz: QuizzesPlayerDataType[0];

@@ -141,6 +141,7 @@ export default withUt({
 		aspectRatio: false,
 	},
 	plugins: [
+		require('tailwindcss-animate'),
 		require('tailwindcss-animated'),
 		require('@tailwindcss/aspect-ratio'),
 	],
