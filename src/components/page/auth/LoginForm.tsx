@@ -70,7 +70,7 @@ const LoginForm = () => {
 	}
 
 	return (
-		<CardContent className=''>
+		<CardContent className='p-0'>
 			<Show if={hasError} wrap={AnimatePresence}>
 				<motion.div
 					initial={{ opacity: 0 }}

@@ -3,7 +3,6 @@
 import { type ObservablePrimitive } from '@legendapp/state';
 import { enableReactComponents } from '@legendapp/state/config/enableReactComponents';
 import { Reactive } from '@legendapp/state/react';
-import { IconArrowLeft } from '@tabler/icons-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@ui/Button';
@@ -33,13 +32,9 @@ const OverlayRegister = ({ isRegisterFocus }: Props) => {
 			</p>
 			<Button
 				onClick={() => isRegisterFocus.toggle()}
-				className='group relative m-3 border-2 border-white bg-[rgba(255,255,255,0.2)] px-[80px] py-3 font-bold capitalize tracking-wider text-white transition-all duration-300 ease-in-out hover:tracking-[3px] focus:outline-none active:scale-95 dark:border-white dark:bg-[rgba(255,255,255,0.2)] dark:text-white dark:hover:bg-neutral-900/90'
+				className='border-2 border-white bg-[rgba(255,255,255,0.2)] px-[80px] py-3 text-base font-bold transition-all duration-300 ease-in-out hover:bg-pink-500/30'
 			>
 				Registerarse
-				<IconArrowLeft
-					className='absolute left-[70px] opacity-0 transition-all duration-300 ease-in-out group-hover:left-10 group-hover:opacity-100'
-					fill='currentColor'
-				/>
 			</Button>
 		</Reactive.div>
 	);

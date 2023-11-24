@@ -68,7 +68,7 @@ const InputPassword = forwardRef<
 						type='button'
 						variant='ghost'
 						size='icon'
-						className='m-0 p-0 text-primary-foreground'
+						className='m-0 p-0 text-foreground'
 						onClick={() => {
 							if (domRef.current) {
 								domRef.current.type = !showPassword.get() ? 'text' : 'password';

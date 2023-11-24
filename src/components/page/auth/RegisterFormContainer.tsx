@@ -26,16 +26,16 @@ const RegisterFormContainer = ({ isRegisterFocus }: Props) => {
 				)
 			}
 		>
-			<CardHeader className='shrink-0 space-y-1'>
-				<CardTitle className='text-2xl'>Crear cuenta</CardTitle>
-				<CardDescription>
-					Enter your email below to create your account
-				</CardDescription>
-				<div className='grid gap-4'>
-					<SocialAuth />
+			<CardHeader className='shrink-0 space-y-3'>
+				<div>
+					<CardTitle className='text-2xl'>Crear cuenta</CardTitle>
+					<CardDescription>
+						Ingresa tus datos para crear tu cuenta
+					</CardDescription>
 				</div>
+				<RegisterForm />
+				<SocialAuth />
 			</CardHeader>
-			<RegisterForm />
 		</Reactive.div>
 	);
 };

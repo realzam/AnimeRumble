@@ -62,7 +62,7 @@ const RegisterForm = () => {
 	}
 
 	return (
-		<CardContent className='flex-1 overflow-y-auto'>
+		<CardContent className='flex-1 overflow-y-auto p-1'>
 			<Show if={hasError} wrap={AnimatePresence}>
 				<motion.div
 					initial={{ opacity: 0 }}

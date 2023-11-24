@@ -25,16 +25,18 @@ const LoginFormContainer = ({ isRegisterFocus }: Props) => {
 				)
 			}
 		>
-			<CardHeader className='space-y-1'>
-				<CardTitle className='text-2xl'>Iniciar sesión</CardTitle>
-				<CardDescription>
-					Enter your email below to create your account
-				</CardDescription>
+			<CardHeader className='space-y-4'>
+				<div>
+					<CardTitle className='text-2xl'>Iniciar sesión</CardTitle>
+					<CardDescription>
+						Ingresa los datos de tu cuenta para ingresar
+					</CardDescription>
+				</div>
+				<LoginForm />
 				<div className='grid gap-4'>
 					<SocialAuth />
 				</div>
 			</CardHeader>
-			<LoginForm />
 		</Reactive.div>
 	);
 };
