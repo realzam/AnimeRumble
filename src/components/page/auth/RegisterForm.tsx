@@ -73,7 +73,6 @@ const RegisterForm = () => {
 					<Alert variant='destructive' className='mb-4 px-3 py-2'>
 						<div className='flex items-center'>
 							<ExclamationTriangleIcon className='h-4 w-4' />
-							{/* <AlertTitle>Error</AlertTitle> */}
 							<AlertDescription className='ml-4'>
 								{errorMsg.get()}
 							</AlertDescription>
@@ -89,7 +88,6 @@ const RegisterForm = () => {
 					<Input
 						autoComplete='name'
 						id='fullName'
-						// name='fullName'
 						placeholder='kirito'
 						type='text'
 						error={!!errors.name}
@@ -104,7 +102,6 @@ const RegisterForm = () => {
 					<Input
 						autoComplete='email'
 						id='register-email'
-						// name='email'
 						placeholder='m@example.com'
 						type='email'
 						error={!!errors.email}
@@ -119,7 +116,6 @@ const RegisterForm = () => {
 					<InputPassword
 						autoComplete='new-password'
 						id='register-password'
-						// name='password'
 						type='password'
 						error={!!errors.password}
 						errorMessage={errors.password?.message}
@@ -133,7 +129,6 @@ const RegisterForm = () => {
 					<InputPassword
 						autoComplete='new-password'
 						id='confirmPassword'
-						// name='password'
 						type='password'
 						error={!!errors.confirmPassword}
 						errorMessage={errors.confirmPassword?.message}

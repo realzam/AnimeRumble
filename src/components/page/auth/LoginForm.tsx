@@ -91,7 +91,7 @@ const LoginForm = () => {
 			</Show>
 			<form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
 				<div className='grid gap-2'>
-					<Label htmlFor='email'>Email</Label>
+					<Label htmlFor='email'>Correo electrónico</Label>
 					<Input
 						autoComplete='email'
 						id='email'
@@ -103,11 +103,9 @@ const LoginForm = () => {
 					/>
 				</div>
 				<div className='grid gap-2'>
-					<Label htmlFor='login-password'>Password</Label>
+					<Label htmlFor='password'>Contraseña</Label>
 					<ReactiveInputPassword
-						autoComplete='new-password'
-						id='login-password'
-						// name='password'
+						id='password'
 						type='password'
 						error={!!errors.password}
 						errorMessage={errors.password?.message}
