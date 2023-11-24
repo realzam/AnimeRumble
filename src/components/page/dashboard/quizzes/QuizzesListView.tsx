@@ -50,12 +50,9 @@ const QuizzesListView = ({ initialQuizzes, type }: Props) => {
 						<div className='relative w-[254px] shrink-0'>
 							<AspectRatio ratio={16 / 9}>
 								<Image
-									src={
-										quiz.img ??
-										'https://images.unsplash.com/photo-1535025183041-0991a977e25b'
-									}
+									src={quiz.img ?? '/svg/quiz_placeholder.svg'}
 									alt={`Quiz-Anime-${quiz.title}`}
-									className='rounded-l-lg object-cover'
+									className='rounded-l-lg bg-neutral-200  object-cover dark:bg-slate-900'
 									fill
 								/>
 							</AspectRatio>
