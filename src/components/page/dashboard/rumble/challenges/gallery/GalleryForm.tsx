@@ -57,6 +57,7 @@ const GalleryForm = () => {
 		},
 	});
 	const isMultiple = useObservable(false);
+	const { refetch } = trpc.rumble.getGallery.useQuery();
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const addGallery = trpc.rumble.addGallery.useMutation();
@@ -97,6 +98,7 @@ const GalleryForm = () => {
 					{
 						onSuccess: () => {
 							resetForm();
+							refetch();
 						},
 						onSettled: () => {
 							setIsSubmitting(false);
