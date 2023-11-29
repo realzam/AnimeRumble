@@ -41,7 +41,7 @@ const InputPassword = forwardRef<
 							'box-border flex h-9 w-full cursor-text flex-row items-center gap-1.5 rounded-md border border-input bg-transparent py-1 pl-3 text-sm focus-within:outline-none focus-within:ring-1 focus-within:ring-ring hover:bg-secondary/80',
 							className,
 							blur.get() && 'outline-none ring-1 ring-ring',
-							error && 'focus-within:ring-destructive',
+							error && 'border-destructive focus-within:ring-destructive',
 						)
 					}
 					onClick={() => {
@@ -68,7 +68,7 @@ const InputPassword = forwardRef<
 						type='button'
 						variant='ghost'
 						size='icon'
-						className='m-0 p-0 text-foreground'
+						className='my-2 p-0 text-foreground '
 						onClick={() => {
 							if (domRef.current) {
 								domRef.current.type = !showPassword.get() ? 'text' : 'password';

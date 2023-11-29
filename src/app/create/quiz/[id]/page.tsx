@@ -1,24 +1,42 @@
 import { redirect } from 'next/navigation';
-import { serverClient } from '@/trpc/client/serverClient';
+import { serverClientSession } from '@/trpc/client/serverClient';
+import { TRPCError } from '@trpc/server';
+import { type Session } from 'next-auth';
 
+import { type QuizDataType } from '@/types/quizQuery';
+import { getAuthSession } from '@/lib/nextauth';
 import animeRumbleRoutes from '@/lib/routes';
-import QuizPage from '@/components/page/quiz/QuizPage';
+import QuizPageContainer from '@/components/page/create/QuizPageContainer';
 
-async function getData(id: string) {
+type TypeGetData =
+	| [undefined, QuizDataType]
+	| [TRPCError['code'], undefined]
+	| ['UNKNOWN', undefined];
+
+async function getData(session: Session, id: string): Promise<TypeGetData> {
 	try {
-		const res = await serverClient.quizz.getQuizz({ id });
-		return res;
+		const res = await serverClientSession(session).quizz.getQuizz({ id });
+		return [undefined, res];
 	} catch (error) {
-		console.error(error);
-		return undefined;
+		if (error instanceof TRPCError) {
+			return [error.code, undefined];
+		}
+		return ['UNKNOWN', undefined];
 	}
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-	const data = await getData(params.id);
-	if (!data) {
-		redirect(animeRumbleRoutes.dashboardQuizzes);
-	} else {
-		return <QuizPage initialQuiz={data} />;
+	const session = (await getAuthSession())!;
+	const res = await getData(session, params.id);
+	const [code, data] = res;
+
+	if (!code) {
+		if (data) {
+			return <QuizPageContainer initialQuiz={data} />;
+		} else {
+			redirect(animeRumbleRoutes.dashboardQuizzes);
+		}
 	}
+
+	redirect(animeRumbleRoutes.home);
 }

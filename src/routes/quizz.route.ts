@@ -3,6 +3,7 @@
 import { env } from '@/env.mjs';
 import * as schema from '@/models/quizzes';
 import {
+	AddQuestionSchema,
 	AsignateQuizSchema,
 	AsnwerQuizSchema,
 	CreateQuizSchema,
@@ -12,6 +13,7 @@ import {
 	GetQuizSchema,
 	ModifiedQuestionSchema,
 	ShortQuestionsSchema,
+	UpdateQuestionSchema,
 	UpdateQuizSchema,
 } from '@/schema/quiz';
 import {
@@ -33,7 +35,7 @@ import { strict_output } from '@/lib/gtp';
 const utapi = new UTApi({ apiKey: env.UPLOADTHING_SECRET });
 
 export const quizRouter = router({
-	createQuizFromIA: publicProcedure
+	createQuizFromIA: adminProcedure
 		.input(CreateQuizSchemaAI)
 		.mutation(async (opts) => {
 			const { topic } = opts.input;
@@ -127,53 +129,71 @@ export const quizRouter = router({
 			return { idQuiz };
 		}),
 
-	createQuizz: publicProcedure
-		.input(CreateQuizSchema)
-		.mutation(async (opts) => {
-			const values = opts.input;
-			const { img, ...props } = values;
-			const nanoid = customAlphabet(urlAlphabet, 15);
-			const idQuiz = nanoid();
-			const idQuestion = nanoid();
+	createQuizz: adminProcedure.input(CreateQuizSchema).mutation(async (opts) => {
+		const values = opts.input;
+		const { img, ...props } = values;
+		const nanoid = customAlphabet(urlAlphabet, 15);
+		const idQuiz = nanoid();
+		const idQuestion = nanoid();
 
-			await db.insert(schema.quizzes).values({
+		await db.insert(schema.quizzes).values({
+			...props,
+			id: idQuiz,
+			state: 'draft',
+			img: img?.url,
+			imgKey: img?.key,
+		});
+
+		const quiz = await db.query.quizzes.findFirst({
+			where: eq(schema.quizzes.id, idQuiz),
+		});
+
+		await db.insert(schema.questions).values({
+			id: idQuestion,
+			questionType: 'Multiple',
+			quizId: idQuiz,
+			question: '',
+			answers: ['', '', '', ''],
+			correctAnswers: [false, false, false, false],
+			position: 0,
+			errors: [
+				'Es necesaria una pregunta',
+				'Es necesario al menos dos respuestas',
+				'Es necesaria al menos una respuesta correcta',
+			],
+		});
+		if (img) {
+			await utapi.renameFile({
+				fileKey: img.key,
+				newName: `QuizPortada-${props.title}-${idQuiz}`,
+			});
+		}
+
+		return {
+			quiz: quiz!,
+		};
+	}),
+
+	updateQuiz: adminProcedure.input(UpdateQuizSchema).mutation(async (opts) => {
+		const values = opts.input;
+		const { img, quizId, ...props } = values;
+		await db
+			.update(schema.quizzes)
+			.set({
 				...props,
-				id: idQuiz,
-				state: 'draft',
 				img: img?.url,
 				imgKey: img?.key,
-			});
+			})
+			.where(eq(schema.quizzes.id, quizId));
 
-			const quiz = await db.query.quizzes.findFirst({
-				where: eq(schema.quizzes.id, idQuiz),
+		if (img) {
+			await utapi.renameFile({
+				fileKey: img.key,
+				newName: `QuizPortada-${props.title}-${quizId}`,
 			});
-
-			await db.insert(schema.questions).values({
-				id: idQuestion,
-				questionType: 'Multiple',
-				quizId: idQuiz,
-				question: '',
-				answers: ['', '', '', ''],
-				correctAnswers: [false, false, false, false],
-				position: 0,
-				errors: [
-					'Es necesaria una pregunta',
-					'Es necesario al menos dos respuestas',
-					'Es necesaria al menos una respuesta correcta',
-				],
-			});
-			if (img) {
-				await utapi.renameFile({
-					fileKey: img.key,
-					newName: `QuizPortada-${props.title}-${idQuiz}`,
-				});
-			}
-
-			return {
-				quiz: quiz!,
-			};
-		}),
-	getListQuizzes: publicProcedure.query(async () => {
+		}
+	}),
+	getListQuizzes: adminProcedure.query(async () => {
 		return await db.query.quizzes.findMany({
 			with: {
 				questions: {
@@ -185,7 +205,7 @@ export const quizRouter = router({
 			},
 		});
 	}),
-	getQuizz: publicProcedure.input(GetQuizSchema).query(async (opts) => {
+	getQuizz: adminProcedure.input(GetQuizSchema).query(async (opts) => {
 		const { input } = opts;
 		const quiz = await db.query.quizzes.findMany({
 			with: {
@@ -229,7 +249,7 @@ export const quizRouter = router({
 
 		return quiz[0];
 	}),
-	deleteQuizz: publicProcedure.input(GetQuizSchema).mutation(async (opts) => {
+	deleteQuizz: adminProcedure.input(GetQuizSchema).mutation(async (opts) => {
 		const { input } = opts;
 
 		await db
@@ -244,50 +264,50 @@ export const quizRouter = router({
 			await utapi.deleteFiles(quiz.imgKey);
 		}
 	}),
-	addQuestion: publicProcedure.input(GetQuizSchema).mutation(async (opts) => {
-		const {
-			input: { id: idQuiz },
-		} = opts;
-		const quiz = await db.query.quizzes.findFirst({
-			with: {
-				questions: {
-					columns: {
-						quizId: false,
+	addQuestion: adminProcedure
+		.input(AddQuestionSchema)
+		.mutation(async (opts) => {
+			const { id, type = 'Multiple' } = opts.input;
+			const quiz = await db.query.quizzes.findFirst({
+				with: {
+					questions: {
+						columns: {
+							quizId: false,
+						},
 					},
 				},
-			},
-			where: eq(schema.quizzes.id, idQuiz),
-		});
-		if (!quiz) {
-			throw new TRPCError({
-				code: 'BAD_REQUEST',
-				message: 'No existe el quiz',
+				where: eq(schema.quizzes.id, id),
 			});
-		}
-		const nanoid = customAlphabet(urlAlphabet, 15);
-		const idQuestion = nanoid();
-		await db.insert(schema.questions).values({
-			id: idQuestion,
-			questionType: 'Multiple',
-			quizId: idQuiz,
-			question: '',
-			answers: ['', '', '', ''],
-			correctAnswers: [false, false, false],
-			position: quiz.questions.length,
-			errors: [
-				'Es necesaria una pregunta',
-				'Es necesario al menos dos respuestas',
-				'Es necesaria al menos una respuesta correcta',
-			],
-		});
+			if (!quiz) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'No existe el quiz',
+				});
+			}
+			const nanoid = customAlphabet(urlAlphabet, 15);
+			const idQuestion = nanoid();
+			await db.insert(schema.questions).values({
+				id: idQuestion,
+				questionType: type,
+				quizId: id,
+				question: '',
+				answers: ['', '', '', ''],
+				correctAnswers: [false, false, false],
+				position: quiz.questions.length,
+				errors: [
+					'Es necesaria una pregunta',
+					'Es necesario al menos dos respuestas',
+					'Es necesaria al menos una respuesta correcta',
+				],
+			});
 
-		const res = (await db.query.questions.findFirst({
-			where: eq(schema.questions.id, idQuestion),
-		}))!;
-		return res;
-	}),
-	updateQuestion: publicProcedure
-		.input(UpdateQuizSchema)
+			const res = (await db.query.questions.findFirst({
+				where: eq(schema.questions.id, idQuestion),
+			}))!;
+			return res;
+		}),
+	updateQuestion: adminProcedure
+		.input(UpdateQuestionSchema)
 		.mutation(async (opts) => {
 			const { input } = opts;
 			const {
@@ -321,9 +341,6 @@ export const quizRouter = router({
 				correctAnswers = [...question.correctAnswers];
 				correctAnswers[correctAnswerUpdate.index] = correctAnswerUpdate.value;
 			}
-			const final = await db.query.questions.findFirst({
-				where: eq(schema.questions.id, questionId),
-			});
 			await db
 				.update(schema.questions)
 				.set({
@@ -339,6 +356,9 @@ export const quizRouter = router({
 						eq(schema.questions.quizId, quizId),
 					),
 				);
+			const final = await db.query.questions.findFirst({
+				where: eq(schema.questions.id, questionId),
+			});
 			if (final) {
 				const [hasError, errors] = validateQuestion(final);
 				await db
@@ -366,7 +386,7 @@ export const quizRouter = router({
 				}
 			}
 		}),
-	setModifiedQuestion: publicProcedure
+	setModifiedQuestion: adminProcedure
 		.input(ModifiedQuestionSchema)
 		.mutation(async (opts) => {
 			const { input } = opts;
@@ -387,7 +407,7 @@ export const quizRouter = router({
 					.where(eq(schema.questions.id, questionId));
 			}
 		}),
-	deleteQuestion: publicProcedure
+	deleteQuestion: adminProcedure
 		.input(DeleteQuestionSchema)
 		.mutation(async (opts) => {
 			const { input } = opts;
@@ -405,7 +425,7 @@ export const quizRouter = router({
 				});
 			}
 		}),
-	shortQuestions: publicProcedure
+	shortQuestions: adminProcedure
 		.input(ShortQuestionsSchema)
 		.mutation(async (opts) => {
 			const { input } = opts;
@@ -470,7 +490,7 @@ export const quizRouter = router({
 				}
 			}
 		}),
-	asignateQuiz: publicProcedure
+	asignateQuiz: adminProcedure
 		.input(AsignateQuizSchema)
 		.mutation(async (opts) => {
 			const { input } = opts;

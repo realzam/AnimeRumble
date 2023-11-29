@@ -8,7 +8,7 @@ const AddLoteriaCardSchema = z.object({
 	title: z.string().trim().min(3),
 	img: z.string().min(1),
 	imgKey: z.string().min(1),
-	fit: z.enum(['cover', 'fit']),
+	fit: z.enum(['fill', 'cover', 'contain']),
 });
 
 const FormLoteriaCardSchema = z.object({

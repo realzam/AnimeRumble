@@ -19,6 +19,7 @@ const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
 
 const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+const DropdownMenuArrow = DropdownMenuPrimitive.Arrow;
 
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 
@@ -188,6 +189,7 @@ DropdownMenuShortcut.displayName = 'DropdownMenuShortcut';
 
 export {
 	DropdownMenu,
+	DropdownMenuArrow,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,

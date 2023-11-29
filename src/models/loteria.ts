@@ -6,7 +6,7 @@ export const loteriaCards = mysqlTable('loteriaCards', {
 	img: varchar('img', { length: 255 }).notNull(),
 	imgKey: varchar('imgKey', { length: 50 }).notNull(),
 	index: smallint('index').notNull(),
-	fit: varchar('fit', { length: 5, enum: ['fit', 'cover'] })
+	fit: varchar('fit', { length: 5, enum: ['fill', 'cover', 'contain'] })
 		.default('cover')
 		.notNull(),
 });

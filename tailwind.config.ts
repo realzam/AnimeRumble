@@ -22,6 +22,7 @@ export default withUt({
 			'3xs': '300px',
 			'2xs': '360px',
 			xs: '425px',
+			'2md': '896px',
 			...screens,
 		},
 		extend: {

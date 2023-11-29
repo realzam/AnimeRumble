@@ -11,9 +11,9 @@ import { type z } from 'zod';
 
 import animeRumbleRoutes from '@/lib/routes';
 import {
-	useUploadImage,
+	useUploadAnime,
 	type TypeUploadthingResponse,
-} from '@/hooks/useUploadImage';
+} from '@/hooks/useUploadAnime';
 import { AspectRatio } from '@ui/AspectRatio';
 import { Button } from '@ui/Button';
 import {
@@ -68,7 +68,7 @@ const CreateQuizButton = () => {
 		);
 	};
 
-	const { UploadImage, startUpload, hasFiles } = useUploadImage({
+	const { UploadFileAnime, startUpload, hasFiles } = useUploadAnime({
 		onClientUploadComplete,
 	});
 
@@ -132,7 +132,7 @@ const CreateQuizButton = () => {
 							/>
 						</div>
 						<AspectRatio ratio={16 / 9}>
-							<UploadImage />
+							<UploadFileAnime />
 						</AspectRatio>
 					</div>
 					<DialogFooter>

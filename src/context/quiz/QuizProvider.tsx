@@ -1,12 +1,11 @@
-import React from 'react';
+'use client';
+
 import { trpc } from '@/trpc/client/client';
 import { useObservable, useObserve } from '@legendapp/state/react';
 import { useObservableQuery } from '@legendapp/state/react-hooks/useObservableQuery';
-import { type UseBaseQueryResult } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
-import { useDebouncedCallback } from 'use-debounce';
 
-import { type QuizDataType } from '@/types/quizQuery';
+import { type QuizDataType, type TypeQuizQueryProps } from '@/types/quizQuery';
 
 import { QuizContex, type UiType } from './QuizContex';
 
@@ -16,14 +15,13 @@ interface Props {
 	index: number;
 }
 
-type QQ = UseBaseQueryResult<QuizDataType, unknown>;
-
 const QuizProvider = ({ children, initialQuiz, index }: Props) => {
-	const utils = trpc.useUtils();
 	let n = 0;
 	if (index >= 0 && index < initialQuiz.questions.length) {
 		n = index;
 	}
+
+	const utils = trpc.useUtils();
 
 	const ui = useObservable<UiType>({
 		questionId: initialQuiz.questions[n].id,
@@ -33,80 +31,48 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 		scrollToQuestion: initialQuiz.questions[n].id,
 	});
 
-	const quiz = useObservable(initialQuiz);
+	const quiz = useObservable<QuizDataType>(initialQuiz);
 	const query$ = useObservableQuery({
 		queryKey: getQueryKey(trpc.quizz.getQuizz, { id: initialQuiz.id }, 'query'),
 		queryFn: () =>
 			utils.client.quizz.getQuizz
 				.query({ id: initialQuiz.id })
-				.then((res: QuizDataType) => res),
+				.then((res: QuizDataType) => res)
+				.catch(),
 		initialData: initialQuiz,
 	});
-	const props$ = useObservable<Omit<QQ, 'data'>>(() => {
+	const props = useObservable<TypeQuizQueryProps>(() => {
 		const q = query$.get();
 		const { data: _, ...opt } = q;
 		return opt;
 	});
 
-	const quizDebounced = useDebouncedCallback(() => {
-		console.log('Global dobunce');
-		props$.get().refetch();
-	}, 8000);
-
-	const setQuestionUi = (id: string) => {
-		quizDebounced.flush();
-		const question = quiz.questions.get().find((q) => q.id === id);
-		if (question) {
-			ui.set((v) => ({
-				...v,
-				question,
-				questionId: question.id,
-				isDragging: false,
-			}));
-		}
-	};
-	const setQuestionUiAfterDelete = () => {
-		const index = quiz.questions
-			.get()
-			.findIndex((q) => q.id === ui.question.id.get());
-		let question = quiz.questions[0].get();
-		if (index > 0) {
-			question = quiz.questions[index - 1].get();
-		}
-		ui.set((v) => ({
-			...v,
-			question,
-			questionId: question.id,
-			isDragging: false,
-		}));
-	};
-
-	useObserve(() => {
+	useObserve(query$, () => {
 		const q = query$.get();
 		const { data, ...opt } = q;
 		if (data) {
 			quiz.set(data);
 		}
-		props$.set(opt);
+		props.set(opt);
 	});
 
-	useObserve(() => {
-		const e = quiz.questions.get().find((q) => q.id === ui.questionId.get());
-		if (e) {
-			ui.question.set(e);
+	const setQuestionUi = (id: string) => {
+		const question = quiz.questions.get().find((q) => q.id === id);
+		if (question) {
+			ui.question.set(question);
+			ui.questionId.set(question.id);
 		}
-	});
+	};
 
 	return (
 		<QuizContex.Provider
 			value={{
 				id: initialQuiz.id,
 				quiz,
-				props$,
+				props,
 				ui,
-				quizDebounced,
+				//functions
 				setQuestionUi,
-				setQuestionUiAfterDelete,
 			}}
 		>
 			{children}

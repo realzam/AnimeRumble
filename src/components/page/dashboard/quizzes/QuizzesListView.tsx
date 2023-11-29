@@ -14,7 +14,6 @@ import { Button } from '@ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/Card';
 import { ScrollArea } from '@ui/ScrollArea';
 
-import AssignateQuiz from '../../quiz/AssignateQuiz';
 import DeleteQuizAlertDialog from './DeleteQuizAlertDialog';
 import EmptyQuizzesListView from './EmptyQuizzesListView';
 
@@ -82,7 +81,7 @@ const QuizzesListView = ({ initialQuizzes, type }: Props) => {
 								</div>
 							</CardHeader>
 							<div>
-								<AssignateQuiz quiz={quiz} refetch={quizzes.refetch} />
+								{/* <AssignateQuiz quiz={quiz} refetch={quizzes.refetch} /> */}
 								<Button className='mx-3' variant='outline'>
 									Empezar
 								</Button>

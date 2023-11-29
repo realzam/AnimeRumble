@@ -45,6 +45,13 @@ const ScrollBar = React.forwardRef<
 				'relative rounded-full bg-border',
 				orientation === 'vertical' && 'flex-1',
 			)}
+			style={
+				orientation === 'horizontal'
+					? {
+							height: '10px',
+					  }
+					: undefined
+			}
 		/>
 	</ScrollAreaPrimitive.ScrollAreaScrollbar>
 ));

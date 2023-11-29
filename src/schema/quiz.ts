@@ -14,6 +14,18 @@ const CreateQuizSchema = z.object({
 		.optional(),
 });
 
+const UpdateQuizSchema = z.object({
+	quizId: z.string().min(1),
+	title: z.string().trim().min(1),
+	description: z.string().trim().optional(),
+	img: z
+		.object({
+			url: z.string().min(1),
+			key: z.string().min(1),
+		})
+		.optional(),
+});
+
 const CreateQuizSchemaAI = z.object({
 	topic: z.string().trim().min(1),
 });
@@ -22,7 +34,12 @@ const GetQuizSchema = z.object({
 	id: z.string().min(1),
 });
 
-const UpdateQuizSchema = z.object({
+const AddQuestionSchema = z.object({
+	id: z.string().min(1),
+	type: z.enum(['Multiple', 'TF']).optional(),
+});
+
+const UpdateQuestionSchema = z.object({
 	quizId: z.string().min(1),
 	questionId: z.string().min(1),
 	question: z.string().trim().optional(),
@@ -104,4 +121,6 @@ export {
 	AsnwerQuizSchema,
 	GetAsnwersUser,
 	CreateQuizSchemaAI,
+	AddQuestionSchema,
+	UpdateQuestionSchema,
 };

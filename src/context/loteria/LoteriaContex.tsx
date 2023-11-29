@@ -12,13 +12,10 @@ export interface UiType {
 
 type QQ = UseBaseQueryResult<LoteriaCardsDataType, unknown>;
 interface State {
-	// id: string;
 	cards: ObservableObject<LoteriaCardsDataType>;
 	props$: ObservableObject<Omit<QQ, 'data'>>;
 	refForm: React.MutableRefObject<HTMLDivElement | null>;
 	ui: ObservableObject<UiType>;
-	// setQuestionUi: (id: string) => void;
-	// setQuestionUiAfterDelete: () => void;
 }
 
 export const LoteriaContex = createContext<State | null>(null);

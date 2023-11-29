@@ -47,7 +47,15 @@ const nextConfig = {
 				destination: '/quiz',
 				permanent: true,
 			},
+			{
+				source: '/auth',
+				destination: '/auth/login',
+				permanent: true,
+			},
 		];
+	},
+	compiler: {
+		removeConsole: process.env.NODE_ENV === 'production',
 	},
 };
 
