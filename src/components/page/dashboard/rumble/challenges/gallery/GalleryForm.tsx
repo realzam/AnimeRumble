@@ -179,10 +179,10 @@ const GalleryForm = () => {
 						if={isMultiple}
 						else={
 							<GalleryFieldForm
-								label='Pregunta'
+								label='Respuesta'
 								register={register('option1')}
 								error={errors.option1}
-								errorMessage='Es necesario agregar una pregunta'
+								errorMessage='Es necesario agregar una Respuesta'
 								disabled={isSubmitting}
 							/>
 						}

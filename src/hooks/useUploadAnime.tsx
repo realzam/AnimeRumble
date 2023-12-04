@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { type OurFileRouter } from '@/app/api/uploadthing/core';
 import {
@@ -14,7 +14,7 @@ import {
 	useObservable,
 	useSelector,
 } from '@legendapp/state/react';
-import { type FileWithPath } from '@uploadthing/react';
+import { type DropEvent, type FileWithPath } from '@uploadthing/react';
 import { useDropzone } from '@uploadthing/react/hooks';
 import {
 	type FileRouterInputKey,
@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@ui/Button';
 import { Card } from '@ui/Card';
 import ComfirmDeleteAlertDialog from '@/components/web/ComfirmDeleteAlertDialog';
+import SimpleAnimeAudioPlayer from '@/components/web/SimpleAnimeAudioPlayer';
 
 interface ContextValue {
 	files: ObservableArray<File[]>;
@@ -53,7 +54,7 @@ interface UploadImagePropsPrivate {
 
 export type UploadAnimeImageFit = 'cover' | 'fill' | 'contain';
 
-interface UploadImagePropsPublic {
+export interface UploadImagePropsPublic {
 	fit?: UploadAnimeImageFit;
 	mode?: 'manual' | 'auto';
 	onRemoveFile?: () => void;
@@ -61,6 +62,10 @@ interface UploadImagePropsPublic {
 	classNameImage?: string;
 	errorMessage?: string;
 	error?: boolean;
+	disableAffterAddedFile?: boolean;
+	onDropAccepted?:
+		| (<T extends File>(files: T[], event: DropEvent) => void)
+		| undefined;
 }
 
 type UploadImageProps = UploadImagePropsPrivate & UploadImagePropsPublic;
@@ -74,13 +79,18 @@ const UploadFileAnime = ({
 	fileTypes,
 	allowedContentText,
 	fit = 'contain',
+	disableAffterAddedFile = false,
+	onDropAccepted,
 }: UploadImageProps) => {
 	const { files, fileUrl, startUpload, isUploading } = useUP();
-	const onDrop = (acceptedFiles: FileWithPath[]) => {
+	const [disabled, setDisabled] = useState(false);
+	const onDrop = async (acceptedFiles: FileWithPath[]) => {
 		if (acceptedFiles.length > 0) {
+			if (disableAffterAddedFile) {
+				setDisabled(true);
+			}
 			files.set(acceptedFiles);
 			fileUrl.set(URL.createObjectURL(acceptedFiles[0]));
-			console.log('onDrop acceptedFiles', fileTypes);
 			if (mode === 'auto') {
 				isUploading.set(true);
 				startUpload();
@@ -111,6 +121,8 @@ const UploadFileAnime = ({
 		onError: (e) => {
 			console.log('useDropzone error:', e);
 		},
+		onDropAccepted,
+		disabled,
 	});
 
 	return (
@@ -145,7 +157,11 @@ const UploadFileAnime = ({
 			</Show>
 			<Show if={showPreview}>
 				<Card
-					className={cn('relative h-full w-full overflow-hidden', className)}
+					className={cn(
+						'relative h-full w-full overflow-hidden',
+						className,
+						fileTypes[0] === 'audio' && 'border-none',
+					)}
 				>
 					<div
 						{...getRootProps()}
@@ -169,17 +185,32 @@ const UploadFileAnime = ({
 										priority
 									/>
 								),
-								audio: () => <ReactPlayer url={fileUrl.get()} />,
-								video: () => <ReactPlayer url={fileUrl.get()} controls />,
+								audio: () => <SimpleAnimeAudioPlayer src={fileUrl.get()} />,
+								video: () => (
+									<ReactPlayer
+										url={fileUrl.get()}
+										controls
+										config={{
+											file: {
+												forceVideo: true,
+											},
+										}}
+									/>
+								),
 								default: () => <>none </>,
 							}}
 						</Switch>
-						<input className='sr-only' {...getInputProps()} />
+
+						{fileTypes[0] !== 'audio' && (
+							<input className='sr-only' {...getInputProps()} />
+						)}
 					</div>
 					<Show if={isNotUploading}>
 						<ComfirmDeleteAlertDialog
 							title='¿Quieres continuar?'
-							description='Al confirmar se eliminara la imagen y no se podra recuperar'
+							description={`Al confirmar se eliminara ${
+								fileTypes[0] === 'image' ? 'la' : 'el'
+							} ${fileTypes[0]} y no se podra recuperar`}
 							onConfirm={() => {
 								console.log('ComfirmDeleteAlertDialog.onConfirm');
 								files.set([]);
@@ -187,6 +218,7 @@ const UploadFileAnime = ({
 								if (onRemoveFile) {
 									console.log('ComfirmDeleteAlertDialog.onRemoveFile');
 									onRemoveFile();
+									setDisabled(false);
 								}
 							}}
 						>
@@ -252,6 +284,8 @@ export const useUploadAnime = (props?: HookProps) => {
 			isUploading.set(false);
 			return;
 		}
+		console.log('startUpload', files.get());
+
 		void startUploadThing(files.get());
 	};
 
@@ -259,6 +293,11 @@ export const useUploadAnime = (props?: HookProps) => {
 		files.set([]);
 		fileUrl.set('');
 		isUploading.set(false);
+	};
+	const setInitialPreview = (preview?: string) => {
+		if (preview && preview !== '') {
+			fileUrl.set(preview);
+		}
 	};
 
 	const Component = (props: UploadImagePropsPublic) => (
@@ -281,7 +320,7 @@ export const useUploadAnime = (props?: HookProps) => {
 		startUpload,
 		UploadFileAnime: Component,
 		clearState,
-		setInitialPreview: fileUrl.set,
+		setInitialPreview,
 		hasFiles,
 	};
 };

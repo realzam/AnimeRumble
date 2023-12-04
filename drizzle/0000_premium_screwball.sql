@@ -111,3 +111,17 @@ CREATE TABLE `gallery` (
 	`options` json NOT NULL,
 	CONSTRAINT `gallery_id` PRIMARY KEY(`id`)
 );
+--> statement-breakpoint
+CREATE TABLE `soundtracks` (
+	`id` varchar(30) NOT NULL,
+	`order` tinyint NOT NULL,
+	`song` varchar(255) NOT NULL,
+	`songKey` varchar(50) NOT NULL,
+	`songTitle` varchar(100) NOT NULL,
+	`artist` varchar(100) NOT NULL,
+	`anime` varchar(100) NOT NULL,
+	`img` varchar(255),
+	`imgKey` varchar(50),
+	`imgFit` varchar(7) DEFAULT 'contain',
+	CONSTRAINT `soundtracks_id` PRIMARY KEY(`id`)
+);

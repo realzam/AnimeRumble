@@ -1,9 +1,9 @@
-import VideoForm from './VideoForm';
+import VideoFormContainer from './VideoForm';
 
 const VideoContainer = () => {
 	return (
-		<div>
-			<VideoForm />
+		<div className='mt-8'>
+			<VideoFormContainer />
 		</div>
 	);
 };

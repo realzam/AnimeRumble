@@ -57,6 +57,7 @@ const nextConfig = {
 	compiler: {
 		removeConsole: process.env.NODE_ENV === 'production',
 	},
+	transpilePackages: ['@madzadev/audio-player'],
 };
 
 export default nextConfig;

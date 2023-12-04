@@ -59,4 +59,39 @@ const FormGallerySchema = z
 		}
 	});
 
-export { AddGallerySchema, FormGallerySchema };
+const AddSoundtrackSchema = z.object({
+	song: z.string().min(1),
+	songKey: z.string().min(1),
+	songTitle: z.string().min(1),
+	artist: z.string().min(1),
+	anime: z.string().min(1),
+	img: z
+		.object({
+			url: z.string().min(1),
+			key: z.string().min(1),
+			fit: z.enum(['fill', 'cover', 'contain']),
+		})
+		.optional(),
+});
+
+const FormAddSoundtrackSchema = z.object({
+	hasSong: z.literal<boolean>(true),
+	hasImg: z.boolean(),
+	songTitle: z.string().min(1),
+	artist: z.string().min(1),
+	anime: z.string().min(1),
+	img: z
+		.object({
+			url: z.string().min(1),
+			key: z.string().min(1),
+			fit: z.enum(['fill', 'cover', 'contain']),
+		})
+		.optional(),
+});
+
+export {
+	AddGallerySchema,
+	FormGallerySchema,
+	AddSoundtrackSchema,
+	FormAddSoundtrackSchema,
+};

@@ -1,6 +1,6 @@
 import { env } from '@/env.mjs';
-import { gallery } from '@/models';
-import { AddGallerySchema } from '@/schema/rumble';
+import { gallery, soundtrack } from '@/models';
+import { AddGallerySchema, AddSoundtrackSchema } from '@/schema/rumble';
 import { adminProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { asc } from 'drizzle-orm';
@@ -41,6 +41,44 @@ export const rumbleRouter = router({
 	getGallery: adminProcedure.query(async () => {
 		const res = await db.query.gallery.findMany({
 			orderBy: [asc(gallery.order)],
+		});
+		return res;
+	}),
+	addSoundtrack: adminProcedure
+		.input(AddSoundtrackSchema)
+		.mutation(async (opts) => {
+			const { img, ...values } = opts.input;
+			const res = await db.query.soundtrack.findMany();
+			const id = nanoid();
+			await db.insert(soundtrack).values({
+				id,
+				order: res.length,
+				...values,
+				img: img?.url,
+				imgKey: img?.key,
+				imgFit: img?.fit,
+			});
+			const resRename = await utapi.renameFile({
+				fileKey: values.songKey,
+				newName: `Rumble-Soundtrack-${res.length}-${id}`,
+			});
+
+			if (img) {
+				console.log(
+					'rename portada',
+					img.key,
+					`Rumble-Song-Img-${res.length}-${id}`,
+				);
+				await utapi.renameFile({
+					fileKey: img.key,
+					newName: `Rumble-Song-Img-${res.length}-${id}`,
+				});
+			}
+			console.log('rename res', resRename);
+		}),
+	getSoundtrack: adminProcedure.query(async () => {
+		const res = await db.query.soundtrack.findMany({
+			orderBy: [asc(soundtrack.order)],
 		});
 		return res;
 	}),
