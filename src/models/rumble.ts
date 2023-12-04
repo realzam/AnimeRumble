@@ -27,5 +27,8 @@ export const soundtrack = mysqlTable('soundtracks', {
 	anime: varchar('anime', { length: 100 }).notNull(),
 	img: varchar('img', { length: 255 }),
 	imgKey: varchar('imgKey', { length: 50 }),
-	imgFit: varchar('imgFit', { length: 7 }).default('contain'),
+	imgFit: varchar('imgFit', {
+		length: 7,
+		enum: ['fill', 'cover', 'contain'],
+	}).default('contain'),
 });

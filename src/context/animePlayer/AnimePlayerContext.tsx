@@ -24,6 +24,8 @@ interface State {
 	clearProgress: () => void;
 	playSelectedTrack: (index: number) => void;
 	getDurationTrack: (index: number) => number;
+	scrollToTrack: string;
+	scroll: boolean;
 }
 
 export const AnimePlayerContext = createContext<State | null>(null);

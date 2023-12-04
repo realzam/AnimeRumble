@@ -66,6 +66,7 @@ export interface UploadImagePropsPublic {
 	onDropAccepted?:
 		| (<T extends File>(files: T[], event: DropEvent) => void)
 		| undefined;
+	disabled?: boolean;
 }
 
 type UploadImageProps = UploadImagePropsPrivate & UploadImagePropsPublic;
@@ -81,14 +82,17 @@ const UploadFileAnime = ({
 	fit = 'contain',
 	disableAffterAddedFile = false,
 	onDropAccepted,
+	disabled = false,
 }: UploadImageProps) => {
 	const { files, fileUrl, startUpload, isUploading } = useUP();
-	const [disabled, setDisabled] = useState(false);
+	const [disabledState, setDisabledState] = useState(false);
 	const onDrop = async (acceptedFiles: FileWithPath[]) => {
 		if (acceptedFiles.length > 0) {
 			if (disableAffterAddedFile) {
-				setDisabled(true);
+				setDisabledState(true);
 			}
+			console.log('onDrop file:', acceptedFiles[0]);
+
 			files.set(acceptedFiles);
 			fileUrl.set(URL.createObjectURL(acceptedFiles[0]));
 			if (mode === 'auto') {
@@ -112,7 +116,7 @@ const UploadFileAnime = ({
 	}, [fit]);
 
 	const showPreview = useSelector(() => fileUrl.get() !== '');
-	const isNotUploading = useComputed(() => !isUploading.get());
+	const isNotUploading = useComputed(() => !isUploading.get() || disabled);
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
 		onDrop,
 		accept: generateClientDropzoneAccept(fileTypes),
@@ -122,7 +126,7 @@ const UploadFileAnime = ({
 			console.log('useDropzone error:', e);
 		},
 		onDropAccepted,
-		disabled,
+		disabled: disabledState || disabled,
 	});
 
 	return (
@@ -185,7 +189,12 @@ const UploadFileAnime = ({
 										priority
 									/>
 								),
-								audio: () => <SimpleAnimeAudioPlayer src={fileUrl.get()} />,
+								audio: () => (
+									<SimpleAnimeAudioPlayer
+										src={fileUrl.get()}
+										name={files.get()[0].name}
+									/>
+								),
 								video: () => (
 									<ReactPlayer
 										url={fileUrl.get()}
@@ -218,7 +227,7 @@ const UploadFileAnime = ({
 								if (onRemoveFile) {
 									console.log('ComfirmDeleteAlertDialog.onRemoveFile');
 									onRemoveFile();
-									setDisabled(false);
+									setDisabledState(false);
 								}
 							}}
 						>

@@ -16,6 +16,7 @@ interface Props {
 	onRemoveFile?: (() => void) | undefined;
 	startUploadTrack: ObservableArray<(() => void)[]>;
 	onClientUploadComplete?: ((res: TypeUploadthingResponse) => void) | undefined;
+	disabled?: boolean;
 }
 
 const AnimeTrackSoundtrackForm = ({
@@ -24,6 +25,7 @@ const AnimeTrackSoundtrackForm = ({
 	onRemoveFile,
 	startUploadTrack,
 	onClientUploadComplete,
+	disabled = false,
 }: Props) => {
 	const { UploadFileAnime, startUpload, clearState } = useUploadAnime({
 		endpoint: 'audioUploader',
@@ -48,6 +50,7 @@ const AnimeTrackSoundtrackForm = ({
 						!!error ? 'Es necesario agregar un Soundtrack' : undefined
 					}
 					onRemoveFile={onRemoveFile}
+					disabled={disabled}
 				/>
 			</div>
 		</div>

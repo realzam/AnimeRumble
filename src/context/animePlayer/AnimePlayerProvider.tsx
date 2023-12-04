@@ -41,7 +41,7 @@ const AnimePlayerProvider = ({
 	const [currentTrack, setCurrentTrack] = useState<AnimeTrack>(tracks[0]);
 
 	const [tracksLoaded, setTracksLoaded] = useState<TrackLoadedInfo[]>(
-		Array.from({ length: 10 }, () => ({
+		Array.from({ length: tracks.length }, () => ({
 			url: '',
 			duration: 0,
 			isReady: false,
@@ -55,6 +55,9 @@ const AnimePlayerProvider = ({
 	const [waitForNextLoadInfo, setWaitForNextLoadInfo] = useState(false);
 
 	const [playOnLoad, setPlayOnLoad] = useState(false);
+	const [endLastTrack, setEndLastTrack] = useState(false);
+	const [scroll, setScroll] = useState(false);
+	const [scrollToTrack, setScrollToTrack] = useState('');
 
 	const startInterval = useCallback(() => {
 		clearInterval(p.current);
@@ -88,10 +91,41 @@ const AnimePlayerProvider = ({
 						}
 					}
 				},
+				onend: () => {
+					if (songIndex === tracks.length - 1) {
+						setEndLastTrack(true);
+						setScroll(true);
+					}
+					nextSong();
+				},
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [load, currentTrack]);
+
+	useEffect(() => {
+		const diff = tracks.length - tracksLoaded.length;
+		if (diff > 0) {
+			console.log('addig new voidtracks', diff);
+
+			const newVoidTracks = Array.from({ length: diff }, () => ({
+				url: '',
+				duration: 0,
+				isReady: false,
+			}));
+			setTracksLoaded((s) => [...s, ...newVoidTracks]);
+		}
+		if (!playing && endLastTrack) {
+			console.log('playing the new last song :)');
+			nextSong();
+			setEndLastTrack(false);
+			setScrollToTrack(tracks[songIndex + 1].song);
+			setTimeout(() => {
+				setScroll(false);
+			}, 500);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [tracks]);
 
 	useEffect(() => {
 		if (waitForLoadInfo && duration > 0 && isReady) {
@@ -204,7 +238,7 @@ const AnimePlayerProvider = ({
 	};
 
 	const getDurationTrack = (index: number) => {
-		if (index >= 0 && index < tracks.length) {
+		if (index >= 0 && index < tracksLoaded.length) {
 			return tracksLoaded[index].duration;
 		}
 		return 0;
@@ -231,6 +265,8 @@ const AnimePlayerProvider = ({
 				stop,
 				playSelectedTrack,
 				getDurationTrack,
+				scroll,
+				scrollToTrack,
 			}}
 		>
 			{tracks.length > 0 ? children : <div>Empty</div>}

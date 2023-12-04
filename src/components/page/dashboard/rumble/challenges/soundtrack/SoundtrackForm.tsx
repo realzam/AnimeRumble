@@ -55,6 +55,7 @@ const SoundtrackForm = () => {
 
 	const submit = async (values: FormSoundtrackData) => {
 		console.log('submit hasImg', values.hasImg);
+		setIsSubmitting(true);
 		if (values.hasImg) {
 			console.log('start upload image :)');
 			const startUpload = startUploadImage.get()[0];
@@ -88,9 +89,11 @@ const SoundtrackForm = () => {
 							const startUpload = startUploadTrack.get()[0];
 							startUpload();
 						}}
+						disabled={isSubmitting}
 					/>
 					{/* Soundtrack */}
 					<AnimeTrackSoundtrackForm
+						disabled={isSubmitting}
 						startUploadTrack={startUploadTrack}
 						onDropAccepted={(files) => {
 							setValue('hasSong', files.length > 0);
@@ -172,7 +175,7 @@ const SoundtrackForm = () => {
 					</CardContent>
 					<CardFooter className='flex justify-end'>
 						<ButtonGradientLoading
-							isLoading={false}
+							isLoading={isSubmitting}
 							type='submit'
 							onClick={() => {
 								console.log('button click');

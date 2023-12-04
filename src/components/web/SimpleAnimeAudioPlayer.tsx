@@ -18,9 +18,10 @@ import { Slider } from '@ui/Slider';
 
 interface Props {
 	src: string;
+	name: string;
 }
 
-const SimpleAnimeAudioPlayer = ({ src }: Props) => {
+const SimpleAnimeAudioPlayer = ({ src, name }: Props) => {
 	const {
 		load,
 		getPosition,
@@ -73,7 +74,8 @@ const SimpleAnimeAudioPlayer = ({ src }: Props) => {
 		<div className='flex flex-col space-y-3 p-4'>
 			{/* song info (name and time) */}
 			<div className='flex justify-between font-semibold'>
-				<div className='flex'>
+				<p>{name}</p>
+				<div className='mr-8 flex'>
 					<Memo>{() => formatTime(position.get())}</Memo>
 					<p>/{formatTime(duration)}</p>
 				</div>

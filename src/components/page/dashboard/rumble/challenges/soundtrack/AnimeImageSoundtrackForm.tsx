@@ -16,12 +16,14 @@ interface Props {
 		key: string;
 		fit: 'fill' | 'cover' | 'contain';
 	}) => void;
+	disabled?: boolean;
 }
 const AnimeImageSoundtrackForm = ({
 	onDropAccepted,
 	onRemoveFile,
 	startUploadImage,
 	onClientUploadComplete,
+	disabled = false,
 }: Props) => {
 	const fit = useObservable<UploadAnimeImageFit>('cover');
 	const { UploadFileAnime, startUpload, clearState } = useUploadAnime({
@@ -51,6 +53,7 @@ const AnimeImageSoundtrackForm = ({
 							fit={fit.get()}
 							onDropAccepted={(files) => onDropAccepted(files)}
 							onRemoveFile={onRemoveFile}
+							disabled={disabled}
 						/>
 					)}
 				</Memo>
