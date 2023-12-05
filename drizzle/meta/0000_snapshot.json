@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "3e5fc788-6a23-433e-afdf-a536cfcb8c67",
+  "id": "84f8f9ba-7630-4904-aee2-7581855b2ee5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -74,7 +74,7 @@
         },
         "imgKey": {
           "name": "imgKey",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -302,7 +302,7 @@
         },
         "imgKey": {
           "name": "imgKey",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -354,7 +354,7 @@
         },
         "imgKey": {
           "name": "imgKey",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -648,7 +648,7 @@
         },
         "imgKey": {
           "name": "imgKey",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -722,7 +722,7 @@
         },
         "songKey": {
           "name": "songKey",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -743,7 +743,7 @@
         },
         "anime": {
           "name": "anime",
-          "type": "varchar(100)",
+          "type": "varchar(200)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -757,7 +757,7 @@
         },
         "imgKey": {
           "name": "imgKey",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

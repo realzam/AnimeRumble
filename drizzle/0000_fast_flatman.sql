@@ -10,7 +10,7 @@ CREATE TABLE `loteriaCards` (
 	`id` varchar(30) NOT NULL,
 	`title` varchar(50) NOT NULL,
 	`img` varchar(255) NOT NULL,
-	`imgKey` varchar(50) NOT NULL,
+	`imgKey` varchar(100) NOT NULL,
 	`index` smallint NOT NULL,
 	`fit` varchar(5) NOT NULL DEFAULT 'cover',
 	CONSTRAINT `loteriaCards_id` PRIMARY KEY(`id`)
@@ -45,7 +45,7 @@ CREATE TABLE `questions` (
 	`errors` json NOT NULL,
 	`modified` boolean NOT NULL DEFAULT false,
 	`img` varchar(255),
-	`imgKey` varchar(50),
+	`imgKey` varchar(100),
 	CONSTRAINT `questions_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -54,7 +54,7 @@ CREATE TABLE `quizzes` (
 	`title` varchar(50) NOT NULL,
 	`description` varchar(150) NOT NULL DEFAULT '',
 	`img` varchar(255),
-	`imgKey` varchar(50),
+	`imgKey` varchar(100),
 	`state` varchar(8) NOT NULL,
 	`endQuiz` timestamp,
 	CONSTRAINT `quizzes_id` PRIMARY KEY(`id`)
@@ -104,7 +104,7 @@ CREATE TABLE `gallery` (
 	`id` varchar(30) NOT NULL,
 	`position` tinyint NOT NULL,
 	`img` varchar(255) NOT NULL,
-	`imgKey` varchar(50) NOT NULL,
+	`imgKey` varchar(100) NOT NULL,
 	`question` varchar(255) NOT NULL,
 	`isMultipleOption` boolean NOT NULL DEFAULT false,
 	`answer` tinyint NOT NULL DEFAULT 0,
@@ -116,12 +116,12 @@ CREATE TABLE `soundtracks` (
 	`id` varchar(30) NOT NULL,
 	`order` tinyint NOT NULL,
 	`song` varchar(255) NOT NULL,
-	`songKey` varchar(50) NOT NULL,
+	`songKey` varchar(100) NOT NULL,
 	`songTitle` varchar(100) NOT NULL,
 	`artist` varchar(100) NOT NULL,
-	`anime` varchar(100) NOT NULL,
+	`anime` varchar(200) NOT NULL,
 	`img` varchar(255),
-	`imgKey` varchar(50),
+	`imgKey` varchar(100),
 	`imgFit` varchar(7) DEFAULT 'contain',
 	CONSTRAINT `soundtracks_id` PRIMARY KEY(`id`)
 );

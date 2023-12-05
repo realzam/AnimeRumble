@@ -16,7 +16,7 @@ export const quizzes = mysqlTable('quizzes', {
 	title: varchar('title', { length: 50 }).notNull(),
 	description: varchar('description', { length: 150 }).default('').notNull(),
 	img: varchar('img', { length: 255 }),
-	imgKey: varchar('imgKey', { length: 50 }),
+	imgKey: varchar('imgKey', { length: 100 }),
 	state: varchar('state', {
 		length: 8,
 		enum: ['active', 'finished', 'draft'],
@@ -51,7 +51,7 @@ export const questions = mysqlTable('questions', {
 	errors: json('errors').$type<string[]>().notNull(),
 	modified: boolean('modified').default(false).notNull(),
 	img: varchar('img', { length: 255 }),
-	imgKey: varchar('imgKey', { length: 50 }),
+	imgKey: varchar('imgKey', { length: 100 }),
 });
 
 export const quizzesRelations = relations(quizzes, ({ many }) => ({
