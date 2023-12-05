@@ -77,6 +77,10 @@ export default withUt({
 					DEFAULT: 'hsl(var(--anime-yellow))',
 					light: 'hsl(var(--anime-yellow-light))',
 				},
+				animePink: {
+					DEFAULT: 'hsl(var(--anime-pink))',
+					light: 'hsl(var(--anime-pink-light))',
+				},
 			},
 			letterSpacing: {
 				wide: '0.5px',

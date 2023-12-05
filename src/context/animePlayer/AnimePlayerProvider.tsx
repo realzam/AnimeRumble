@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useObservable } from '@legendapp/state/react';
+import { useMount, useObservable } from '@legendapp/state/react';
 import { useAudioPlayer } from 'react-use-audio-player';
 
 import { AnimePlayerContext, type AnimeTrack } from './AnimePlayerContext';
@@ -58,6 +58,7 @@ const AnimePlayerProvider = ({
 	const [endLastTrack, setEndLastTrack] = useState(false);
 	const [scroll, setScroll] = useState(false);
 	const [scrollToTrack, setScrollToTrack] = useState('');
+	const [forceNextSong, setForceNextSong] = useState(false);
 
 	const startInterval = useCallback(() => {
 		clearInterval(p.current);
@@ -70,7 +71,7 @@ const AnimePlayerProvider = ({
 		if (currentTrack) {
 			const index = tracksLoaded.findIndex((t) => t.url === currentTrack.song);
 			if (index === -1) {
-				console.log('track was not loaded getting info...');
+				console.log('track was not found in loaded tracks getting info...');
 				setTrackInfoLoaded({
 					url: '',
 					duration: 0,
@@ -96,7 +97,7 @@ const AnimePlayerProvider = ({
 						setEndLastTrack(true);
 						setScroll(true);
 					}
-					nextSong();
+					forceNext();
 				},
 			});
 		}
@@ -104,6 +105,11 @@ const AnimePlayerProvider = ({
 	}, [load, currentTrack]);
 
 	useEffect(() => {
+		console.log('tracks changed, new length', {
+			tracksLength: tracks.length,
+			tracks,
+		});
+
 		const diff = tracks.length - tracksLoaded.length;
 		if (diff > 0) {
 			console.log('addig new voidtracks', diff);
@@ -114,6 +120,7 @@ const AnimePlayerProvider = ({
 				isReady: false,
 			}));
 			setTracksLoaded((s) => [...s, ...newVoidTracks]);
+			preloadNextSong();
 		}
 		if (!playing && endLastTrack) {
 			console.log('playing the new last song :)');
@@ -208,12 +215,46 @@ const AnimePlayerProvider = ({
 		}
 	}, [playing, startInterval]);
 
+	useEffect(() => {
+		if (forceNextSong) {
+			console.log('next forceNext', {
+				songIndex,
+				tracksLength: tracks.length,
+				tracksLoadedLength: tracksLoaded.length,
+			});
+			nextSong();
+			setForceNextSong(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [forceNextSong, , setForceNextSong]);
+
+	useMount(() => {
+		if (playing) {
+			startInterval();
+		} else {
+			clearInterval(p.current);
+		}
+	});
+
 	const clearProgress = () => {
 		clearInterval(p.current);
 	};
 
+	const forceNext = () => {
+		console.log('next forceNext', {
+			songIndex,
+			tracksLength: tracks.length,
+			tracksLoadedLength: tracksLoaded.length,
+		});
+		setForceNextSong(true);
+	};
+
 	const nextSong = () => {
-		console.log('next click', songIndex);
+		console.log('next nextSong', {
+			songIndex,
+			tracksLength: tracks.length,
+			tracksLoadedLength: tracksLoaded.length,
+		});
 		if (songIndex < tracks.length - 1) {
 			setPlayOnLoad(true);
 			setSongIndex((prev) => prev + 1);

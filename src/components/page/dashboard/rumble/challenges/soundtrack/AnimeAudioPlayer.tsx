@@ -1,6 +1,6 @@
 'use client';
 
-import { Computed, Memo, Show, useUnmount } from '@legendapp/state/react';
+import { Computed, Show, useUnmount } from '@legendapp/state/react';
 import { Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 
 import { formatTime } from '@/lib/utils';
@@ -35,13 +35,13 @@ const AnimeAudioPlayer = () => {
 		<div className='mt-3 flex w-full flex-col space-y-3'>
 			{/* Progress bar */}
 			<div className='flex justify-between space-x-3'>
-				<Memo>
+				<Computed>
 					{() => (
 						<div className='min-w-[45px] shrink-0'>
 							{formatTime(position.get())}
 						</div>
 					)}
-				</Memo>
+				</Computed>
 				<Computed>
 					{() => (
 						<Slider

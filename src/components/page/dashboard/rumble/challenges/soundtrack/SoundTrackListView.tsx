@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
@@ -10,22 +11,34 @@ import SoundTrackListViewItem from './SoundTrackListViewItem';
 
 const SoundTrackListView = () => {
 	const { currentTrack, tracksLength, tracks } = useAnimeAudio();
+
+	const fit = useMemo(() => {
+		switch (currentTrack.imgFit) {
+			case 'contain':
+				return 'object-contain';
+			case 'fill':
+				return 'object-fill';
+			case 'cover':
+				return 'object-cover';
+		}
+	}, [currentTrack.imgFit]);
+
 	return (
-		<Card className='relative mx-auto max-w-[700px] overflow-hidden'>
+		<Card className='relative mx-auto max-w-[700px] overflow-hidden shadow-lg shadow-black/60'>
 			<Image
 				src={currentTrack.img || '/images/albumCover.jpg'}
 				alt={currentTrack.anime}
 				className='absolute object-cover'
 				fill
 			/>
-			<div className='grid w-full grid-cols-5 bg-slate-900/70 p-4 text-white backdrop-blur-md'>
+			<div className='grid w-full grid-cols-5 bg-animePink/50 p-4 text-white  backdrop-blur-md dark:bg-slate-900/70'>
 				<div className='col-span-2 flex flex-col items-center p-4'>
 					<div className='relative h-[200px] w-[200px]'>
 						<Image
 							fill
 							src={currentTrack.img || '/images/albumCover.jpg'}
 							alt={currentTrack.anime}
-							className={cn('rounded-lg shadow-lg')}
+							className={cn('rounded-lg shadow-lg shadow-black/60', fit)}
 						/>
 					</div>
 					<AnimeAudioPlayer />
