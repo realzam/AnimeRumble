@@ -5,7 +5,7 @@ import { trpc } from '@/trpc/client/client';
 
 import { Spinner } from '@/components/web/Spinner';
 
-import SoundTrackListView from './SoundtrackPlayerContainer';
+import SoundTrackListView from './SoundTrackListView';
 
 const SoundtrackPlayerContainer = () => {
 	const { data, isLoading } = trpc.rumble.getSoundtrack.useQuery(undefined, {

@@ -37,10 +37,10 @@ const SoundTrackListViewItem = ({ track, index }: Props) => {
 		<Button
 			ref={scollToRef}
 			variant={track === currentTrack ? 'default' : 'ghost'}
-			className='flex w-full justify-between transition-colors duration-300'
+			className='grid w-full grid-cols-8 transition-colors duration-300'
 			onClick={() => playSelectedTrack(index)}
 		>
-			<div className='shrink-0'>
+			<div className='col-span-1 flex justify-center'>
 				{track === currentTrack ? (
 					<>
 						{playing ? (
@@ -53,8 +53,9 @@ const SoundTrackListViewItem = ({ track, index }: Props) => {
 					index + 1
 				)}
 			</div>
-			<div>{track.anime}</div>
-			<div className='shrink-0'>
+			<div className='col-span-6 h-full truncate text-left'> {track.anime}</div>
+			<div className='col-span-1'>
+				{' '}
 				{trackDuration > 0 ? formatTime(trackDuration) : '...'}
 			</div>
 		</Button>

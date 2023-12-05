@@ -18,7 +18,7 @@ const SoundTrackListView = () => {
 				className='absolute object-cover'
 				fill
 			/>
-			<div className='grid w-full grid-cols-4 bg-slate-900/70 p-4 text-white backdrop-blur-md'>
+			<div className='grid w-full grid-cols-5 bg-slate-900/70 p-4 text-white backdrop-blur-md'>
 				<div className='col-span-2 flex flex-col items-center p-4'>
 					<div className='relative h-[200px] w-[200px]'>
 						<Image
@@ -30,7 +30,7 @@ const SoundTrackListView = () => {
 					</div>
 					<AnimeAudioPlayer />
 				</div>
-				<div className='col-span-2 space-y-4'>
+				<div className='col-span-3 space-y-4'>
 					<div className='space-y-2'>
 						<CardTitle>Lista de Soundtracks</CardTitle>
 						<CardDescription>{tracksLength} Soundtracks</CardDescription>
