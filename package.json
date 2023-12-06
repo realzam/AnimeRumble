@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "App to help the Anime Club in ESCOM",
   "private": true,
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/realzam/AnimeRumble"
@@ -25,7 +24,11 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "co": "sui-mono commit",
+    "build": "turbo --filter=anime-rumble build",
+    "lint": "turbo --filter=anime-rumble lint",
+    "lint:fix": "turbo --filter=anime-rumble lint:fix",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",

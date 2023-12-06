@@ -9,7 +9,7 @@
 		"prettier"
 	],
 	"parserOptions": {
-		"project": "./apps/www/tsconfig.json",
+		"project": "./tsconfig.json",
 		"tsconfigRootDir": "./"
 	},
 	"plugins": ["tailwindcss", "prettier"],
