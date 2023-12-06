@@ -1,0 +1,6 @@
+[submodule "packages/useAudioPlayer"]
+	path = packages/useAudioPlayer
+	url = https://github.com/realzam/useAudioPlayer.git
+[submodule "packages/prettier-plugin-tailwindcss"]
+	path = packages/prettier-plugin-tailwindcss
+	url = https://github.com/realzam/prettier-plugin-tailwindcss.git
