@@ -1,16 +1,46 @@
 {
-  "name": "hola",
+  "name": "animerumble",
+  "version": "1.0.0",
+  "description": "App to help the Anime Club in ESCOM",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/realzam/AnimeRumble"
+  },
+  "homepage": "https://anime-rumble.com",
+  "author": {
+    "name": "Sergio Iván Zamorano Aguilar",
+    "url": "https://github.com/realzam",
+    "email": "sza0210escom@gmail.com"
+  },
+  "keywords": [
+    "anime",
+    "games",
+    "IPN",
+    "ESCOM"
+  ],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo build",
     "start": "turbo start --filter=web",
     "dev": "turbo dev --filter=web",
     "lint": "turbo lint --filter=web",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "husky install",
+    "co": "sui-mono commit",
+    "clean": "rimraf pnpm-lock.yaml && rimraf node_modules && rimraf apps/web/node_modules",
+    "pre-commit": "pnpm run --filter=web pre-commit"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@s-ui/mono": "^2.41.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "husky": "^8.0.3",
     "prettier": "^3.1.0",
     "turbo": "latest"
   },

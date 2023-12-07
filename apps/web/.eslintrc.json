@@ -1,0 +1,84 @@
+{
+	"$schema": "https://json.schemastore.org/eslintrc",
+	"root": true,
+	"globals": {
+		"React": true,
+		"JSX": true
+	},
+	"env": {
+		"node": true
+	},
+	"extends": [
+		"next/core-web-vitals",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:import/recommended",
+		"plugin:tailwindcss/recommended",
+		"prettier"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"tsconfigRootDir": "./"
+	},
+	"plugins": ["tailwindcss", "prettier"],
+	"settings": {
+		"import/resolver": {
+			"webpack": true,
+			"typescript": {
+				"project": ["./apps/web/tsconfig.json"]
+			}
+		},
+		"tailwindcss": {
+			"callees": ["cn", "cva"],
+			"config": "tailwind.config.ts"
+		},
+		"next": {
+			"rootDir": ["apps/*/"]
+		}
+	},
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx"],
+			"parser": "@typescript-eslint/parser"
+		}
+	],
+	"rules": {
+		"@next/next/no-html-link-for-pages": "off",
+		"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+		"@typescript-eslint/consistent-type-imports": [
+			"error",
+			{ "prefer": "type-imports", "fixStyle": "inline-type-imports" }
+		],
+		"@typescript-eslint/no-unused-vars": [
+			"error",
+			{
+				"argsIgnorePattern": "^_",
+				"destructuredArrayIgnorePattern": "^_",
+				"caughtErrorsIgnorePattern": "^_",
+				"varsIgnorePattern": "^_"
+			}
+		],
+		"@typescript-eslint/naming-convention": [
+			"error",
+			{
+				"selector": ["parameter", "variable"],
+				"leadingUnderscore": "forbid",
+				"filter": {
+					// keep this one open for destructuring
+					"regex": "_*",
+					"match": false
+				},
+				"format": null
+			},
+			{
+				"selector": "parameter",
+				"leadingUnderscore": "require",
+				"format": null,
+				"modifiers": ["unused"]
+			}
+		],
+		"import/consistent-type-specifier-style": ["error", "prefer-inline"],
+		"object-shorthand": ["error", "always"],
+		"tailwindcss/no-custom-classname": "off"
+	}
+}
