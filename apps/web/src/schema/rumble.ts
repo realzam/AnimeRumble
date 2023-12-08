@@ -74,6 +74,10 @@ const AddSoundtrackSchema = z.object({
 		.optional(),
 });
 
+const AddJigsaw = z.object({
+	pid: z.string().min(1),
+});
+
 const FormAddSoundtrackSchema = z.object({
 	hasSong: z.literal<boolean>(true),
 	hasImg: z.boolean(),
@@ -94,4 +98,5 @@ export {
 	FormGallerySchema,
 	AddSoundtrackSchema,
 	FormAddSoundtrackSchema,
+	AddJigsaw,
 };

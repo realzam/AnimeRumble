@@ -32,3 +32,12 @@ export const soundtrack = mysqlTable('soundtracks', {
 		enum: ['fill', 'cover', 'contain'],
 	}).default('contain'),
 });
+
+export const jigsaws = mysqlTable('jigsaws', {
+	id: varchar('id', { length: 30 }).primaryKey().notNull(),
+	jigsawID: varchar('jigsawID', { length: 30 }).notNull(),
+	order: tinyint('order').notNull(),
+	img: varchar('img', { length: 255 }).notNull(),
+	imgKey: varchar('imgKey', { length: 100 }).notNull(),
+	name: varchar('name', { length: 100 }).notNull(),
+});

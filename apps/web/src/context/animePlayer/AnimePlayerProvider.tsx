@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMount, useObservable } from '@legendapp/state/react';
+import { useMount, useObservable, useUnmount } from '@legendapp/state/react';
 import { useAudioPlayer } from 'react-use-audio-player';
 
 import { AnimePlayerContext, type AnimeTrack } from './AnimePlayerContext';
@@ -28,6 +28,7 @@ const AnimePlayerProvider = ({
 		seek,
 		stop,
 		isReady,
+		cleanup,
 	} = useAudioPlayer();
 
 	const nextSongState = useAudioPlayer();
@@ -50,6 +51,10 @@ const AnimePlayerProvider = ({
 			pos.set(getPosition());
 		}, 10);
 	}, [getPosition, pos]);
+
+	useUnmount(() => {
+		cleanup();
+	});
 
 	useEffect(() => {
 		if (currentTrack) {

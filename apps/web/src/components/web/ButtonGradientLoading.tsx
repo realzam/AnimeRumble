@@ -14,12 +14,12 @@ export interface ButtonProps
 }
 const ReactiveButton = reactive(Button);
 const ButtonGradientLoading = React.forwardRef<HTMLButtonElement, ButtonProps>(
-	({ children, variant: _, isLoading, ...props }, ref) => {
+	({ children, variant: _, isLoading, disabled = false, ...props }, ref) => {
 		return (
 			<ReactiveButton
 				variant='gradient'
 				ref={ref}
-				$disabled={isLoading}
+				$disabled={disabled ? () => true : isLoading}
 				{...props}
 			>
 				<Show if={isLoading} else={children}>

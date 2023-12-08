@@ -112,6 +112,16 @@ CREATE TABLE `gallery` (
 	CONSTRAINT `gallery_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `jigsaws` (
+	`id` varchar(30) NOT NULL,
+	`jigsawID` varchar(30) NOT NULL,
+	`order` tinyint NOT NULL,
+	`img` varchar(255) NOT NULL,
+	`imgKey` varchar(100) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	CONSTRAINT `jigsaws_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `soundtracks` (
 	`id` varchar(30) NOT NULL,
 	`order` tinyint NOT NULL,
