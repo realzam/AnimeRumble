@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "init": "tsc --init",
-    "build": "tsc",
+    "init": "npx -p typescript tsc --init",
+    "build": "npx -p typescript tsc",
     "dev": "npx nodemon",
     "start": "node dist/app"
   },
