@@ -1,7 +1,7 @@
 'server-only';
 
 import { env } from '@/env.mjs';
-import { loteriaCards } from '@/models';
+import { loteriaCards, loteriaGame } from '@/models';
 import { AddLoteriaCardSchema } from '@/schema/loteria';
 import { publicProcedure, router } from '@/trpc/server/trpc';
 import { asc, eq } from 'drizzle-orm';
@@ -9,7 +9,7 @@ import { customAlphabet, urlAlphabet } from 'nanoid';
 import { UTApi } from 'uploadthing/server';
 
 import { db } from '@/lib/db';
-import { generarNumerosAleatorios } from '@/lib/utils';
+import { generarNumerosAleatorios, shuffleArray } from '@/lib/utils';
 
 const utapi = new UTApi({ apiKey: env.UPLOADTHING_SECRET });
 export const loteriaRouter = router({
@@ -46,5 +46,22 @@ export const loteriaRouter = router({
 		const random = generarNumerosAleatorios(20, 1, cards.length);
 
 		return random.map((i) => cards[i - 1]);
+	}),
+
+	startLoteriaHost: publicProcedure.query(async () => {
+		const cards = await db.query.loteriaCards.findMany({
+			orderBy: asc(loteriaCards.index),
+		});
+		const newOrder = shuffleArray(cards);
+		const nanoid = customAlphabet(urlAlphabet);
+		const idLoteriaGame = nanoid();
+		await db.insert(loteriaGame).values({
+			id: idLoteriaGame,
+			deckPlayed: cards.map((c) => c.id),
+		});
+		const game = await db.query.loteriaGame.findFirst({
+			where: eq(loteriaGame.id, idLoteriaGame),
+		});
+		return { cards: newOrder, game: game! };
 	}),
 });

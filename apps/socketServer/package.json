@@ -1,0 +1,27 @@
+{
+  "name": "socketServer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "init": "tsc --init",
+    "build": "tsc",
+    "dev": "npx nodemon",
+    "start": "node dist/app"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

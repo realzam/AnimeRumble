@@ -22,14 +22,23 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 			ClientIO(process.env.NEXTAUTH_URL!, {
 				path: '/api/socket/io',
 				addTrailingSlash: false,
+				transports: ['websocket', 'polling'],
+				// autoConnect: false,
+				// forceNew: false,
 			});
 
 		socketInstance.on('connect', () => {
+			console.log('socket.oConnect');
 			setIsConnected(true);
+			socketInstance.emit('updateCounter', 0);
 		});
 
 		socketInstance.on('disconnect', () => {
 			setIsConnected(false);
+		});
+
+		socketInstance.on('counterUpdated', () => {
+			console.log('Socket.Provider.counterUpdated');
 		});
 
 		setSocket(socketInstance);

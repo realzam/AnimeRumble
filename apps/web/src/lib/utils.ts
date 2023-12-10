@@ -129,3 +129,33 @@ export const formatTime = (time: number) => {
 	}
 	return '00:00';
 };
+
+export const quitarAcentos = (texto: string): string => {
+	const mapaAcentos: { [key: string]: string } = {
+		á: 'a',
+		é: 'e',
+		í: 'i',
+		ó: 'o',
+		ú: 'u',
+		ü: 'u',
+		ñ: 'n',
+	};
+
+	return texto.replace(
+		/[áéíóúüñ]/g,
+		(match: string) => mapaAcentos[match] || match,
+	);
+};
+
+export const shuffleArray = <T>(array: T[]): T[] => {
+	// Copia el arreglo para no modificar el original
+	const shuffledArray = [...array];
+
+	// Algoritmo de Fisher-Yates para mezclar el arreglo
+	for (let i = shuffledArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+	}
+
+	return shuffledArray;
+};

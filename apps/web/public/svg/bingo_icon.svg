@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" version="1.1" viewBox="0 0 271 271" xmlns="http://www.w3.org/2000/svg">
+  <rect x="31.8" y="79.4" width="212" height="164" fill="#4361ee"/>
+  <rect x="30.2" y="21.2" width="213" height="221" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.29"/>
+  <rect x="31.2" y="22" width="212" height="58.2" fill="#ff006e"/>
+  <g fill="none" stroke="#000" stroke-width="5.29">
+    <path d="m30.4 79.4h213"/>
+    <path d="m30.4 119h213"/>
+    <path d="m30.4 206h213"/>
+    <path d="m30.4 164h213"/>
+    <path d="m82 79.4v164"/>
+    <path d="m139 79.4v164"/>
+    <path d="m194 79.4v164"/>
+  </g>
+  <text transform="scale(1.02 .979)" x="54.88089" y="67.974831" fill="#ffffff" font-family="Ebrima" font-size="52.8px" letter-spacing="0px" stroke-width=".265" word-spacing="0px" style="line-height:1.25" xml:space="preserve"><tspan x="54.88089" y="67.974831" fill="#ffffff" stroke-width=".265">BINGO</tspan></text>
+  <path d="m58.2 97.4 175 138" fill="none" stroke="#ff006e" stroke-linecap="round" stroke-width="5.29"/>
+</svg>

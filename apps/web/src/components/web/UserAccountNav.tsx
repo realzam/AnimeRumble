@@ -23,13 +23,18 @@ const UserAccountNav = ({ user }: Props) => {
 				<UserAvatar user={user} />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
-				<div className='flex items-center justify-start gap-2 p-2'>
-					<div className='flex flex-col space-y-1'>
+				<div className='flex w-80 p-4'>
+					<div className='shrink-0'>
+						<UserAvatar user={user} className='h-16 w-16' />
+					</div>
+					<div className='ml-4 grow'>
 						{user.name && (
-							<div className='flex space-x-2'>
-								<p className='font-semibold'>{capitalizeWord(user.name)}</p>
+							<>
+								<span className='mr-2 font-semibold'>
+									{capitalizeWord(user.name)}
+								</span>
 								<Badge>{user.role}</Badge>
-							</div>
+							</>
 						)}
 						{user.email && (
 							<p className='max-w-[300px] truncate text-sm'>

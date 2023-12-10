@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@ui/Avatar';
 
 interface Props {
 	user: Session['user'];
+	className?: string;
 }
 
 function obtenerIniciales(nombreCompleto: string | undefined | null): string {
@@ -17,9 +18,9 @@ function obtenerIniciales(nombreCompleto: string | undefined | null): string {
 	return iniciales.toUpperCase();
 }
 
-const UserAvatar = ({ user }: Props) => {
+const UserAvatar = ({ user, className }: Props) => {
 	return (
-		<Avatar>
+		<Avatar className={className}>
 			<AvatarImage
 				src={user.image!}
 				alt='profile picture'

@@ -13,13 +13,13 @@ export default function HomePage() {
 				<ActivityCard
 					title='Lotería'
 					route={animeRumbleRoutes.activityLoteria}
-					icon='/svg/quiz_icon.svg'
+					icon='/svg/loteria_icon.svg'
 					color='red'
 				/>
 				<ActivityCard
 					title='Bingo'
 					route={animeRumbleRoutes.activityBingo}
-					icon='/svg/quiz_icon.svg'
+					icon='/svg/bingo_icon.svg'
 					color='yellow'
 				/>
 			</div>

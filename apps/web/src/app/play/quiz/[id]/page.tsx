@@ -7,7 +7,7 @@ import { type Session } from 'next-auth';
 import { type QuizDataType } from '@/types/quizQuery';
 import { getAuthSession } from '@/lib/nextauth';
 import animeRumbleRoutes from '@/lib/routes';
-import PlayQuizContainer from '@/components/page/play/PlayQuizContainer';
+import PlayQuizContainer from '@/components/page/playQuiz/PlayQuizContainer';
 
 type TypeGetData =
 	| [undefined, QuizDataType]

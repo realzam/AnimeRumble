@@ -16,6 +16,14 @@ CREATE TABLE `loteriaCards` (
 	CONSTRAINT `loteriaCards_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `loteriaGame` (
+	`id` varchar(30) NOT NULL,
+	`deckPlayed` json NOT NULL,
+	`state` varchar(8) NOT NULL DEFAULT 'lobby',
+	`index` smallint NOT NULL DEFAULT 0,
+	CONSTRAINT `loteriaGame_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `answers` (
 	`id` varchar(255) NOT NULL,
 	`user` varchar(255) NOT NULL,

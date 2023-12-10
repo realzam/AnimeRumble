@@ -3,6 +3,7 @@ import { Dices, Grid3x3 } from 'lucide-react';
 
 import animeRumbleRoutes from '@/lib/routes';
 import { Button } from '@ui/Button';
+import StartActivityDialog from '@/components/web/StartActivityDialog';
 
 interface Props {
 	active?: 'quizz' | 'bingo' | 'loteria' | 'users' | 'rumble';
@@ -11,6 +12,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 	return (
 		<div className='space-y-4 py-4 pb-12'>
 			<div className='px-3 py-2'>
+				<StartActivityDialog />
 				<h2 className='mb-2 px-4 text-lg font-semibold tracking-tight'>
 					Actividades
 				</h2>

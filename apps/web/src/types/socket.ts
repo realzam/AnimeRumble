@@ -13,8 +13,10 @@ export type NextApiResponseServerIo = NextApiResponse & {
 export interface ClientToServerEvents {
 	noArg: () => void;
 	basicEmit: (a: number, b: string, c: number[]) => void;
+	updateCounter: (counter: number) => void;
 }
 
 export interface ServerToClientEvents {
 	withAck: (d: string, cb: (e: number) => void) => void;
+	counterUpdated: (counter: number) => void;
 }

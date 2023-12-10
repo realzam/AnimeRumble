@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { type Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const NavbarLinks = ({ initialSession }: Props) => {
+	const path = usePathname();
 	const [sessionData, setSessionData] = useState(initialSession);
 	const session = useSession();
 
@@ -26,9 +28,13 @@ const NavbarLinks = ({ initialSession }: Props) => {
 			{sessionData?.user.role === 'admin' && (
 				<Link href={animeRumbleRoutes.dashboard}>Dashboard</Link>
 			)}
-			<Link href={animeRumbleRoutes.activityQuizzes}>Quizzes</Link>
-			<Link href={animeRumbleRoutes.activityBingo}>Bingo</Link>
-			<Link href={animeRumbleRoutes.activityLoteria}>Loteria</Link>
+			{path !== '/' && sessionData?.user.role === 'player' && (
+				<>
+					<Link href={animeRumbleRoutes.activityQuizzes}>Quizzes</Link>
+					<Link href={animeRumbleRoutes.activityBingo}>Bingo</Link>
+					<Link href={animeRumbleRoutes.activityLoteria}>Loteria</Link>
+				</>
+			)}
 		</>
 	);
 };

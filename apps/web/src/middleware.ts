@@ -4,4 +4,6 @@ export default withAuth(async function middleware() {
 	console.log('hola desde el middleware');
 });
 
-export const config = { matcher: ['/dashboard/:path*', '/create/:path*'] };
+export const config = {
+	matcher: ['/dashboard/:path*', '/create/:path*', '/host/:path*'],
+};

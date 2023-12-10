@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" version="1.1" viewBox="0 0 271 271" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.12">
+    <g fill="#003049">
+      <rect x="52.9" y="2.65" width="31.8" height="58.2" style="paint-order:normal"/>
+      <rect transform="rotate(-30)" x="86.8" y="276" width="31.8" height="58.2" style="paint-order:normal"/>
+      <rect x="225" y="13.2" width="31.8" height="58.2" style="paint-order:normal"/>
+    </g>
+    <g>
+      <rect x="95.2" y="2.65" width="31.8" height="58.2" fill="#d62828" style="paint-order:markers fill stroke"/>
+      <circle cx="110" cy="32.4" r="10.2" style="paint-order:normal"/>
+      <rect x="138" y="2.65" width="31.8" height="58.2" fill="#f77f00" style="paint-order:markers fill stroke"/>
+      <rect x="180" y="2.65" width="31.8" height="58.2" fill="#8338ec" style="paint-order:markers fill stroke"/>
+      <rect x="52.9" y="71.4" width="31.8" height="58.2" fill="#a7c957" style="paint-order:markers fill stroke"/>
+      <rect x="95.2" y="71.4" width="31.8" height="58.2" fill="#fca311" style="paint-order:markers fill stroke"/>
+      <rect transform="rotate(-15)" x="205" y="76.2" width="31.8" height="58.2" fill="#fca311" style="paint-order:markers fill stroke"/>
+      <rect x="138" y="71.4" width="31.8" height="58.2" fill="#0096c7" style="paint-order:markers fill stroke"/>
+      <rect x="180" y="71.4" width="31.8" height="58.2" fill="#ff006e" style="paint-order:markers fill stroke"/>
+      <rect x="10.6" y="103" width="31.8" height="58.2" fill="#ff006e" style="paint-order:markers fill stroke"/>
+      <rect transform="rotate(-30)" x="-62.2" y="108" width="31.8" height="58.2" fill="#9b5de5" style="paint-order:markers fill stroke"/>
+      <rect x="52.9" y="140" width="31.8" height="58.2" fill="#ffbe0b" style="paint-order:markers fill stroke"/>
+      <rect x="95.2" y="140" width="31.8" height="58.2" fill="#ff006e" style="paint-order:markers fill stroke"/>
+      <rect x="233" y="21.2" width="31.8" height="58.2" fill="#ff006e" style="paint-order:markers fill stroke"/>
+    </g>
+    <rect x="138" y="140" width="31.8" height="58.2" fill="#800080" style="paint-order:markers fill stroke"/>
+    <g fill="#00f5d4">
+      <rect x="180" y="140" width="31.8" height="58.2" style="paint-order:markers fill stroke"/>
+      <rect transform="rotate(15)" x="281" y="135" width="31.8" height="58.2" style="paint-order:markers fill stroke"/>
+      <rect x="5.29" y="130" width="31.8" height="58.2" style="paint-order:markers fill stroke"/>
+    </g>
+    <rect x="52.9" y="209" width="31.8" height="58.2" fill="#f0f" style="paint-order:markers fill stroke"/>
+    <rect x="95.2" y="209" width="31.8" height="58.2" fill="#7678ed" style="paint-order:markers fill stroke"/>
+    <rect x="138" y="209" width="31.8" height="58.2" fill="#f00" style="paint-order:markers fill stroke"/>
+    <g>
+      <rect x="180" y="209" width="31.8" height="58.2" fill="#9b5de5" style="paint-order:markers fill stroke"/>
+      <rect transform="rotate(15)" x="232" y="-44" width="31.8" height="58.2" fill="#9b5de5" style="paint-order:markers fill stroke"/>
+      <rect transform="rotate(15)" x="48.5" y="99.3" width="31.8" height="58.2" fill="#a7c957" style="paint-order:markers fill stroke"/>
+    </g>
+    <g>
+      <circle cx="196" cy="99.9" r="10.2" style="paint-order:normal"/>
+      <circle cx="68.1" cy="170" r="10.2" style="paint-order:normal"/>
+      <circle cx="110" cy="170" r="10.2" style="paint-order:normal"/>
+      <circle cx="196" cy="170" r="10.2" style="paint-order:normal"/>
+      <circle cx="153" cy="99.9" r="10.2" style="paint-order:normal"/>
+      <circle cx="195" cy="240" r="10.2" style="paint-order:normal"/>
+      <circle cx="153" cy="239" r="10.2" style="paint-order:normal"/>
+      <circle cx="68.1" cy="237" r="10.2" style="paint-order:normal"/>
+      <circle cx="110" cy="101" r="10.2" style="paint-order:normal"/>
+    </g>
+  </g>
+</svg>

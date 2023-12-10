@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "c221b531-68e4-474d-a981-525d967c1e7a",
+  "id": "565b5c77-cbe1-4e4d-b40d-ea1bcd3bfd89",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -100,6 +100,52 @@
       "compositePrimaryKeys": {
         "loteriaCards_id": {
           "name": "loteriaCards_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "loteriaGame": {
+      "name": "loteriaGame",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "deckPlayed": {
+          "name": "deckPlayed",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'lobby'"
+        },
+        "index": {
+          "name": "index",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "loteriaGame_id": {
+          "name": "loteriaGame_id",
           "columns": [
             "id"
           ]
