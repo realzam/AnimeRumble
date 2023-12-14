@@ -38,7 +38,11 @@ const useSocket = <
 				? window.localStorage.getItem('anime.player')
 				: undefined;
 
-		const socketTemp = io('http://localhost:4000/loteria', {
+		const URL =
+			process.env.NODE_ENV === 'production'
+				? 'https://socket.anime-rumble.com/loteria'
+				: 'http://localhost:4000/loteria';
+		const socketTemp = io(URL, {
 			transports: ['websocket', 'polling'],
 			autoConnect: true,
 			forceNew: true,

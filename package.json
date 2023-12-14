@@ -30,6 +30,7 @@
     "start:all": "dotenv -- turbo start --filter=web --filter=socket-anime",
     "build:backend": "dotenv -- turbo build --filter=socket-anime",
     "dev:backend": "dotenv -- turbo dev --filter=socket-anime",
+    "start:backend": "dotenv -- turbo start --filter=socket-anime",
     "start:web": "dotenv -- turbo start --filter=web",
     "build:web": "dotenv -- turbo build --filter=web --filter=anime-db",
     "dev:web": "dotenv -- turbo dev --filter=web",
