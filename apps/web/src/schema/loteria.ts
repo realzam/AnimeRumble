@@ -16,4 +16,7 @@ const FormLoteriaCardSchema = z.object({
 	img: z.literal<boolean>(true),
 });
 
+export const JoinToLoteriaSchema = z.object({
+	nickName: z.string().min(1),
+});
 export { AddLoteriaCardSchema, FormLoteriaCardSchema };

@@ -19,9 +19,11 @@ export const env = createEnv({
 		DATABASE_USERNAME: z.string().min(1),
 		DATABASE_PASSWORD: z.string().min(1),
 		OPENAI_API_KEY: z.string().min(1),
+
+		SECRET_JWT_SOCKET: z.string().min(1),
 	},
 	client: {
-		// NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),
+		//  NEXT_SOCKET_URL: z.string().min(1),
 	},
 
 	// For Next.js >= 13.4.4, you only need to destructure client variables:

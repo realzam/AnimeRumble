@@ -21,7 +21,7 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 			<header
 				ref={ref}
 				className={cn(
-					'supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur transition-colors',
+					'supports-backdrop-blur:bg-background/60 z-40 w-full border-b bg-background/80 backdrop-blur transition-colors',
 					className,
 				)}
 				{...props}
@@ -35,7 +35,7 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 							<AnimeRumbleIcon height={24} width={24} />
 							<span
 								className={cn(
-									'hidden text-xl font-bold 2xs:inline-block xs:text-2xl',
+									'text-xl xs:text-2xl hidden font-bold 2xs:inline-block',
 									chewy.className,
 								)}
 							>
@@ -43,12 +43,14 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 							</span>
 						</NextLink>
 					</div>
+
 					<div className='flex-1'>
-						<div className='hidden h-full w-full items-center justify-center space-x-6 text-lg font-medium md:flex'>
+						<div className='text-lg hidden h-full w-full items-center justify-center space-x-6 font-medium md:flex'>
 							<NavbarLinks initialSession={session} />
 						</div>
 					</div>
-					<div className='flex w-[180px] shrink-0 items-center justify-end space-x-2'>
+
+					<div className='flex shrink-0 items-center justify-end space-x-2 md:w-[180px]'>
 						<NavbarSession initialSession={session} />
 						<NavbarLinksButton initialSession={session} />
 						<ToggleThemeButton />

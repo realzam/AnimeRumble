@@ -25,6 +25,10 @@ export default withUt({
 			'2md': '896px',
 			...screens,
 		},
+		fontSize: {
+			'2xs': '0.5rem',
+			xs: '0.8rem',
+		},
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',

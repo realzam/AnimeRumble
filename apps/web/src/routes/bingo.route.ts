@@ -1,6 +1,6 @@
-import { bingoReactives } from '@/models';
 import { AddBingoReactiveSchema } from '@/schema/bingo';
 import { publicProcedure, router } from '@/trpc/server/trpc';
+import { bingoReactives } from 'anime-db';
 import { asc, eq } from 'drizzle-orm';
 import { customAlphabet, urlAlphabet } from 'nanoid';
 

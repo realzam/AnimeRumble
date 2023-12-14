@@ -1,7 +1,7 @@
-import { users } from '@/models';
 import { RegisterSchema } from '@/schema/auth';
 import { publicProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
+import { users } from 'anime-db';
 import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
@@ -17,16 +17,27 @@ export const authRouter = router({
 				message: 'Las contraseñas no coiciden',
 			});
 		}
-		const user = await db
-			.select()
-			.from(users)
-			.where(eq(users.email, values.email));
-		if (user.length > 0) {
+		const emailIsUsed = await db.query.users.findFirst({
+			where: eq(users.email, values.email),
+		});
+
+		if (emailIsUsed) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
 				message: 'El correo ya esta registrado',
 			});
 		}
+		const nicknameIsUsed = await db.query.users.findFirst({
+			where: eq(users.email, values.nickname),
+		});
+
+		if (nicknameIsUsed) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'El Nickname ya esta ocupado, utiliza otro',
+			});
+		}
+
 		await db.insert(users).values({
 			...values,
 			password: hashPassword(values.password),

@@ -96,6 +96,20 @@ const RegisterForm = () => {
 					/>
 				</div>
 				<div className='grid gap-2'>
+					<Label htmlFor='nickname' isError={!!errors.email}>
+						Nickname
+					</Label>
+					<Input
+						autoComplete='nickname'
+						id='nickname'
+						placeholder='GhibliGuru'
+						type='text'
+						error={!!errors.nickname}
+						errorMessage={errors.nickname?.message}
+						{...register('nickname')}
+					/>
+				</div>
+				<div className='grid gap-2'>
 					<Label htmlFor='email' isError={!!errors.email}>
 						Correo electrónico
 					</Label>

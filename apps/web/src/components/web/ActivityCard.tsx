@@ -64,7 +64,7 @@ const ActivityCard = ({ title, color, route, icon }: ActivityCardProps) => {
 							priority
 						/>
 					</div>
-					<span className='z-[11] mt-7 text-xl font-semibold tracking-widest group-hover:text-slate-100'>
+					<span className='text-xl z-[11] mt-7 font-semibold tracking-widest group-hover:text-slate-100'>
 						{title}
 					</span>
 				</Card>

@@ -45,21 +45,21 @@ const PlayQuizQuestionContainer = () => {
 					<Show
 						if={isCorrectAnswer}
 						else={
-							<div className='absolute left-0 z-50 flex h-20 w-full animate-fade-down flex-col items-center justify-center rounded-b bg-red-400 text-lg font-semibold tracking-widest text-white animate-normal animate-once'>
+							<div className='text-lg absolute left-0 z-50 flex h-20 w-full animate-fade-down flex-col items-center justify-center rounded-b bg-red-400 font-semibold tracking-widest text-white animate-normal animate-once'>
 								<Memo>
 									{() => (
 										<>{time.get() <= 0 ? 'Se acabo el tiempo' : 'Incorrecto'}</>
 									)}
 								</Memo>
-								<div className='rounded-full bg-white px-4 py-1 text-lg text-red-400'>
+								<div className='text-lg rounded-full bg-white px-4 py-1 text-red-400'>
 									No te rindas, tu puedes
 								</div>
 							</div>
 						}
 					>
-						<div className='absolute left-0 z-50 flex h-20 w-full animate-fade-down flex-col items-center justify-center rounded-b bg-green-400 text-lg font-semibold tracking-widest text-white animate-normal animate-once'>
+						<div className='text-lg absolute left-0 z-50 flex h-20 w-full animate-fade-down flex-col items-center justify-center rounded-b bg-green-400 font-semibold tracking-widest text-white animate-normal animate-once'>
 							<p>Correcto</p>
-							<div className='rounded-full bg-white px-4 py-1 text-lg text-green-400'>
+							<div className='text-lg rounded-full bg-white px-4 py-1 text-green-400'>
 								<Switch value={question.points}>
 									{{
 										standar: () => (

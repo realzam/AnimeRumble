@@ -13,7 +13,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 		<div className='space-y-4 py-4 pb-12'>
 			<div className='px-3 py-2'>
 				<StartActivityDialog />
-				<h2 className='mb-2 px-4 text-lg font-semibold tracking-tight'>
+				<h2 className='text-lg mb-2 px-4 font-semibold tracking-tight'>
 					Actividades
 				</h2>
 				<div className='space-y-1'>
@@ -128,7 +128,7 @@ const Sidebar = ({ active = 'quizz' }: Props) => {
 			</div>
 
 			<div className='px-3 py-2'>
-				<h2 className='mb-2 px-4 text-lg font-semibold tracking-tight'>
+				<h2 className='text-lg mb-2 px-4 font-semibold tracking-tight'>
 					Configuraciones
 				</h2>
 			</div>

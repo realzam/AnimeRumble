@@ -39,7 +39,7 @@ const AtivityCardAdmin = ({ title, className, icon, link }: PropsCard) => {
 					height={100}
 					priority
 				/>
-				<div className='mt-2 text-xl font-semibold capitalize tracking-widest'>
+				<div className='text-xl mt-2 font-semibold capitalize tracking-widest'>
 					{title}
 				</div>
 			</Card>

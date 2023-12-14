@@ -47,7 +47,7 @@ const ListPagination = () => {
 				</Memo>
 			</div>
 			<div className='flex space-x-2'>
-				<div className='flex w-[100px] items-center justify-center text-sm font-medium'>
+				<div className='text-sm flex w-[100px] items-center justify-center font-medium'>
 					Página <Memo>{ui.page}</Memo> de <Memo>{ui.totalPages}</Memo>
 				</div>
 

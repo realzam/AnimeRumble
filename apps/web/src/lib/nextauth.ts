@@ -1,7 +1,8 @@
 import { env } from '@/env.mjs'; // On server
-import { accounts, users } from '@/models';
+
 import { LoginSchema } from '@/schema/auth';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import { accounts, users } from 'anime-db';
 import { eq } from 'drizzle-orm';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
@@ -85,6 +86,7 @@ export const nextAuthOptions: NextAuthOptions = {
 			if (dbUser) {
 				token.id = dbUser.id;
 				token.role = dbUser.role;
+				token.nickName = dbUser.nickName;
 			}
 			return token;
 		},
@@ -95,6 +97,7 @@ export const nextAuthOptions: NextAuthOptions = {
 				session.user.email = token.email;
 				session.user.image = token.picture;
 				session.user.role = token.role;
+				session.user.nickName = token.nickName;
 			}
 
 			return session;

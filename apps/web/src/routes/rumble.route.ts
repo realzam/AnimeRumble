@@ -1,5 +1,4 @@
 import { env } from '@/env.mjs';
-import { gallery, jigsaws, soundtrack } from '@/models';
 import {
 	AddGallerySchema,
 	AddJigsaw,
@@ -7,6 +6,7 @@ import {
 } from '@/schema/rumble';
 import { adminProcedure, router } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
+import { gallery, jigsaws, soundtrack } from 'anime-db';
 import { asc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { UTApi } from 'uploadthing/server';

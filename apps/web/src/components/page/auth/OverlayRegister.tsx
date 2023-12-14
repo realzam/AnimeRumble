@@ -27,12 +27,12 @@ const OverlayRegister = ({ isRegisterFocus }: Props) => {
 				<br />
 				viaje ahora
 			</h1>
-			<p className='rop-shadow-text mx-0 mb-8 mt-5 text-sm font-thin tracking-wide'>
+			<p className='rop-shadow-text text-sm mx-0 mb-8 mt-5 font-thin tracking-wide'>
 				Si aún no tienes una cuenta, únete y comienza el viaje
 			</p>
 			<Button
 				onClick={() => isRegisterFocus.toggle()}
-				className='border-2 border-white bg-[rgba(255,255,255,0.2)] px-[80px] py-3 text-base font-bold transition-all duration-300 ease-in-out hover:bg-pink-500/30'
+				className='text-base border-2 border-white bg-[rgba(255,255,255,0.2)] px-[80px] py-3 font-bold transition-all duration-300 ease-in-out hover:bg-pink-500/30'
 			>
 				Registerarse
 			</Button>

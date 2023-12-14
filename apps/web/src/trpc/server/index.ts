@@ -3,6 +3,7 @@ import { bingoRouter } from '@/routes/bingo.route';
 import { loteriaRouter } from '@/routes/loteria.route';
 import { quizRouter } from '@/routes/quizz.route';
 import { rumbleRouter } from '@/routes/rumble.route';
+import { userRouter } from '@/routes/user.route';
 
 import { router } from './trpc';
 
@@ -12,6 +13,7 @@ export const appRouter = router({
 	bingo: bingoRouter,
 	loteria: loteriaRouter,
 	rumble: rumbleRouter,
+	user: userRouter,
 });
 
 export type AppRouter = typeof appRouter;

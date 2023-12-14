@@ -1,6 +1,6 @@
 'use client';
 
-import LoteriaProvider from '@/context/loteria/LoteriaProvider';
+import LoteriaInfoAdminProvider from '@/context/loteriaInfoAdmin/LoteriaInfoAdminProvider';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 import { ScrollArea } from '@ui/ScrollArea';
@@ -13,7 +13,7 @@ interface Props {
 }
 const DashboardLoteriaContainer = ({ cards }: Props) => {
 	return (
-		<LoteriaProvider initialCards={cards}>
+		<LoteriaInfoAdminProvider initialCards={cards}>
 			<div className='h-[calc(100vh-3.5rem-1px)]'>
 				<ScrollArea className='h-full' type='always'>
 					<div className='mx-auto mt-9 w-[70%]'>
@@ -24,7 +24,7 @@ const DashboardLoteriaContainer = ({ cards }: Props) => {
 					</div>
 				</ScrollArea>
 			</div>
-		</LoteriaProvider>
+		</LoteriaInfoAdminProvider>
 	);
 };
 

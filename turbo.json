@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDotEnv": [".env"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
@@ -10,6 +10,10 @@
       "dependsOn": ["^lint"]
     },
     "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "pre-commit": {
       "cache": false,
       "persistent": true
     },

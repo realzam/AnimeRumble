@@ -31,13 +31,13 @@ const UserAccountNav = ({ user }: Props) => {
 						{user.name && (
 							<>
 								<span className='mr-2 font-semibold'>
-									{capitalizeWord(user.name)}
+									{`${user.nickName} (${capitalizeWord(user.name)})`}
 								</span>
 								<Badge>{user.role}</Badge>
 							</>
 						)}
 						{user.email && (
-							<p className='max-w-[300px] truncate text-sm'>
+							<p className='text-sm max-w-[300px] truncate'>
 								{user.email.toLowerCase()}
 							</p>
 						)}

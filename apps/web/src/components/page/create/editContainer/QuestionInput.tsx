@@ -56,7 +56,7 @@ const QuestionInput = () => {
 		<Tooltip open={showError}>
 			<TooltipTrigger className='w-full'>
 				<Reactive.input
-					className='flex h-11 w-full rounded-md border border-input bg-transparent px-3 py-1 text-center shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-lg lg:text-2xl'
+					className='file:text-sm md:text-lg lg:text-2xl flex h-11 w-full rounded-md border border-input bg-transparent px-3 py-1 text-center shadow-sm transition-colors file:border-0 file:bg-transparent file:font-medium placeholder:text-muted-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
 					name='question'
 					id='question'
 					placeholder='Escribe tu pregunta'

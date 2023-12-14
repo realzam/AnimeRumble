@@ -1,7 +1,6 @@
 'server-only';
 
 import { env } from '@/env.mjs';
-import * as schema from '@/models/quizzes';
 import {
 	AddQuestionSchema,
 	AsignateQuizSchema,
@@ -23,6 +22,7 @@ import {
 	userProcedure,
 } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
+import * as schema from 'anime-db';
 import { and, asc, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { customAlphabet, urlAlphabet } from 'nanoid';
 import { UTApi } from 'uploadthing/server';

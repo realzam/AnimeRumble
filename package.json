@@ -24,22 +24,25 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo build",
-    "start": "turbo start --filter=web",
-    "dev": "turbo dev --filter=web",
+    "build": "dotenv -- turbo build",
+    "dev": "dotenv -- turbo dev --filter=web --filter=socket-anime",
+    "start": "dotenv -- turbo start --filter=web --filter=socket-anime",
+    "build:backend": "dotenv -- turbo build --filter=socket-anime",
+    "dev:backend": "dotenv -- turbo dev --filter=socket-anime",
     "lint": "turbo lint --filter=web",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install",
     "co": "sui-mono commit",
-    "clean": "rimraf pnpm-lock.yaml && rimraf node_modules && rimraf apps/web/node_modules",
-    "pre-commit": "pnpm run --filter=web pre-commit"
+    "clean": "rimraf pnpm-lock.yaml && rimraf node_modules && rimraf .turbo && rimraf apps/web/node_modules  && rimraf apps/socketServer/node_modules",
+    "pre-commit": "turbo --filter=web pre-commit && turbo --filter=socket-anime pre-commit"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
-    "@s-ui/mono": "^2.41.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@s-ui/mono": "^2.41.0",
+    "dotenv-cli": "^7.3.0",
     "husky": "^8.0.3",
     "prettier": "^3.1.0",
     "turbo": "latest"

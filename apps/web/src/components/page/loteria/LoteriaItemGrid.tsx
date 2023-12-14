@@ -5,19 +5,25 @@ import { Computed, Show, useComputed } from '@legendapp/state/react';
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 import { cn } from '@/lib/utils';
 import usePlayLoteria from '@/hooks/usePlayLoteria';
+// import CreateLoteriaDialog from './CreateLoteriaDialog';
+import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
 import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Card } from '@/components/ui/Card';
 
-import CreateLoteriaDialog from './CreateLoteriaDialog';
+import LoteriaCardEditDialog from './LoteriaCardEditDialog';
 
 interface Props {
 	id: string;
 	item: ObservableObject<LoteriaCardsDataType[0]>;
 }
 const LoteriaItemGrid = ({ item: card, id }: Props) => {
-	const { playMode, toggleActiveCard, ractivesMarked } = usePlayLoteria();
-	const overlay = useComputed(() => playMode.get() && ractivesMarked[id].get());
-	const edit = useComputed(() => !playMode.get());
+	const { stateGame } = usePlayLoteria();
+	const { ractivesMarked, toggleActiveCard, props } = usePlayLoteriaUI();
+	const playMode = useComputed(() => stateGame.get() === 'play');
+	const overlay = useComputed(() => ractivesMarked[id].get());
+	const edit = useComputed(
+		() => stateGame.get() === 'lobby' && !props.isFetching.get(),
+	);
 	return (
 		<Computed>
 			{() => (
@@ -28,7 +34,9 @@ const LoteriaItemGrid = ({ item: card, id }: Props) => {
 							'cursor-pointer xs:hover:scale-[1.05] xs:hover:ring xs:hover:ring-primary',
 					)}
 					onClick={() => {
-						toggleActiveCard(id);
+						if (playMode.get()) {
+							toggleActiveCard(id);
+						}
 					}}
 				>
 					<AspectRatio ratio={3 / 5}>
@@ -43,14 +51,14 @@ const LoteriaItemGrid = ({ item: card, id }: Props) => {
 							priority
 						/>
 						<Show if={edit}>
-							<CreateLoteriaDialog id={id} />
+							<LoteriaCardEditDialog id={id} />
 						</Show>
-						<div className='absolute bottom-0 w-full bg-slate-900/50 px-3 text-center text-xs capitalize text-white backdrop-blur-sm xs:text-sm'>
-							{`${card.index.get()}. ${card.title.get()}`}
+						<div className='xs:text-sm absolute bottom-0 w-full bg-slate-900/80 px-3 text-center text-2xs font-semibold capitalize tracking-wider text-white backdrop-blur-sm'>
+							{card.title.get()}
 						</div>
 
 						<Show if={overlay}>
-							<div className='absolute h-full w-full rounded-sm bg-slate-900/70 backdrop-blur-[2px]' />
+							<div className='absolute h-full w-full rounded-sm rounded-b bg-slate-900/70 backdrop-blur-[2px]' />
 						</Show>
 					</AspectRatio>
 				</Card>
