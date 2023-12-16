@@ -1,23 +1,23 @@
 import { useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Show } from '@legendapp/state/react';
-import { Pencil, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 import { cn, quitarAcentos } from '@/lib/utils';
 import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
-import { Dialog, DialogContent, DialogTrigger } from '@ui/Dialog';
+import { Dialog, DialogContent } from '@ui/Dialog';
 import { ScrollArea } from '@ui/ScrollArea';
 import { AspectRatio } from '@/components/ui/AspectRatio';
-import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 
-interface Props {
-	id: string;
-}
-
-const LoteriaCardEditDialog = ({ id }: Props) => {
-	const { searchList, replaceCard } = usePlayLoteriaUI();
+const LoteriaCardEditDialog = () => {
+	const {
+		searchList,
+		replaceCard,
+		isOpenChangeCardDialog,
+		closeChangeCardDialog,
+	} = usePlayLoteriaUI();
 	const [search, setSearch] = useState('');
 
 	const clearText = useCallback((text: string) => {
@@ -33,12 +33,13 @@ const LoteriaCardEditDialog = ({ id }: Props) => {
 	);
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button className='absolute right-2 top-2 z-10 h-7 w-7 rounded-full p-[6px] text-white hover:scale-[1.05] hover:bg-purple-600 xs:-right-4 xs:-top-4 xs:h-9 xs:w-9'>
-					<Pencil className='h-full w-full' />
-				</Button>
-			</DialogTrigger>
+		<Dialog
+			open={isOpenChangeCardDialog}
+			onOpenChange={(v) => {
+				console.log('onOpenChange', v);
+				closeChangeCardDialog();
+			}}
+		>
 			<DialogContent className='p-0 sm:max-w-[500px]'>
 				<div className='relative h-12'>
 					<Search className='absolute left-3 top-4 h-4 w-4' />
@@ -62,9 +63,7 @@ const LoteriaCardEditDialog = ({ id }: Props) => {
 									console.log('click replace card');
 
 									if (!card.disable) {
-										console.log('execute replace card', id, card.id);
-
-										replaceCard(id, card.id);
+										replaceCard(card.id);
 									}
 								}}
 							>
@@ -80,7 +79,7 @@ const LoteriaCardEditDialog = ({ id }: Props) => {
 										priority
 									/>
 
-									<div className='xs:text-sm absolute bottom-0 w-full bg-slate-900/50 px-3 text-center text-xs capitalize text-white backdrop-blur-sm'>
+									<div className='absolute bottom-0 w-full bg-slate-900/50 px-3 text-center text-xs capitalize text-white backdrop-blur-sm xs:text-sm'>
 										{`${card.index}. ${card.title}`}
 									</div>
 									<Show if={card.disable}>

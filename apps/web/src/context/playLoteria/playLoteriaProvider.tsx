@@ -2,8 +2,10 @@ import { useEffect, type FC } from 'react';
 import { trpc } from '@/trpc/client/client';
 import { useMount, useObservable } from '@legendapp/state/react';
 import { type LoteriaClientSocket } from 'anime-sockets-types';
+import { decodeJwt } from 'jose';
 import { type Session } from 'next-auth';
 
+import { type JwtAnimePlayer } from '@/types/jwt.types';
 import {
 	type LoteriaCardsDataType,
 	type LoteriaCurrentGameDataType,
@@ -23,6 +25,7 @@ interface Props {
 	children: React.ReactNode;
 	cards: LoteriaCardsDataType;
 	allCards: LoteriaCardsDataType;
+	playersOnline: string[];
 }
 
 const PlayLoteriaProvider: FC<Props> = ({
@@ -31,6 +34,7 @@ const PlayLoteriaProvider: FC<Props> = ({
 	initalSession,
 	cards,
 	allCards,
+	playersOnline,
 }) => {
 	const stateGame = useObservable<TypeStateGame>('initializing');
 	const joinToLoteria = trpc.loteria.joinToLoteria.useMutation();
@@ -52,6 +56,11 @@ const PlayLoteriaProvider: FC<Props> = ({
 	const login = (jwt: string) => {
 		localStorage.setItem('anime.player', jwt);
 		console.log('login', jwt);
+		const { id, nick } = decodeJwt<JwtAnimePlayer>(jwt);
+		userInfo.set({
+			userId: id,
+			nickname: nick,
+		});
 		conectarSocket();
 	};
 
@@ -108,9 +117,14 @@ const PlayLoteriaProvider: FC<Props> = ({
 				stateGame,
 				userInfo,
 				login,
+				socket,
 			}}
 		>
-			<PlayLoteriaUIProvider allCards={allCards} initialCards={cards}>
+			<PlayLoteriaUIProvider
+				allCards={allCards}
+				initialCards={cards}
+				playersOnline={playersOnline}
+			>
 				{children}
 			</PlayLoteriaUIProvider>
 		</PlayLoteriaContext.Provider>

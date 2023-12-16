@@ -88,3 +88,29 @@ export const joinUserToLoteria = async (userId: string): Promise<Response> => {
 
 	return { ok: true };
 };
+
+export const getOnlinePlayersGameLoteria = async () => {
+	const currentGame = await getCurrentGameLoteria();
+	if (!currentGame) {
+		console.log('getPlayersGameLoteria no game current playing');
+
+		return [];
+	}
+	const players = await db.query.playerLoteria.findMany({
+		where: and(
+			eq(playerLoteria.gameId, currentGame.id),
+			eq(playerLoteria.online, true),
+		),
+	});
+	return players.map((p) => p.nickName);
+};
+
+export const setOnlinePlayerLoteria = async (id: string, online: boolean) => {
+	const currentGame = await getCurrentGameLoteria();
+	if (currentGame) {
+		await db
+			.update(playerLoteria)
+			.set({ online })
+			.where(eq(playerLoteria.userId, id));
+	}
+};

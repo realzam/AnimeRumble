@@ -10,7 +10,7 @@ import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
 import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Card } from '@/components/ui/Card';
 
-import LoteriaCardEditDialog from './LoteriaCardEditDialog';
+import LoteriaEditCardButton from './LoteriaEditCardButton';
 
 interface Props {
 	id: string;
@@ -18,9 +18,12 @@ interface Props {
 }
 const LoteriaItemGrid = ({ item: card, id }: Props) => {
 	const { stateGame } = usePlayLoteria();
-	const { ractivesMarked, toggleActiveCard, props } = usePlayLoteriaUI();
-	const playMode = useComputed(() => stateGame.get() === 'play');
-	const overlay = useComputed(() => ractivesMarked[id].get());
+	const { ractivesMarked, toggleActiveCard, props, playMode } =
+		usePlayLoteriaUI();
+
+	const overlay = useComputed(
+		() => ractivesMarked[id].get() || props.isFetching.get(),
+	);
 	const edit = useComputed(
 		() => stateGame.get() === 'lobby' && !props.isFetching.get(),
 	);
@@ -51,9 +54,9 @@ const LoteriaItemGrid = ({ item: card, id }: Props) => {
 							priority
 						/>
 						<Show if={edit}>
-							<LoteriaCardEditDialog id={id} />
+							<LoteriaEditCardButton id={card.id.get()} />
 						</Show>
-						<div className='xs:text-sm absolute bottom-0 w-full bg-slate-900/80 px-3 text-center text-2xs font-semibold capitalize tracking-wider text-white backdrop-blur-sm'>
+						<div className='absolute bottom-0 w-full bg-slate-900/80 px-3 text-center text-2xs font-semibold capitalize tracking-wider text-white backdrop-blur-sm xs:text-xs sm:text-sm'>
 							{card.title.get()}
 						</div>
 

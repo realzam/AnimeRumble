@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import { screens } from 'tailwindcss/defaultTheme';
+import { fontSize, screens } from 'tailwindcss/defaultTheme';
 import { withUt } from 'uploadthing/tw';
 
 export default withUt({
@@ -27,7 +27,7 @@ export default withUt({
 		},
 		fontSize: {
 			'2xs': '0.5rem',
-			xs: '0.8rem',
+			...fontSize,
 		},
 		extend: {
 			colors: {

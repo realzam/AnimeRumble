@@ -15,12 +15,14 @@ interface Props {
 	allCards: LoteriaCardsDataType;
 	session: Session | null;
 	currentGame: LoteriaCurrentGameDataType;
+	playersOnline: string[];
 }
 const LoteriaContainerPage = ({
 	currentGame,
 	session,
 	allCards,
 	cards,
+	playersOnline,
 }: Props) => {
 	return (
 		<PlayLoteriaProvider
@@ -28,6 +30,7 @@ const LoteriaContainerPage = ({
 			initalSession={session}
 			cards={cards}
 			allCards={allCards}
+			playersOnline={playersOnline}
 		>
 			<LoteriaSwitcherScreen />
 		</PlayLoteriaProvider>

@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { type Observable, type ObservablePrimitive } from '@legendapp/state';
+import { type LoteriaClientSocket } from 'anime-sockets-types';
 
 export type TypeStateGame =
 	| 'initializing'
@@ -17,6 +18,7 @@ export interface TypeUserInfo {
 export type RactivesMarkedRecord = Record<string, boolean>;
 
 interface State {
+	socket: LoteriaClientSocket | null;
 	stateGame: ObservablePrimitive<TypeStateGame>;
 	userInfo: Observable<TypeUserInfo | undefined>;
 	login: (jwt: string) => void;

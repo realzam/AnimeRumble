@@ -196,4 +196,21 @@ export const loteriaRouter = router({
 				return jwt;
 			}
 		}),
+	getPlayesrOnline: publicProcedure.query(async () => {
+		const currentGame = await db.query.loteriaGame.findFirst({
+			where: ne(loteriaGame.state, 'finish'),
+		});
+		if (!currentGame) {
+			console.log('getPlayersGameLoteria no game current playing');
+
+			return [];
+		}
+		const players = await db.query.playerLoteria.findMany({
+			where: and(
+				eq(playerLoteria.gameId, currentGame.id),
+				eq(playerLoteria.online, true),
+			),
+		});
+		return players.map((p) => p.nickName);
+	}),
 });

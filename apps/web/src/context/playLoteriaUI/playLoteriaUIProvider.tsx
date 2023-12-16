@@ -1,12 +1,19 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+	type FC,
+} from 'react';
 import { trpc } from '@/trpc/client/client';
-import { useMount, useObservable, useObserve } from '@legendapp/state/react';
+import { useComputed, useObservable, useObserve } from '@legendapp/state/react';
 import { useObservableQuery } from '@legendapp/state/react-hooks/useObservableQuery';
 import { getQueryKey } from '@trpc/react-query';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 import { type TypeLoteriaRandomQueryProps } from '@/types/rumbleQuery';
 import { quitarAcentos } from '@/lib/utils';
+import usePlayLoteria from '@/hooks/usePlayLoteria';
 
 import {
 	PlayLoteriaUIContext,
@@ -18,23 +25,30 @@ interface Props {
 	children: React.ReactNode;
 	allCards: LoteriaCardsDataType;
 	initialCards: LoteriaCardsDataType;
+	playersOnline: string[];
 }
 
 const PlayLoteriaUIProvider: FC<Props> = ({
 	children,
 	allCards,
 	initialCards,
+	playersOnline,
 }) => {
+	const { stateGame, socket } = usePlayLoteria();
+	const [playersList, setPlayersList] = useState<string[]>(playersOnline);
+	const [idChangeCard, setIdChangeCard] = useState('');
+	const [isOpenChangeCardDialog, setIsOpenChangeCardDialog] = useState(false);
+	const playMode = useComputed(() => stateGame.get() === 'play');
 	const currentCards$ = useObservable<LoteriaCardsDataType>([...initialCards]);
-	const playMode = useObservable(true);
-
-	const ractivesMarked = useObservable<RactivesMarkedRecord>(() => {
+	const defaultRactives = useMemo(() => {
 		const ractive: RactivesMarkedRecord = {};
-		currentCards$.get().forEach((value) => {
+		allCards.forEach((value) => {
 			Object.assign(ractive, { [value.id]: false });
 		});
 		return ractive;
-	});
+	}, [allCards]);
+
+	const ractivesMarked = useObservable<RactivesMarkedRecord>(defaultRactives);
 
 	const clearText = useCallback((text: string) => {
 		return text.toLowerCase().trim().replace(/\s+/g, '');
@@ -94,32 +108,20 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 		props.set(opt);
 	});
 
-	useObserve(currentCards$, () => {
-		const ractive: RactivesMarkedRecord = {};
-		currentCards$.get().forEach((value) => {
-			Object.assign(ractive, { [value.id]: false });
+	useEffect(() => {
+		socket?.on('players', (playersSo) => {
+			console.log('socket.onPlayers', playersSo);
+			setPlayersList(playersSo);
 		});
-		ractivesMarked.set(ractive);
-		setSearchList(searchListProcess());
-	});
+	}, [socket]);
 
 	const clearPlantilla = () => {
-		Object.keys(ractivesMarked.get()).forEach(function (key) {
-			ractivesMarked[key].set(false);
-		});
-	};
-
-	const checkAllPlantilla = () => {
-		Object.keys(ractivesMarked.get()).forEach(function (key) {
-			ractivesMarked[key].set(true);
-		});
+		ractivesMarked.set(defaultRactives);
 	};
 
 	const generateRandomCards = async () => {
-		checkAllPlantilla();
 		const e = props.get();
-		await e.refetch({});
-		clearPlantilla();
+		await e.refetch();
 	};
 
 	const toggleActiveCard = (key: string) => {
@@ -128,23 +130,27 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 		}
 	};
 
-	const replaceCard = (from: string, to: string) => {
-		const newCards = [...currentCards$.get()];
-		const iFrom = newCards.findIndex((c) => c.id === from);
-		const iTo = allCards.find((c) => c.id === to);
-		console.log('test', newCards, iFrom, !!iTo);
+	const openChangeCardDialog = (id: string) => {
+		setIdChangeCard(id);
+		setIsOpenChangeCardDialog(true);
+	};
 
-		if (iFrom != -1 && iTo) {
-			console.log('replaceCard before', currentCards$.get());
-			newCards[iFrom] = iTo;
-			currentCards$.set([...newCards]);
-			console.log('replaceCard after', currentCards$.get());
+	const closeChangeCardDialog = () => {
+		setIsOpenChangeCardDialog(false);
+	};
+
+	const replaceCard = (to: string) => {
+		const from = idChangeCard;
+		const toCard = allCards.find((c) => c.id === to);
+		const iFrom = currentCards$.get().findIndex((c) => c.id === from);
+		const isToInCurrent = currentCards$.get().find((c) => c.id === to);
+		if (!playMode.get() && iFrom !== -1 && !isToInCurrent) {
+			currentCards$[iFrom].set(toCard);
 		}
 	};
 
-	useMount(() => {
-		playMode.set(true);
-		clearPlantilla();
+	useObserve(currentCards$, () => {
+		setSearchList(searchListProcess());
 	});
 
 	return (
@@ -159,6 +165,11 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 				replaceCard,
 				toggleActiveCard,
 				ractivesMarked,
+				playMode,
+				isOpenChangeCardDialog,
+				openChangeCardDialog,
+				closeChangeCardDialog,
+				playersList,
 			}}
 		>
 			{children}
