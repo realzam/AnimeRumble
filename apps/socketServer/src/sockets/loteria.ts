@@ -7,12 +7,18 @@ import { type Server } from 'socket.io';
 
 import {
 	getOnlinePlayersGameLoteria,
+	goToLobbyGameLoteria,
+	nextCardGameLoteria,
 	setOnlinePlayerLoteria,
 } from '../controllers/loteria';
+import { startGameEvent } from '../event/loteria';
 import { type JwtAnimePlayer } from '../types/jwt';
 
 const loteriaSocket = async (io: Server): Promise<void> => {
 	const loteria: LoteriaIONamesapce = io.of('/loteria');
+	loteria.sockets.forEach((e) => {
+		console.log('sockets in loateria', e.data.userId);
+	});
 
 	loteria.use(async (socket, next) => {
 		const token = socket.handshake.query['x-token'] as string;
@@ -35,23 +41,29 @@ const loteriaSocket = async (io: Server): Promise<void> => {
 	loteria.on('connection', async (socket: LoteriaServerSocket) => {
 		console.log('client connect to loteria');
 		await setOnlinePlayerLoteria(socket.data.userId, true);
+		loteria.emit('joinPlayer');
 		loteria.emit('players', await getOnlinePlayersGameLoteria());
-		// const currentGame = await getCurrentGameLoteria();
-		// let info: TypeIsRoomCreated = {
-		// 	created: false,
-		// };
-		// if (currentGame) {
-		// 	info = {
-		// 		created: true,
-		// 		status: currentGame.state,
-		// 	};
-		// }
-		// socket.emit('isRoomCreated', info);
-		// socket.on('joinGuest', (nick) => joinGuest(socket, nick));
-		// socket.on('joinUser', (id) => joinUser(socket, id));
 		socket.on('disconnect', async () => {
+			loteria.emit('leavePlayer');
 			await setOnlinePlayerLoteria(socket.data.userId, false);
 			loteria.emit('players', await getOnlinePlayersGameLoteria());
+		});
+
+		socket.on('startGame', () => startGameEvent(loteria, socket));
+		socket.on('goToLobbyGame', async () => {
+			if (socket.data.role === 'admin') {
+				await goToLobbyGameLoteria();
+				loteria.emit('gameState', 'lobby');
+			}
+		});
+
+		socket.on('nextCard', async () => {
+			if (socket.data.role === 'admin') {
+				const index = await nextCardGameLoteria();
+				if (index) {
+					loteria.emit('updateCurrentCard', index);
+				}
+			}
 		});
 	});
 };

@@ -1,15 +1,19 @@
 import { createContext } from 'react';
 import { type Observable, type ObservablePrimitive } from '@legendapp/state';
+import { type loteriaGame } from 'anime-db';
 import { type LoteriaClientSocket } from 'anime-sockets-types';
 
-export type TypeStateGame =
+import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
+
+export type TypeLoteriaGameTableState = typeof loteriaGame.$inferSelect.state;
+
+export type TypeStateGameUI =
 	| 'initializing'
 	| 'waitSocketStartup'
 	| 'waitToRoom'
-	| 'nickNameForm'
-	| 'lobby'
-	| 'finish'
-	| 'play';
+	| 'nickNameForm';
+
+export type TypeStateGame = TypeStateGameUI | TypeLoteriaGameTableState;
 export interface TypeUserInfo {
 	userId: string;
 	nickname?: string | null;
@@ -21,7 +25,10 @@ interface State {
 	socket: LoteriaClientSocket | null;
 	stateGame: ObservablePrimitive<TypeStateGame>;
 	userInfo: Observable<TypeUserInfo | undefined>;
-	login: (jwt: string) => void;
+	allCards: LoteriaCardsDataType;
+	cardsPlayer: LoteriaCardsDataType;
+	playersOnline: string[];
+	login: (jwt: string, playerCards: LoteriaCardsDataType) => void;
 }
 
 export const PlayLoteriaContext = createContext<State | null>(null);

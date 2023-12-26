@@ -39,7 +39,7 @@
     "prepare": "husky install",
     "co": "sui-mono commit",
     "clean": "rimraf pnpm-lock.yaml && rimraf node_modules && rimraf .turbo && rimraf apps/web/node_modules  && rimraf apps/socketServer/node_modules",
-    "pre-commit": "turbo --filter=web pre-commit && turbo --filter=socket-anime pre-commit"
+    "pre-commit": "turbo --filter=web pre-commit"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",

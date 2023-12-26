@@ -1,4 +1,4 @@
-import { useEffect, type FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { trpc } from '@/trpc/client/client';
 import { useMount, useObservable } from '@legendapp/state/react';
 import { type LoteriaClientSocket } from 'anime-sockets-types';
@@ -12,7 +12,6 @@ import {
 } from '@/types/loteriaQuery';
 import useSocket from '@/hooks/useSocket';
 
-import PlayLoteriaUIProvider from '../playLoteriaUI/playLoteriaUIProvider';
 import {
 	PlayLoteriaContext,
 	type TypeStateGame,
@@ -23,7 +22,6 @@ interface Props {
 	initialCurrentGame: LoteriaCurrentGameDataType;
 	initalSession: Session | null;
 	children: React.ReactNode;
-	cards: LoteriaCardsDataType;
 	allCards: LoteriaCardsDataType;
 	playersOnline: string[];
 }
@@ -32,13 +30,13 @@ const PlayLoteriaProvider: FC<Props> = ({
 	children,
 	initialCurrentGame,
 	initalSession,
-	cards,
 	allCards,
 	playersOnline,
 }) => {
+	const [cardsPlayer, setCardsPlayer] = useState<LoteriaCardsDataType>([]);
 	const stateGame = useObservable<TypeStateGame>('initializing');
 	const joinToLoteria = trpc.loteria.joinToLoteria.useMutation();
-
+	const loginLoteria = trpc.loteria.loginLoteria.useMutation();
 	const userInfo = useObservable<TypeUserInfo | undefined>(() => {
 		if (initalSession && initalSession.user) {
 			return { userId: initalSession.user.id };
@@ -53,9 +51,9 @@ const PlayLoteriaProvider: FC<Props> = ({
 		},
 	});
 
-	const login = (jwt: string) => {
+	const login = (jwt: string, playerCards: LoteriaCardsDataType) => {
 		localStorage.setItem('anime.player', jwt);
-		console.log('login', jwt);
+		setCardsPlayer(playerCards);
 		const { id, nick } = decodeJwt<JwtAnimePlayer>(jwt);
 		userInfo.set({
 			userId: id,
@@ -72,8 +70,9 @@ const PlayLoteriaProvider: FC<Props> = ({
 						nickName: initalSession.user.nickName,
 					},
 					{
-						onSuccess: (jwt) => {
-							login(jwt);
+						onSuccess: ({ jwt, playerCards }) => {
+							setCardsPlayer(playerCards);
+							login(jwt, playerCards);
 						},
 					},
 				);
@@ -104,8 +103,16 @@ const PlayLoteriaProvider: FC<Props> = ({
 		const jwt = window.localStorage.getItem('anime.player');
 		console.log(jwt);
 		if (jwt) {
-			login(jwt);
 			stateGame.set('waitSocketStartup');
+			loginLoteria.mutate(
+				{ jwt },
+				{
+					onSuccess: (playerCards) => {
+						setCardsPlayer(playerCards);
+						login(jwt, playerCards);
+					},
+				},
+			);
 			return;
 		}
 		setStartupPage();
@@ -118,15 +125,19 @@ const PlayLoteriaProvider: FC<Props> = ({
 				userInfo,
 				login,
 				socket,
+				cardsPlayer,
+				allCards,
+				playersOnline,
 			}}
 		>
-			<PlayLoteriaUIProvider
+			{/* <PlayLoteriaUIProvider
 				allCards={allCards}
-				initialCards={cards}
+				initialCards={cardsPlayer}
 				playersOnline={playersOnline}
 			>
 				{children}
-			</PlayLoteriaUIProvider>
+			</PlayLoteriaUIProvider> */}
+			{children}
 		</PlayLoteriaContext.Provider>
 	);
 };

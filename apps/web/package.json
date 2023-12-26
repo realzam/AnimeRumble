@@ -13,7 +13,7 @@
 		"clean:all": "rimraf node_modules && rimraf .next && rimraf pnpm-lock.yaml",
 		"format:check": "prettier \"**/*.{js,ts,tsx}\" --check --cache",
 		"format:write": "prettier \"**/*.{js,ts,tsx}\" --write --cache",
-		"pre-commit": "pnpm lint-staged"
+		"pre-commit": "tsc --noEmit && pnpm lint-staged"
 	},
 	"dependencies": {
 		"@auth/core": "^0.18.3",

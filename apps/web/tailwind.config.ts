@@ -30,6 +30,9 @@ export default withUt({
 			...fontSize,
 		},
 		extend: {
+			height: {
+				all: 'calc(100vh - 3.5rem - 1px)',
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "922a23ef-7d72-4216-9c83-a7f6ee6ddd32",
+  "id": "0fd5bf39-83c8-42e5-b074-d55ddca7e84f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -145,6 +145,45 @@
       },
       "uniqueConstraints": {}
     },
+    "loteriaCardsToPlayerLoteria": {
+      "name": "loteriaCardsToPlayerLoteria",
+      "columns": {
+        "cardId": {
+          "name": "cardId",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "gameId": {
+          "name": "gameId",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "playerId": {
+          "name": "playerId",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "loteriaCardsToPlayerLoteria_cardId_gameId_playerId_pk": {
+          "name": "loteriaCardsToPlayerLoteria_cardId_gameId_playerId_pk",
+          "columns": [
+            "cardId",
+            "gameId",
+            "playerId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "loteriaGame": {
       "name": "loteriaGame",
       "columns": {
@@ -157,7 +196,7 @@
         },
         "state": {
           "name": "state",
-          "type": "varchar(8)",
+          "type": "varchar(9)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -219,6 +258,13 @@
         "userType": {
           "name": "userType",
           "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "correctAnswers": {
+          "name": "correctAnswers",
+          "type": "json",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

@@ -23,9 +23,16 @@ CREATE TABLE `loteriaCardsToLoteriaGames` (
 	CONSTRAINT `loteriaCardsToLoteriaGames_cardId_gameId_pk` PRIMARY KEY(`cardId`,`gameId`)
 );
 --> statement-breakpoint
+CREATE TABLE `loteriaCardsToPlayerLoteria` (
+	`cardId` varchar(30) NOT NULL,
+	`gameId` varchar(50) NOT NULL,
+	`playerId` varchar(50) NOT NULL,
+	CONSTRAINT `loteriaCardsToPlayerLoteria_cardId_gameId_playerId_pk` PRIMARY KEY(`cardId`,`gameId`,`playerId`)
+);
+--> statement-breakpoint
 CREATE TABLE `loteriaGame` (
 	`id` varchar(30) NOT NULL,
-	`state` varchar(8) NOT NULL DEFAULT 'lobby',
+	`state` varchar(9) NOT NULL DEFAULT 'lobby',
 	`index` smallint NOT NULL DEFAULT 0,
 	CONSTRAINT `loteriaGame_id` PRIMARY KEY(`id`)
 );
@@ -36,6 +43,7 @@ CREATE TABLE `playerLoteria` (
 	`nickName` varchar(100) NOT NULL,
 	`isCorrect` boolean NOT NULL DEFAULT false,
 	`userType` varchar(8) NOT NULL,
+	`correctAnswers` json NOT NULL,
 	CONSTRAINT `playerLoteria_userId_gameId_pk` PRIMARY KEY(`userId`,`gameId`)
 );
 --> statement-breakpoint

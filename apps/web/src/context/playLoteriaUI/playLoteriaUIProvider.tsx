@@ -6,9 +6,15 @@ import React, {
 	type FC,
 } from 'react';
 import { trpc } from '@/trpc/client/client';
-import { useComputed, useObservable, useObserve } from '@legendapp/state/react';
+import {
+	useComputed,
+	useMount,
+	useObservable,
+	useObserve,
+} from '@legendapp/state/react';
 import { useObservableQuery } from '@legendapp/state/react-hooks/useObservableQuery';
 import { getQueryKey } from '@trpc/react-query';
+import { useAudioPlayer } from 'react-use-audio-player';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 import { type TypeLoteriaRandomQueryProps } from '@/types/rumbleQuery';
@@ -34,9 +40,14 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 	initialCards,
 	playersOnline,
 }) => {
+	const soundCounter = useAudioPlayer();
+	const soundLeavePlayer = useAudioPlayer();
+	const soundJoinPlayer = useAudioPlayer();
 	const { stateGame, socket } = usePlayLoteria();
 	const [playersList, setPlayersList] = useState<string[]>(playersOnline);
 	const [idChangeCard, setIdChangeCard] = useState('');
+	const [openCountdownDialog, setOpenCountdownDialog] = useState(false);
+
 	const [isOpenChangeCardDialog, setIsOpenChangeCardDialog] = useState(false);
 	const playMode = useComputed(() => stateGame.get() === 'play');
 	const currentCards$ = useObservable<LoteriaCardsDataType>([...initialCards]);
@@ -99,6 +110,12 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 		return opt;
 	});
 
+	useMount(() => {
+		soundCounter.load('/sounds/countdown.mp3');
+		soundLeavePlayer.load('/sounds/leavePlayer.mp3');
+		soundJoinPlayer.load('/sounds/joinPlayer.mp3');
+	});
+
 	useObserve(query$, () => {
 		const q = query$.get();
 		const { data, ...opt } = q;
@@ -110,10 +127,45 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 
 	useEffect(() => {
 		socket?.on('players', (playersSo) => {
-			console.log('socket.onPlayers', playersSo);
 			setPlayersList(playersSo);
 		});
 	}, [socket]);
+
+	useEffect(() => {
+		socket?.removeListener('joinPlayer');
+		socket?.on('joinPlayer', () => {
+			soundJoinPlayer.play();
+		});
+	}, [socket, soundJoinPlayer]);
+
+	useEffect(() => {
+		socket?.removeListener('leavePlayer');
+		socket?.on('leavePlayer', () => {
+			soundLeavePlayer.play();
+		});
+	}, [socket, soundLeavePlayer]);
+
+	useEffect(() => {
+		socket?.removeListener('gameState');
+		socket?.on('gameState', (state) => {
+			stateGame.set(state);
+		});
+	}, [socket, stateGame]);
+
+	useEffect(() => {
+		socket?.removeListener('showCountdownDialog');
+		socket?.on('showCountdownDialog', () => {
+			setIsOpenChangeCardDialog(false);
+			setOpenCountdownDialog(true);
+		});
+	}, [socket, stateGame]);
+
+	useEffect(() => {
+		socket?.removeListener('closeCountdownDialog');
+		socket?.on('closeCountdownDialog', () => {
+			setOpenCountdownDialog(false);
+		});
+	}, [socket, stateGame]);
 
 	const clearPlantilla = () => {
 		ractivesMarked.set(defaultRactives);
@@ -156,6 +208,7 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 	return (
 		<PlayLoteriaUIContext.Provider
 			value={{
+				soundCounter,
 				props,
 				generateRandomCards,
 				clearPlantilla,
@@ -170,6 +223,7 @@ const PlayLoteriaUIProvider: FC<Props> = ({
 				openChangeCardDialog,
 				closeChangeCardDialog,
 				playersList,
+				openCountdownDialog,
 			}}
 		>
 			{children}

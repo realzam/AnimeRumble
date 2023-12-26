@@ -4,6 +4,7 @@ import {
 	type ObservableComputed,
 	type ObservableObject,
 } from '@legendapp/state';
+import { type AudioPlayer } from 'react-use-audio-player';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 import { type TypeLoteriaRandomQueryProps } from '@/types/rumbleQuery';
@@ -24,6 +25,8 @@ interface State {
 	ractivesMarked: ObservableObject<RactivesMarkedRecord>;
 	playMode: ObservableComputed<boolean>;
 	isOpenChangeCardDialog: boolean;
+	openCountdownDialog: boolean;
+	soundCounter: AudioPlayer;
 	openChangeCardDialog: (id: string) => void;
 	closeChangeCardDialog: () => void;
 	replaceCard: (to: string) => void;

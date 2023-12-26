@@ -1,14 +1,22 @@
 'use client';
 
-import { type LoteriaGameDataType } from '@/types/loteriaQuery';
+import HostLoteriaProvider from '@/context/hostLoteria/HostLoteriaProvider';
 
-import LoteriaHostContainer from './LoteriaHostContainer';
+import { type LoteriaStartLoteriaHostDataType } from '@/types/loteriaQuery';
+
+import HostLoteriaSwitcher from './HostLoteriaSwitcher';
 
 interface Props {
-	game: LoteriaGameDataType;
+	game: LoteriaStartLoteriaHostDataType['game'];
+	token: LoteriaStartLoteriaHostDataType['token'];
+	playersOnline: string[];
 }
-const LoteriaHostPage = ({}: Props) => {
-	return <LoteriaHostContainer />;
+const LoteriaHostPage = (props: Props) => {
+	return (
+		<HostLoteriaProvider {...props}>
+			<HostLoteriaSwitcher />
+		</HostLoteriaProvider>
+	);
 };
 
 export default LoteriaHostPage;

@@ -63,9 +63,9 @@ const LoteriaNicknameForm = () => {
 		joinToLoteria.mutate(
 			{ nickName },
 			{
-				onSuccess: (jwt) => {
+				onSuccess: ({ jwt, playerCards }) => {
 					console.log('my jwt is', jwt);
-					login(jwt);
+					login(jwt, playerCards);
 				},
 				onSettled: () => {
 					isSubmitting.set(false);

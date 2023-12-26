@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server as ServerIO } from 'socket.io';
 
+import { setOfflineAllUsers } from './controllers/loteria';
 import { defaultSocket } from './sockets/default';
 import { loteriaSocket } from './sockets/loteria';
 
@@ -15,7 +16,10 @@ class Server {
 
 	private io = new ServerIO(this.server, {
 		cors: {
-			origin: '*',
+			origin:
+				process.env.NODE_ENV === 'production'
+					? 'https://www.anime-rumble.com'
+					: '*',
 		},
 		transports: ['websocket', 'polling'],
 	});
@@ -26,7 +30,6 @@ class Server {
 			console.log(`Server correindo en puerto: ${this.port}`);
 		});
 		this.configurarSockets();
-		// dbConnection();
 	}
 
 	private middlewares() {
@@ -42,7 +45,8 @@ class Server {
 		// this.app.use(notFound);
 	}
 
-	private configurarSockets() {
+	private async configurarSockets() {
+		await setOfflineAllUsers();
 		loteriaSocket(this.io);
 		defaultSocket(this.io);
 	}

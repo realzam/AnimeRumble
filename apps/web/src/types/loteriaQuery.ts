@@ -14,3 +14,7 @@ export type LoteriaGameDataType = Awaited<
 export type LoteriaCurrentGameDataType = Awaited<
 	ReturnType<typeof serverClient.loteria.getCurrentGame>
 >;
+
+export type LoteriaStartLoteriaHostDataType = Awaited<
+	ReturnType<typeof serverClient.loteria.startLoteriaHost>
+>;

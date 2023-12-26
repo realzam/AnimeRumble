@@ -4,14 +4,14 @@ import { zodCustomErrorMap } from '@/lib/zodCustomErrorMap';
 
 z.setErrorMap(zodCustomErrorMap);
 
-const AddLoteriaCardSchema = z.object({
+export const AddLoteriaCardSchema = z.object({
 	title: z.string().trim().min(3),
 	img: z.string().min(1),
 	imgKey: z.string().min(1),
 	fit: z.enum(['fill', 'cover', 'contain']),
 });
 
-const FormLoteriaCardSchema = z.object({
+export const FormLoteriaCardSchema = z.object({
 	title: z.string().trim().min(3),
 	img: z.literal<boolean>(true),
 });
@@ -19,4 +19,7 @@ const FormLoteriaCardSchema = z.object({
 export const JoinToLoteriaSchema = z.object({
 	nickName: z.string().min(1),
 });
-export { AddLoteriaCardSchema, FormLoteriaCardSchema };
+
+export const LoginToLoteriaSchema = z.object({
+	jwt: z.string().min(10),
+});

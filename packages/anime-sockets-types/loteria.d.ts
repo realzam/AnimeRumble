@@ -1,9 +1,7 @@
 import { type Namespace, type Socket } from "socket.io";
 import { type Socket as SocketClient } from "socket.io-client";
 
-interface LoteriaSpecificInterServerEvents {
-  // ...
-}
+interface LoteriaSpecificInterServerEvents {}
 
 interface LoteriaSpecificSocketData {
   userId: string;
@@ -23,9 +21,22 @@ export type TypeIsRoomCreated =
     };
 export interface LoteriaServerToClientEvents {
   invalidToken: () => void;
+  joinPlayer: () => void;
+  leavePlayer: () => void;
   players: (players: string[]) => void;
+  gameState: (status: "lobby" | "play" | "finish") => void;
+  startCountdown: (value: number) => void;
+  countdown: (value: number) => void;
+  preAnimeCountdown: () => void;
+  showCountdownDialog: () => void;
+  closeCountdownDialog: () => void;
+  updateCurrentCard: (index: number) => void;
 }
-export interface LoteriaClientToServerEvents {}
+export interface LoteriaClientToServerEvents {
+  startGame: () => void;
+  goToLobbyGame: () => void;
+  nextCard: () => void;
+}
 
 export type LoteriaIONamesapce = Namespace<
   LoteriaClientToServerEvents,
