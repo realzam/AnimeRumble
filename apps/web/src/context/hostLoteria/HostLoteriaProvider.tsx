@@ -1,25 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useMount, useObservable } from '@legendapp/state/react';
-import { type LoteriaClientSocket } from 'anime-sockets-types';
+import {
+	type LoteriaClientSocket,
+	type WaitRoomClientSocket,
+} from 'anime-sockets-types';
 import { useAudioPlayer } from 'react-use-audio-player';
 
 import { type LoteriaStartLoteriaHostDataType } from '@/types/loteriaQuery';
+import { sleep } from '@/lib/utils';
 import useSocket from '@/hooks/useSocket';
 
 import { type TypeStateGame } from '../playLoteria/playLoteriaContext';
 import { HostLoteriaIContext } from './HostLoteriaContex';
 
-interface Props {
-	token: string;
-	children: React.ReactNode;
-	game: LoteriaStartLoteriaHostDataType['game'];
+type Props = LoteriaStartLoteriaHostDataType & {
 	playersOnline: string[];
-}
+	children: React.ReactNode;
+};
+
 const HostLoteriaProvider = ({
 	token,
 	children,
 	game,
+	cards,
 	playersOnline,
+	created,
 }: Props) => {
 	const soundCounter = useAudioPlayer();
 	const soundLeavePlayer = useAudioPlayer();
@@ -29,19 +34,36 @@ const HostLoteriaProvider = ({
 	const [currentCard, setCurrenCard] = useState(game.currentCard);
 	const [playersList, setPlayersList] = useState(playersOnline);
 	const [cardsPassed, setCardsPassed] = useState(
-		game.cards.slice(0, game.currentCard),
+		cards.slice(0, game.currentCard),
 	);
 	const [cardsMissed, setCardsMissed] = useState(
-		game.cards.slice(game.currentCard + 1),
+		cards.slice(game.currentCard + 1),
 	);
-	// cardsPassed: LoteriaCardsDataType;
-	// cardsMissed: LoteriaCardsDataType;
+	const [isPaused, setIsPaused] = useState(game.isPaused);
+	// const [updateProgress, setUpdateProgress] = useState(100);
+	const updateProgress = useObservable(100);
 
 	const { conectarSocket, socket } = useSocket<LoteriaClientSocket>({
 		room: 'loteria',
 		onConnect: () => {
-			console.log('onConnect ready');
+			console.log('onConnect ready', 'created', created);
 			stateGame.set(game.state);
+			if (created) {
+				socket?.emit('gameCreated');
+			}
+		},
+	});
+
+	const {
+		conectarSocket: conectarSocketWaitRoom,
+		desconectarSocket,
+		socket: waitRoomSocket,
+	} = useSocket<WaitRoomClientSocket>({
+		room: 'waitRoom',
+		onConnect: async () => {
+			waitRoomSocket?.emit('createLoteria');
+			await sleep(500);
+			desconectarSocket();
 		},
 	});
 
@@ -49,6 +71,7 @@ const HostLoteriaProvider = ({
 		soundCounter.load('/sounds/countdown.mp3');
 		soundLeavePlayer.load('/sounds/leavePlayer.mp3');
 		soundJoinPlayer.load('/sounds/joinPlayer.mp3');
+		conectarSocketWaitRoom();
 	});
 
 	useEffect(() => {
@@ -72,6 +95,19 @@ const HostLoteriaProvider = ({
 	}, [socket]);
 
 	useEffect(() => {
+		socket?.removeListener('updateProgress');
+		socket?.on('updateProgress', (value) => {
+			updateProgress.set(value);
+		});
+	}, [socket, updateProgress]);
+
+	useEffect(() => {
+		socket?.on('isPausedGame', (isPaused) => {
+			setIsPaused(isPaused);
+		});
+	}, [socket]);
+
+	useEffect(() => {
 		socket?.removeListener('gameState');
 		socket?.on('gameState', (state) => {
 			stateGame.set(state);
@@ -82,10 +118,10 @@ const HostLoteriaProvider = ({
 		socket?.removeListener('updateCurrentCard');
 		socket?.on('updateCurrentCard', (i) => {
 			setCurrenCard(i);
-			setCardsPassed(game.cards.slice(0, i));
-			setCardsMissed(game.cards.slice(i + 1));
+			setCardsPassed(cards.slice(0, i));
+			setCardsMissed(cards.slice(i + 1));
 		});
-	}, [socket, game.cards]);
+	}, [socket, cards]);
 
 	useEffect(() => {
 		window.localStorage.setItem('anime.player', token);
@@ -107,6 +143,11 @@ const HostLoteriaProvider = ({
 	const nextCard = () => {
 		socket?.emit('nextCard');
 	};
+
+	const togglePauseLoteria = () => {
+		socket?.emit('togglePause');
+	};
+
 	return (
 		<HostLoteriaIContext.Provider
 			value={{
@@ -119,6 +160,10 @@ const HostLoteriaProvider = ({
 				goToLobbyGame,
 				game,
 				nextCard,
+				togglePauseLoteria,
+				isPaused,
+				updateProgress,
+				cards,
 			}}
 		>
 			{children}

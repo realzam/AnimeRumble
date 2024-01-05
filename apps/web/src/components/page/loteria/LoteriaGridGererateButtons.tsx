@@ -4,27 +4,27 @@ import { Dices } from 'lucide-react';
 
 import usePlayLoteria from '@/hooks/usePlayLoteria';
 import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
-import { Button } from '@ui/Button';
+import ButtonGradientLoading from '@/components/web/ButtonGradientLoading';
 
 const LoteriaGridGererateButtons = () => {
 	const { stateGame } = usePlayLoteria();
-	const { generateRandomCards, props } = usePlayLoteriaUI();
+	const { generateRandomTable, isGenerationRandomTable } = usePlayLoteriaUI();
 	const edit = useComputed(() => stateGame.get() === 'lobby');
 	return (
 		<Show if={edit}>
 			<div className='flex justify-end'>
 				<Memo>
 					{() => (
-						<Button
+						<ButtonGradientLoading
 							variant='secondary'
-							disabled={props.isFetching.get()}
+							isLoading={isGenerationRandomTable}
 							onClick={() => {
-								generateRandomCards();
+								generateRandomTable();
 							}}
 						>
 							<Dices className='mr-2' />
 							Plantilla Aleatoria
-						</Button>
+						</ButtonGradientLoading>
 					)}
 				</Memo>
 			</div>

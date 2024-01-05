@@ -3,4 +3,4 @@ import { BingoClientSocket } from "./bingo";
 
 export type AnimeSocketsClient = LoteriaClientSocket | BingoClientSocket;
 
-export type AnimeSocketsRooms = "loteria" | "bingo";
+export type AnimeSocketsRooms = "loteria" | "bingo" | "waitRoom";

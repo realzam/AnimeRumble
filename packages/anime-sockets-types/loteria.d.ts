@@ -6,9 +6,6 @@ interface LoteriaSpecificInterServerEvents {}
 interface LoteriaSpecificSocketData {
   userId: string;
   role: "player" | "admin";
-  // 	nick: string;
-  // 	id: string;
-  // 	typeUser: 'register' | 'guest';
 }
 
 export type TypeIsRoomCreated =
@@ -28,14 +25,20 @@ export interface LoteriaServerToClientEvents {
   startCountdown: (value: number) => void;
   countdown: (value: number) => void;
   preAnimeCountdown: () => void;
-  showCountdownDialog: () => void;
-  closeCountdownDialog: () => void;
+  showCountdownDialog: (show: boolean) => void;
   updateCurrentCard: (index: number) => void;
+  checkCardPlayer: (key: string) => void;
+  winner: (place: number) => void;
+  isPausedGame: (isPaused: boolean) => void;
+  updateProgress: (value: number) => void;
 }
 export interface LoteriaClientToServerEvents {
   startGame: () => void;
   goToLobbyGame: () => void;
   nextCard: () => void;
+  checkCard: (target: string, index: number) => void;
+  gameCreated: () => void;
+  togglePause: () => void;
 }
 
 export type LoteriaIONamesapce = Namespace<

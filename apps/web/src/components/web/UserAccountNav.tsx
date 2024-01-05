@@ -37,7 +37,7 @@ const UserAccountNav = ({ user }: Props) => {
 							</>
 						)}
 						{user.email && (
-							<p className='text-sm max-w-[300px] truncate'>
+							<p className='max-w-[300px] truncate text-sm'>
 								{user.email.toLowerCase()}
 							</p>
 						)}

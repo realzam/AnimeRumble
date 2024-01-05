@@ -23,12 +23,14 @@ import { Label } from '@/components/ui/Label';
 import ButtonGradientLoading from '@/components/web/ButtonGradientLoading';
 
 const LoteriaNicknameForm = () => {
-	const { userInfo, login } = usePlayLoteria();
-	const user = useSelector(() => userInfo.get());
+	const joinGuestLoteria = trpc.loteria.joinGuestLoteria.useMutation();
+	const joinUserLoteria = trpc.loteria.joinUserLoteria.useMutation();
 	const updateNickName = trpc.user.updateUser.useMutation();
+	const { userInfo, login } = usePlayLoteria();
+
 	const isSubmitting = useObservable(false);
-	const joinToLoteria = trpc.loteria.joinToLoteria.useMutation();
 	const errorMsg = useObservable('');
+	const user = useSelector(() => userInfo.get());
 	const hasError = useSelector(() => errorMsg.get().length > 0);
 	const {
 		register,
@@ -38,7 +40,7 @@ const LoteriaNicknameForm = () => {
 	} = useForm<z.infer<typeof NickNameForm>>({
 		resolver: zodResolver(NickNameForm),
 	});
-	const execute = (nickName: string) => {
+	const updetUserNickName = (nickName: string) => {
 		updateNickName.mutate(
 			{ nickName },
 			{
@@ -53,19 +55,39 @@ const LoteriaNicknameForm = () => {
 					isSubmitting.set(false);
 				},
 				onSuccess: () => {
-					joinToplay(nickName);
+					joinUserToPlay();
 				},
 			},
 		);
 	};
 
-	const joinToplay = (nickName: string) => {
-		joinToLoteria.mutate(
+	const joinUserToPlay = () => {
+		joinUserLoteria.mutate(undefined, {
+			onSuccess: ({ jwt, playerCards, reactive }) => {
+				login(jwt, playerCards, reactive);
+			},
+			onSettled: () => {
+				isSubmitting.set(false);
+			},
+			onError: (e) => {
+				errorMsg.set(e.message);
+				setError('nickName', {
+					message: e.message,
+				});
+				setTimeout(() => {
+					errorMsg.set('');
+				}, 3000);
+				isSubmitting.set(false);
+			},
+		});
+	};
+
+	const joinGuestToPlay = (nickName: string) => {
+		joinGuestLoteria.mutate(
 			{ nickName },
 			{
-				onSuccess: ({ jwt, playerCards }) => {
-					console.log('my jwt is', jwt);
-					login(jwt, playerCards);
+				onSuccess: ({ jwt, playerCards, reactive }) => {
+					login(jwt, playerCards, reactive);
 				},
 				onSettled: () => {
 					isSubmitting.set(false);
@@ -89,10 +111,10 @@ const LoteriaNicknameForm = () => {
 		await sleep(1000);
 		if (user && user.userId) {
 			console.log('update user nickname');
-			execute(nickName);
+			updetUserNickName(nickName);
 		} else {
 			console.log('logging guestuser');
-			joinToplay(nickName);
+			joinGuestToPlay(nickName);
 		}
 	};
 

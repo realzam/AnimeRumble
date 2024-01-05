@@ -1,97 +1,100 @@
-import { useCallback, useMemo, useState } from 'react';
+'use client';
+
 import Image from 'next/image';
-import { Show } from '@legendapp/state/react';
+import { Memo, Show, useObservable, useObserve } from '@legendapp/state/react';
 import { Search } from 'lucide-react';
 
-import { cn, quitarAcentos } from '@/lib/utils';
+import { clearText, cn, getStyleClassCardFit } from '@/lib/utils';
 import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
 import { Dialog, DialogContent } from '@ui/Dialog';
 import { ScrollArea } from '@ui/ScrollArea';
 import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+import { ReactiveInput } from '@/components/web/ReactiveInput';
 
 const LoteriaCardEditDialog = () => {
 	const {
-		searchList,
-		replaceCard,
-		isOpenChangeCardDialog,
-		closeChangeCardDialog,
+		editCardPlantilla,
+		showEditPlantillaDialog,
+		closeEditPlantillaDialog,
+		allCardsSearch,
 	} = usePlayLoteriaUI();
-	const [search, setSearch] = useState('');
 
-	const clearText = useCallback((text: string) => {
-		return text.toLowerCase().trim().replace(/\s+/g, '');
-	}, []);
+	const search = useObservable('');
+	const list = useObservable(allCardsSearch.get());
 
-	const list = useMemo(
-		() =>
-			searchList.filter((c) =>
-				c.titleSearch.includes(clearText(quitarAcentos(search))),
-			),
-		[search, searchList, clearText],
-	);
+	useObserve(allCardsSearch, () => {
+		list.set(allCardsSearch.get());
+	});
+
+	useObserve(search, () => {
+		const target = allCardsSearch
+			.get()
+			.filter((c) => c.titleSearch.includes(clearText(search.get())));
+		list.set(target);
+	});
 
 	return (
-		<Dialog
-			open={isOpenChangeCardDialog}
-			onOpenChange={(v) => {
-				console.log('onOpenChange', v);
-				closeChangeCardDialog();
-			}}
-		>
-			<DialogContent className='p-0 sm:max-w-[500px]'>
-				<div className='relative h-12'>
-					<Search className='absolute left-3 top-4 h-4 w-4' />
-					<Input
-						value={search}
-						onChange={(v) => setSearch(v.target.value)}
-						className='h-12 rounded-none border-0 border-b-2 px-9 focus-visible:border-primary focus-visible:ring-0'
-					/>
-				</div>
-				<ScrollArea className='h-[272px] p-4' type='always'>
-					<div className='grid grid-cols-4 gap-2 p-1'>
-						{list.map((card) => (
-							<Card
-								key={card.id}
-								className={cn(
-									'flex select-none shadow-lg xs:p-2',
-									!card.disable &&
-										'cursor-pointer transition-all duration-300 xs:hover:ring-1 xs:hover:ring-primary',
-								)}
-								onClick={() => {
-									console.log('click replace card');
-
-									if (!card.disable) {
-										replaceCard(card.id);
-									}
-								}}
-							>
-								<AspectRatio ratio={3 / 5}>
-									<Image
-										alt='up'
-										src={card.img}
+		<Memo>
+			{() => (
+				<Dialog
+					open={showEditPlantillaDialog.get()}
+					onOpenChange={() => {
+						closeEditPlantillaDialog();
+					}}
+				>
+					<DialogContent className='p-0 sm:max-w-[600px]'>
+						<div className='relative h-12'>
+							<Search className='absolute left-3 top-4 h-4 w-4' />
+							<ReactiveInput
+								value={search}
+								className='h-12 rounded-none border-0 border-b-2 px-9 focus-visible:border-primary focus-visible:ring-0'
+							/>
+						</div>
+						<ScrollArea className='h-[272px] p-4' type='always'>
+							<div className='grid grid-cols-4 gap-2 p-1'>
+								{list.get().map((card) => (
+									<Card
+										key={card.id}
 										className={cn(
-											'rounded-sm',
-											card.fit === 'cover' ? 'object-cover' : 'object-fit',
+											'select-none shadow-lg xs:p-2',
+											!card.disable &&
+												'cursor-pointer transition-all duration-300 xs:hover:ring-1 xs:hover:ring-primary',
 										)}
-										fill
-										priority
-									/>
+										onClick={() => {
+											console.log('click replace card');
 
-									<div className='absolute bottom-0 w-full bg-slate-900/50 px-3 text-center text-xs capitalize text-white backdrop-blur-sm xs:text-sm'>
-										{`${card.index}. ${card.title}`}
-									</div>
-									<Show if={card.disable}>
-										<div className='absolute h-full w-full rounded-sm bg-slate-900/70 backdrop-blur-[2px]' />
-									</Show>
-								</AspectRatio>
-							</Card>
-						))}
-					</div>
-				</ScrollArea>
-			</DialogContent>
-		</Dialog>
+											if (!card.disable) {
+												editCardPlantilla(card.id);
+											}
+										}}
+									>
+										<AspectRatio ratio={3 / 5}>
+											<div className='relative h-full w-full overflow-hidden rounded-sm'>
+												<Image
+													className={getStyleClassCardFit(card.fit)}
+													alt={card.title}
+													src={card.img}
+													sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+													fill
+													priority
+												/>
+												<div className='absolute bottom-0 w-full rounded-b-sm bg-slate-900/50 px-3 text-center text-xs capitalize text-white backdrop-blur-sm xs:text-sm'>
+													{`${card.index}. ${card.title}`}
+												</div>
+												<Show if={card.disable}>
+													<div className='absolute left-0 h-full w-full rounded-sm bg-slate-900/70 backdrop-blur-[2px]' />
+												</Show>
+											</div>
+										</AspectRatio>
+									</Card>
+								))}
+							</div>
+						</ScrollArea>
+					</DialogContent>
+				</Dialog>
+			)}
+		</Memo>
 	);
 };
 

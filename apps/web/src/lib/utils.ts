@@ -8,6 +8,8 @@ import sha512 from 'crypto-js/sha512';
 import moment from 'moment';
 import { twMerge } from 'tailwind-merge';
 
+import { type LoteriaCardDataType } from '@/types/loteriaQuery';
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -159,3 +161,18 @@ export const shuffleArray = <T>(array: T[]): T[] => {
 
 	return shuffledArray;
 };
+
+export const getStyleClassCardFit = (fit: LoteriaCardDataType['fit']) => {
+	switch (fit) {
+		case 'fill':
+			return 'object-fill';
+
+		case 'contain':
+			return 'object-contain';
+		default:
+			return 'object-cover';
+	}
+};
+
+export const clearText = (text: string) =>
+	quitarAcentos(text.toLowerCase().trim().replace(/\s+/g, ''));

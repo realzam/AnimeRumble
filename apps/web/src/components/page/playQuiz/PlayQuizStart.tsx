@@ -31,7 +31,7 @@ const PlayQuizStart = () => {
 				if={!started.get()}
 				else={
 					<>
-						<div className='text-6xl animate-ping select-none animate-normal animate-duration-1000 animate-infinite'>
+						<div className='animate-ping select-none text-6xl animate-normal animate-duration-1000 animate-infinite'>
 							{time}
 						</div>
 					</>

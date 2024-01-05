@@ -146,7 +146,7 @@ const UploadFileAnime = ({
 					<UploadCloud size={44} />
 					<label
 						htmlFor='file-upload'
-						className='text-sm relative mt-4 flex w-64 cursor-pointer items-center justify-center font-semibold leading-6 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
+						className='relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2'
 					>
 						{`Elegir ${fileTypes[0]} o arrastrar y soltar`}
 					</label>
@@ -155,7 +155,7 @@ const UploadFileAnime = ({
 						{allowedContentText}
 					</div>
 					{errorMessage && (
-						<div className='text-base m-3 h-[1.25rem] animate-pulse leading-5 text-destructive'>
+						<div className='m-3 h-[1.25rem] animate-pulse text-base leading-5 text-destructive'>
 							{errorMessage}
 						</div>
 					)}

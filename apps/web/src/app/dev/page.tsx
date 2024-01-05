@@ -1,9 +1,13 @@
+import { serverClient } from '@/trpc/client/serverClient';
+
 import DevContainer from '@/components/page/dev/DevContainer';
 
-const page = () => {
+const page = async () => {
+	const list = await serverClient.loteria.getCards();
+
 	return (
 		<div>
-			<DevContainer />
+			<DevContainer list={list} />
 		</div>
 	);
 };

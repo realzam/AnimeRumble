@@ -17,8 +17,8 @@ const EmptyLoteriaCardList = () => {
 					<path d='M17 18.5a9 9 0 1 0-10 0' />
 				</svg>
 
-				<h3 className='text-lg mt-4 font-semibold'>No hay quizzes</h3>
-				<p className='text-sm mb-4 mt-2 text-muted-foreground'>
+				<h3 className='mt-4 text-lg font-semibold'>No hay quizzes</h3>
+				<p className='mb-4 mt-2 text-sm text-muted-foreground'>
 					You have not added any podcasts. Add one below.
 				</p>
 			</div>

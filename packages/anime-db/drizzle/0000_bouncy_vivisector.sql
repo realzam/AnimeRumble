@@ -16,35 +16,50 @@ CREATE TABLE `loteriaCards` (
 	CONSTRAINT `loteriaCards_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `loteriaCardsToLoteriaGames` (
-	`cardId` varchar(30) NOT NULL,
+CREATE TABLE `loteriaDeck` (
+	`cardId` varchar(50) NOT NULL,
 	`gameId` varchar(50) NOT NULL,
 	`order` smallint NOT NULL,
-	CONSTRAINT `loteriaCardsToLoteriaGames_cardId_gameId_pk` PRIMARY KEY(`cardId`,`gameId`)
-);
---> statement-breakpoint
-CREATE TABLE `loteriaCardsToPlayerLoteria` (
-	`cardId` varchar(30) NOT NULL,
-	`gameId` varchar(50) NOT NULL,
-	`playerId` varchar(50) NOT NULL,
-	CONSTRAINT `loteriaCardsToPlayerLoteria_cardId_gameId_playerId_pk` PRIMARY KEY(`cardId`,`gameId`,`playerId`)
+	CONSTRAINT `loteriaDeck_cardId_gameId_pk` PRIMARY KEY(`cardId`,`gameId`)
 );
 --> statement-breakpoint
 CREATE TABLE `loteriaGame` (
-	`id` varchar(30) NOT NULL,
+	`id` varchar(50) NOT NULL,
 	`state` varchar(9) NOT NULL DEFAULT 'lobby',
-	`index` smallint NOT NULL DEFAULT 0,
+	`currentCard` smallint NOT NULL DEFAULT 0,
+	`isPaused` boolean NOT NULL DEFAULT true,
+	`date` timestamp NOT NULL,
 	CONSTRAINT `loteriaGame_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `playerLoteria` (
+CREATE TABLE `loteriaPlantilla` (
+	`cardId` varchar(30) NOT NULL,
 	`gameId` varchar(50) NOT NULL,
+	`playerId` varchar(50) NOT NULL,
+	`order` smallint NOT NULL,
+	`checked` boolean NOT NULL DEFAULT false,
+	CONSTRAINT `loteriaPlantilla_cardId_gameId_playerId_pk` PRIMARY KEY(`cardId`,`gameId`,`playerId`)
+);
+--> statement-breakpoint
+CREATE TABLE `loteriaPlayer` (
 	`userId` varchar(60) NOT NULL,
 	`nickName` varchar(100) NOT NULL,
-	`isCorrect` boolean NOT NULL DEFAULT false,
+	`online` boolean NOT NULL DEFAULT false,
 	`userType` varchar(8) NOT NULL,
-	`correctAnswers` json NOT NULL,
-	CONSTRAINT `playerLoteria_userId_gameId_pk` PRIMARY KEY(`userId`,`gameId`)
+	CONSTRAINT `loteriaPlayer_userId` PRIMARY KEY(`userId`)
+);
+--> statement-breakpoint
+CREATE TABLE `loteriaSessions` (
+	`playerId` varchar(50) NOT NULL,
+	`gameId` varchar(50) NOT NULL,
+	CONSTRAINT `loteriaSessions_playerId_gameId_pk` PRIMARY KEY(`playerId`,`gameId`)
+);
+--> statement-breakpoint
+CREATE TABLE `loteriaWinners` (
+	`playerId` varchar(50) NOT NULL,
+	`gameId` varchar(50) NOT NULL,
+	`place` smallint NOT NULL,
+	CONSTRAINT `loteriaWinners_playerId_gameId_pk` PRIMARY KEY(`playerId`,`gameId`)
 );
 --> statement-breakpoint
 CREATE TABLE `answers` (

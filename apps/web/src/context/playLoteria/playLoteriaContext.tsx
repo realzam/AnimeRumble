@@ -5,6 +5,8 @@ import { type LoteriaClientSocket } from 'anime-sockets-types';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
 
+// import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
+
 export type TypeLoteriaGameTableState = typeof loteriaGame.$inferSelect.state;
 
 export type TypeStateGameUI =
@@ -17,18 +19,24 @@ export type TypeStateGame = TypeStateGameUI | TypeLoteriaGameTableState;
 export interface TypeUserInfo {
 	userId: string;
 	nickname?: string | null;
+	jwt: string;
 }
 
 export type RactivesMarkedRecord = Record<string, boolean>;
 
-interface State {
+interface PlayLoteriaState {
 	socket: LoteriaClientSocket | null;
 	stateGame: ObservablePrimitive<TypeStateGame>;
 	userInfo: Observable<TypeUserInfo | undefined>;
-	allCards: LoteriaCardsDataType;
 	cardsPlayer: LoteriaCardsDataType;
-	playersOnline: string[];
-	login: (jwt: string, playerCards: LoteriaCardsDataType) => void;
+	allCards: LoteriaCardsDataType;
+
+	initialReactives: RactivesMarkedRecord;
+	login: (
+		jwt: string,
+		playerCards: LoteriaCardsDataType,
+		reactive: RactivesMarkedRecord,
+	) => void;
 }
 
-export const PlayLoteriaContext = createContext<State | null>(null);
+export const PlayLoteriaContext = createContext<PlayLoteriaState | null>(null);

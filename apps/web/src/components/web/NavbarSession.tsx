@@ -25,7 +25,7 @@ const NavbarSession = ({ initialSession }: Props) => {
 		return <UserAccountNav user={sessionData.user} />;
 	} else {
 		return (
-			<div className='text-lg hidden items-center space-x-6 font-medium md:flex'>
+			<div className='hidden items-center space-x-6 text-lg font-medium md:flex'>
 				<Link href={animeRumbleRoutes.login}>Ingresar</Link>
 				<Link href={animeRumbleRoutes.register}>Registrarse</Link>
 			</div>

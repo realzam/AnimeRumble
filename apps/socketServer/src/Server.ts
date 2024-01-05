@@ -6,6 +6,7 @@ import { Server as ServerIO } from 'socket.io';
 import { setOfflineAllUsers } from './controllers/loteria';
 import { defaultSocket } from './sockets/default';
 import { loteriaSocket } from './sockets/loteria';
+import { waitRoomSocket } from './sockets/waitRoom';
 
 class Server {
 	private app = express();
@@ -29,7 +30,7 @@ class Server {
 		this.server.listen(this.port, () => {
 			console.log(`Server correindo en puerto: ${this.port}`);
 		});
-		this.configurarSockets();
+		this.configSockets();
 	}
 
 	private middlewares() {
@@ -45,8 +46,9 @@ class Server {
 		// this.app.use(notFound);
 	}
 
-	private async configurarSockets() {
+	private async configSockets() {
 		await setOfflineAllUsers();
+		waitRoomSocket(this.io);
 		loteriaSocket(this.io);
 		defaultSocket(this.io);
 	}

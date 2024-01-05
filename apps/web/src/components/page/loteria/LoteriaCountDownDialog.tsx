@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Nunito } from 'next/font/google';
+import { Memo, useObservable } from '@legendapp/state/react';
 import { useAnimate } from 'framer-motion';
 
 import { cn } from '@/lib/utils';
@@ -15,15 +16,15 @@ const nunito = Nunito({
 });
 const LoteriaCountDownDialog = () => {
 	const { socket } = usePlayLoteria();
-	const { openCountdownDialog, soundCounter } = usePlayLoteriaUI();
-	const [counter, setCounter] = useState(10);
+	const { showCountdownDialog, soundCounter } = usePlayLoteriaUI();
+	const counter = useObservable(10);
 	const [scope, animate] = useAnimate();
 
 	useEffect(() => {
 		socket?.on('startCountdown', (value) => {
-			setCounter(value);
+			counter.set(value);
 		});
-	}, [socket]);
+	}, [socket, counter]);
 
 	useEffect(() => {
 		socket?.removeListener('preAnimeCountdown');
@@ -39,7 +40,7 @@ const LoteriaCountDownDialog = () => {
 	useEffect(() => {
 		socket?.removeListener('countdown');
 		socket?.on('countdown', async (n) => {
-			setCounter(n);
+			counter.set(n);
 			soundCounter.play();
 			await animate(
 				scope.current,
@@ -52,24 +53,28 @@ const LoteriaCountDownDialog = () => {
 				{ duration: 0.1, ease: 'easeInOut' },
 			);
 		});
-	}, [socket, animate, scope, soundCounter]);
+	}, [socket, animate, scope, soundCounter, counter]);
 
 	return (
-		<AlertDialog open={openCountdownDialog}>
-			<AlertDialogOverlay>
-				<div className='flex h-full w-full items-center justify-center'>
-					<div
-						ref={scope}
-						className={cn(
-							'mb-9 select-none text-center text-[20rem] leading-[17rem] text-indigo-600',
-							nunito.className,
-						)}
-					>
-						{counter}
-					</div>
-				</div>
-			</AlertDialogOverlay>
-		</AlertDialog>
+		<Memo>
+			{() => (
+				<AlertDialog open={showCountdownDialog.get()}>
+					<AlertDialogOverlay>
+						<div className='flex h-full w-full items-center justify-center'>
+							<div
+								ref={scope}
+								className={cn(
+									'mb-9 select-none text-center text-[20rem] leading-[17rem] text-indigo-600',
+									nunito.className,
+								)}
+							>
+								<Memo>{counter}</Memo>
+							</div>
+						</div>
+					</AlertDialogOverlay>
+				</AlertDialog>
+			)}
+		</Memo>
 	);
 };
 

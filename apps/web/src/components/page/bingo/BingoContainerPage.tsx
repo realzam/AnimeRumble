@@ -47,7 +47,7 @@ const BingoContainerPage = ({ reactives }: Props) => {
 													ractivesMarked[i].toggle();
 												}}
 											>
-												<CardTitle className='xs:text-sm hyphens-auto text-xs'>
+												<CardTitle className='hyphens-auto text-xs xs:text-sm'>
 													{reactive.response}
 												</CardTitle>
 												<Show if={ractivesMarked[i].get()}>

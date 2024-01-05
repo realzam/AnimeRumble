@@ -4,7 +4,6 @@ import { getAuthSession } from '@/lib/nextauth';
 import LoteriaContainerPage from '@/components/page/loteria/LoteriaContainerPage';
 
 const LoteriaPage = async () => {
-	const playersOnline = await serverClient.loteria.getPlayesrOnline();
 	const allCards = await serverClient.loteria.getCards();
 	const currentGame = await serverClient.loteria.getCurrentGame();
 	const session = await getAuthSession();
@@ -15,7 +14,6 @@ const LoteriaPage = async () => {
 					allCards={allCards}
 					session={session}
 					currentGame={currentGame}
-					playersOnline={playersOnline}
 				/>
 			</div>
 		</div>

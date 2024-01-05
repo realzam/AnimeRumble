@@ -6,11 +6,10 @@ import { type LoteriaStartLoteriaHostDataType } from '@/types/loteriaQuery';
 
 import HostLoteriaSwitcher from './HostLoteriaSwitcher';
 
-interface Props {
-	game: LoteriaStartLoteriaHostDataType['game'];
-	token: LoteriaStartLoteriaHostDataType['token'];
+type Props = LoteriaStartLoteriaHostDataType & {
 	playersOnline: string[];
-}
+};
+
 const LoteriaHostPage = (props: Props) => {
 	return (
 		<HostLoteriaProvider {...props}>

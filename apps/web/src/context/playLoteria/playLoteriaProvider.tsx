@@ -1,7 +1,16 @@
-import { useEffect, useState, type FC } from 'react';
+import {
+	useCallback,
+	useEffect,
+	useState,
+	type FC,
+	type ReactNode,
+} from 'react';
 import { trpc } from '@/trpc/client/client';
 import { useMount, useObservable } from '@legendapp/state/react';
-import { type LoteriaClientSocket } from 'anime-sockets-types';
+import {
+	type LoteriaClientSocket,
+	type WaitRoomClientSocket,
+} from 'anime-sockets-types';
 import { decodeJwt } from 'jose';
 import { type Session } from 'next-auth';
 
@@ -10,10 +19,12 @@ import {
 	type LoteriaCardsDataType,
 	type LoteriaCurrentGameDataType,
 } from '@/types/loteriaQuery';
+import { sleep } from '@/lib/utils';
 import useSocket from '@/hooks/useSocket';
 
 import {
 	PlayLoteriaContext,
+	type RactivesMarkedRecord,
 	type TypeStateGame,
 	type TypeUserInfo,
 } from './playLoteriaContext';
@@ -21,9 +32,8 @@ import {
 interface Props {
 	initialCurrentGame: LoteriaCurrentGameDataType;
 	initalSession: Session | null;
-	children: React.ReactNode;
+	children: ReactNode;
 	allCards: LoteriaCardsDataType;
-	playersOnline: string[];
 }
 
 const PlayLoteriaProvider: FC<Props> = ({
@@ -31,16 +41,19 @@ const PlayLoteriaProvider: FC<Props> = ({
 	initialCurrentGame,
 	initalSession,
 	allCards,
-	playersOnline,
 }) => {
-	const [cardsPlayer, setCardsPlayer] = useState<LoteriaCardsDataType>([]);
-	const stateGame = useObservable<TypeStateGame>('initializing');
-	const joinToLoteria = trpc.loteria.joinToLoteria.useMutation();
 	const loginLoteria = trpc.loteria.loginLoteria.useMutation();
-	const userInfo = useObservable<TypeUserInfo | undefined>(() => {
-		if (initalSession && initalSession.user) {
-			return { userId: initalSession.user.id };
-		}
+	const joinUserLoteria = trpc.loteria.joinUserLoteria.useMutation();
+
+	const {
+		conectarSocket: conectarSocketWaitRoom,
+		desconectarSocket,
+		socket: waitRoomSocket,
+	} = useSocket<WaitRoomClientSocket>({
+		room: 'waitRoom',
+		onConnect: () => {
+			stateGame.set('waitToRoom');
+		},
 	});
 
 	const { conectarSocket, socket } = useSocket<LoteriaClientSocket>({
@@ -51,92 +64,99 @@ const PlayLoteriaProvider: FC<Props> = ({
 		},
 	});
 
-	const login = (jwt: string, playerCards: LoteriaCardsDataType) => {
-		localStorage.setItem('anime.player', jwt);
-		setCardsPlayer(playerCards);
-		const { id, nick } = decodeJwt<JwtAnimePlayer>(jwt);
-		userInfo.set({
-			userId: id,
-			nickname: nick,
-		});
-		conectarSocket();
-	};
+	const stateGame = useObservable<TypeStateGame>('initializing');
+	const [cardsPlayer, setCardsPlayer] = useState<LoteriaCardsDataType>([]);
+	const [initialReactives, setInitialReactives] =
+		useState<RactivesMarkedRecord>({});
+	const userInfo = useObservable<TypeUserInfo | undefined>(() => {
+		if (initalSession && initalSession.user) {
+			return { userId: initalSession.user.id, jwt: '' };
+		}
+	});
+
+	const login = useCallback(
+		async (
+			jwt: string,
+			playerCards: LoteriaCardsDataType,
+			reactive: RactivesMarkedRecord,
+		) => {
+			localStorage.setItem('anime.player', jwt);
+			setCardsPlayer(playerCards);
+			setInitialReactives(reactive);
+			const { id, nick } = decodeJwt<JwtAnimePlayer>(jwt);
+			userInfo.set({
+				userId: id,
+				nickname: nick,
+				jwt,
+			});
+			await sleep(100);
+			desconectarSocket();
+			conectarSocket();
+		},
+		[conectarSocket, desconectarSocket, userInfo],
+	);
 
 	const setStartupPage = () => {
-		if (initialCurrentGame) {
-			if (initalSession && initalSession.user && initalSession.user.nickName) {
-				joinToLoteria.mutate(
+		if (initalSession && initalSession.user && initalSession.user.nickName) {
+			console.log('setStartupPage register user');
+
+			joinUserLoteria.mutate(undefined, {
+				onSuccess: ({ jwt, playerCards, reactive }) => {
+					login(jwt, playerCards, reactive);
+				},
+			});
+		} else {
+			console.log('setStartupPage guest user');
+			stateGame.set('nickNameForm');
+		}
+	};
+
+	useMount(() => {
+		if (!initialCurrentGame) {
+			window.localStorage.removeItem('anime.player');
+			conectarSocketWaitRoom();
+		} else {
+			const jwt = window.localStorage.getItem('anime.player');
+			if (jwt) {
+				stateGame.set('waitSocketStartup');
+				loginLoteria.mutate(
+					{ jwt },
 					{
-						nickName: initalSession.user.nickName,
-					},
-					{
-						onSuccess: ({ jwt, playerCards }) => {
-							setCardsPlayer(playerCards);
-							login(jwt, playerCards);
+						onSuccess: ({ playerCards, reactive }) => {
+							login(jwt, playerCards, reactive);
+						},
+						onError: () => {
+							window.localStorage.removeItem('anime.player');
+							setStartupPage();
 						},
 					},
 				);
-				return;
-			}
-			stateGame.set('nickNameForm');
-			return;
-		} else {
-			stateGame.set('waitToRoom');
-			return;
-		}
-	};
-
-	useEffect(() => {
-		socket?.on('connect_error', (error) => {
-			console.log('connect_error', error);
-
-			if (error.message === 'not authorized') {
-				console.log('invalid token');
-				window.localStorage.removeItem('anime.player');
+			} else {
 				setStartupPage();
 			}
+		}
+	});
+
+	useEffect(() => {
+		waitRoomSocket?.on('loteriaRoomCreated', () => {
+			console.log('waitRoomSocket.on loteriaRoomCreated');
+			setStartupPage();
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [socket]);
-	useMount(() => {
-		console.log('getting nextComponent');
-		const jwt = window.localStorage.getItem('anime.player');
-		console.log(jwt);
-		if (jwt) {
-			stateGame.set('waitSocketStartup');
-			loginLoteria.mutate(
-				{ jwt },
-				{
-					onSuccess: (playerCards) => {
-						setCardsPlayer(playerCards);
-						login(jwt, playerCards);
-					},
-				},
-			);
-			return;
-		}
-		setStartupPage();
-	});
+	}, [waitRoomSocket]);
 
 	return (
 		<PlayLoteriaContext.Provider
 			value={{
 				stateGame,
-				userInfo,
-				login,
 				socket,
 				cardsPlayer,
+				initialReactives,
+				userInfo,
+				login,
 				allCards,
-				playersOnline,
 			}}
 		>
-			{/* <PlayLoteriaUIProvider
-				allCards={allCards}
-				initialCards={cardsPlayer}
-				playersOnline={playersOnline}
-			>
-				{children}
-			</PlayLoteriaUIProvider> */}
 			{children}
 		</PlayLoteriaContext.Provider>
 	);

@@ -9,7 +9,7 @@ const BackButton = () => {
 	const router = useRouter();
 	return (
 		<Button
-			className='text-base w-fit shrink-0'
+			className='w-fit shrink-0 text-base'
 			variant='ghost'
 			onClick={() => {
 				router.back();

@@ -1,229 +1,168 @@
-import React, {
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-	type FC,
-} from 'react';
+import { useEffect, type FC } from 'react';
 import { trpc } from '@/trpc/client/client';
-import {
-	useComputed,
-	useMount,
-	useObservable,
-	useObserve,
-} from '@legendapp/state/react';
-import { useObservableQuery } from '@legendapp/state/react-hooks/useObservableQuery';
-import { getQueryKey } from '@trpc/react-query';
+import { useComputed, useMount, useObservable } from '@legendapp/state/react';
 import { useAudioPlayer } from 'react-use-audio-player';
 
 import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
-import { type TypeLoteriaRandomQueryProps } from '@/types/rumbleQuery';
-import { quitarAcentos } from '@/lib/utils';
+import { clearText } from '@/lib/utils';
 import usePlayLoteria from '@/hooks/usePlayLoteria';
 
-import {
-	PlayLoteriaUIContext,
-	type RactivesMarkedRecord,
-	type SearchCard,
-} from './playLoteriaUIContext';
+import { type RactivesMarkedRecord } from '../playLoteria/playLoteriaContext';
+import { PlayLoteriaUIContext } from './playLoteriaUIContext';
 
 interface Props {
 	children: React.ReactNode;
-	allCards: LoteriaCardsDataType;
-	initialCards: LoteriaCardsDataType;
-	playersOnline: string[];
 }
 
-const PlayLoteriaUIProvider: FC<Props> = ({
-	children,
-	allCards,
-	initialCards,
-	playersOnline,
-}) => {
+const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 	const soundCounter = useAudioPlayer();
 	const soundLeavePlayer = useAudioPlayer();
 	const soundJoinPlayer = useAudioPlayer();
-	const { stateGame, socket } = usePlayLoteria();
-	const [playersList, setPlayersList] = useState<string[]>(playersOnline);
-	const [idChangeCard, setIdChangeCard] = useState('');
-	const [openCountdownDialog, setOpenCountdownDialog] = useState(false);
+	const {
+		socket,
+		userInfo,
+		cardsPlayer,
+		initialReactives,
+		stateGame,
+		allCards,
+	} = usePlayLoteria();
 
-	const [isOpenChangeCardDialog, setIsOpenChangeCardDialog] = useState(false);
-	const playMode = useComputed(() => stateGame.get() === 'play');
-	const currentCards$ = useObservable<LoteriaCardsDataType>([...initialCards]);
-	const defaultRactives = useMemo(() => {
-		const ractive: RactivesMarkedRecord = {};
-		allCards.forEach((value) => {
-			Object.assign(ractive, { [value.id]: false });
-		});
-		return ractive;
-	}, [allCards]);
+	const generateRandomTableMutation =
+		trpc.loteria.generateRandomTable.useMutation();
+	const updatePlantillaCard = trpc.loteria.updatePlantillaCard.useMutation();
 
-	const ractivesMarked = useObservable<RactivesMarkedRecord>(defaultRactives);
+	const showCountdownDialog = useObservable(false);
+	const showEditPlantillaDialog = useObservable(false);
+	const showLoteriaWinnerDialog = useObservable(false);
+	const isGenerationRandomTable = useObservable(false);
+	const placeWinning = useObservable(0);
 
-	const clearText = useCallback((text: string) => {
-		return text.toLowerCase().trim().replace(/\s+/g, '');
-	}, []);
-
-	const initialsearchList = useMemo<SearchCard[]>(
-		() =>
-			allCards.map((c, i) => ({
-				...c,
-				titleSearch: clearText(quitarAcentos(c.title)),
-				disable: false,
-				index: i + 1,
-			})),
-		[allCards, clearText],
+	const playersList = useObservable<string[]>([]);
+	const editCard = useObservable({ id: '', index: 0 });
+	const plantilla = useObservable<LoteriaCardsDataType>([...cardsPlayer]);
+	const plantillaChecks = useObservable<RactivesMarkedRecord>(initialReactives);
+	const allowEditPlantilla = useComputed(
+		() => stateGame.get() === 'lobby' && !isGenerationRandomTable.get(),
+	);
+	const isPlaying = useComputed(() => stateGame.get() === 'play');
+	const allCardsSearch = useObservable(() =>
+		allCards.map((c) => ({
+			...c,
+			titleSearch: clearText(c.title),
+			disable: Object.hasOwn(plantillaChecks.get(), c.id),
+		})),
 	);
 
-	const searchListProcess = () => {
-		const newSearchList = [...initialsearchList];
-		currentCards$.get().forEach((c) => {
-			newSearchList[c.index - 1] = {
-				...newSearchList[c.index - 1],
-				disable: true,
-			};
-		});
-		return newSearchList;
+	const setAllCardsSearch = () => {
+		console.log('setAllCardsSearch', plantillaChecks.get());
+
+		const list = allCards.map((c) => ({
+			...c,
+			titleSearch: clearText(c.title),
+			disable: Object.hasOwn(plantillaChecks.get(), c.id),
+		}));
+		console.log('setAllCardsSearch list', list);
+		allCardsSearch.set(list);
 	};
-
-	const [searchList, setSearchList] =
-		useState<SearchCard[]>(searchListProcess());
-
-	const utils = trpc.useUtils();
-	const query$ = useObservableQuery({
-		queryKey: getQueryKey(trpc.loteria.getRandomCards),
-		queryFn: () =>
-			utils.client.loteria.getRandomCards
-				.query()
-				.then((res) => res)
-				.catch(),
-		refetchOnMount: false,
-		refetchOnWindowFocus: false,
-		enabled: false,
-		initialData: initialCards,
-	});
-
-	const props = useObservable<TypeLoteriaRandomQueryProps>(() => {
-		const q = query$.get();
-		const { data: _, ...opt } = q;
-		return opt;
-	});
-
 	useMount(() => {
 		soundCounter.load('/sounds/countdown.mp3');
 		soundLeavePlayer.load('/sounds/leavePlayer.mp3');
 		soundJoinPlayer.load('/sounds/joinPlayer.mp3');
 	});
 
-	useObserve(query$, () => {
-		const q = query$.get();
-		const { data, ...opt } = q;
-		if (data) {
-			currentCards$.set(data);
-		}
-		props.set(opt);
-	});
-
-	useEffect(() => {
-		socket?.on('players', (playersSo) => {
-			setPlayersList(playersSo);
-		});
-	}, [socket]);
-
-	useEffect(() => {
-		socket?.removeListener('joinPlayer');
-		socket?.on('joinPlayer', () => {
-			soundJoinPlayer.play();
-		});
-	}, [socket, soundJoinPlayer]);
-
-	useEffect(() => {
-		socket?.removeListener('leavePlayer');
-		socket?.on('leavePlayer', () => {
-			soundLeavePlayer.play();
-		});
-	}, [socket, soundLeavePlayer]);
-
-	useEffect(() => {
-		socket?.removeListener('gameState');
-		socket?.on('gameState', (state) => {
-			stateGame.set(state);
-		});
-	}, [socket, stateGame]);
-
+	/*Dialogs events */
 	useEffect(() => {
 		socket?.removeListener('showCountdownDialog');
-		socket?.on('showCountdownDialog', () => {
-			setIsOpenChangeCardDialog(false);
-			setOpenCountdownDialog(true);
+		socket?.on('showCountdownDialog', (show) => {
+			showCountdownDialog.set(show);
 		});
-	}, [socket, stateGame]);
+	}, [socket, showCountdownDialog]);
 
 	useEffect(() => {
-		socket?.removeListener('closeCountdownDialog');
-		socket?.on('closeCountdownDialog', () => {
-			setOpenCountdownDialog(false);
+		socket?.on('players', (players) => {
+			playersList.set(players);
 		});
-	}, [socket, stateGame]);
+	}, [socket, playersList]);
 
-	const clearPlantilla = () => {
-		ractivesMarked.set(defaultRactives);
+	const generateRandomTable = () => {
+		console.log('generateRandomTable');
+
+		isGenerationRandomTable.set(true);
+		generateRandomTableMutation.mutate(
+			{ jwt: userInfo.get()!.jwt },
+			{
+				onSuccess: ({ reactive, playerCards }) => {
+					console.log('generateRandomTable onSucces');
+
+					plantilla.set(playerCards);
+					plantillaChecks.set(reactive);
+					setAllCardsSearch();
+				},
+				onSettled: () => {
+					isGenerationRandomTable.set(false);
+				},
+			},
+		);
 	};
-
-	const generateRandomCards = async () => {
-		const e = props.get();
-		await e.refetch();
-	};
-
-	const toggleActiveCard = (key: string) => {
-		if (playMode.get()) {
-			ractivesMarked[key].set(!ractivesMarked.get()[key]);
+	const openEditPlantillaDialog = (id: string) => {
+		const index = cardsPlayer.findIndex((c) => c.id === id);
+		if (index !== -1) {
+			editCard.set({
+				id,
+				index,
+			});
+			showEditPlantillaDialog.set(true);
+			console.log('openEditPlantillaDialog', showEditPlantillaDialog.get());
 		}
 	};
-
-	const openChangeCardDialog = (id: string) => {
-		setIdChangeCard(id);
-		setIsOpenChangeCardDialog(true);
+	const closeEditPlantillaDialog = () => {
+		showEditPlantillaDialog.set(false);
+		editCard.set({
+			id: '',
+			index: 0,
+		});
 	};
-
-	const closeChangeCardDialog = () => {
-		setIsOpenChangeCardDialog(false);
-	};
-
-	const replaceCard = (to: string) => {
-		const from = idChangeCard;
-		const toCard = allCards.find((c) => c.id === to);
-		const iFrom = currentCards$.get().findIndex((c) => c.id === from);
-		const isToInCurrent = currentCards$.get().find((c) => c.id === to);
-		if (!playMode.get() && iFrom !== -1 && !isToInCurrent) {
-			currentCards$[iFrom].set(toCard);
+	const editCardPlantilla = (id: string) => {
+		const card = allCards.find((c) => c.id === id);
+		if (card) {
+			const checks = plantillaChecks.get();
+			const edit = editCard.get();
+			delete checks[edit.id];
+			Object.assign(checks, { [id]: false });
+			const newCards = plantilla.get();
+			newCards[edit.index] = card;
+			plantillaChecks.set(checks);
+			plantilla.set([]);
+			plantilla.set([...newCards]);
+			closeEditPlantillaDialog();
+			setAllCardsSearch();
+			updatePlantillaCard.mutate({
+				jwt: userInfo.get()!.jwt,
+				from: edit.id,
+				to: id,
+			});
 		}
 	};
-
-	useObserve(currentCards$, () => {
-		setSearchList(searchListProcess());
-	});
 
 	return (
 		<PlayLoteriaUIContext.Provider
 			value={{
 				soundCounter,
-				props,
-				generateRandomCards,
-				clearPlantilla,
-				allCards,
-				currentCards: currentCards$,
-				searchList,
-				replaceCard,
-				toggleActiveCard,
-				ractivesMarked,
-				playMode,
-				isOpenChangeCardDialog,
-				openChangeCardDialog,
-				closeChangeCardDialog,
+				placeWinning,
+				showCountdownDialog,
+				showLoteriaWinnerDialog,
 				playersList,
-				openCountdownDialog,
+				generateRandomTable,
+				isGenerationRandomTable,
+				plantilla,
+				plantillaChecks,
+				allowEditPlantilla,
+				isPlaying,
+				showEditPlantillaDialog,
+				openEditPlantillaDialog,
+				closeEditPlantillaDialog,
+				editCardPlantilla,
+				allCardsSearch,
 			}}
 		>
 			{children}

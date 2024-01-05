@@ -5,6 +5,7 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { accounts, users } from 'anime-db';
 import { eq } from 'drizzle-orm';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
+import { type Adapter } from 'next-auth/adapters';
 import Credentials from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 
@@ -70,7 +71,7 @@ export const nextAuthOptions: NextAuthOptions = {
 		signIn: '/auth/login',
 		newUser: '/auth/register',
 	},
-	adapter: DrizzleAdapter(db),
+	adapter: DrizzleAdapter(db) as Adapter,
 	providers: [
 		GoogleProvider({
 			clientId: env.GOOGLE_CLIENT_ID,

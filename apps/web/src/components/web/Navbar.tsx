@@ -35,7 +35,7 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 							<AnimeRumbleIcon height={24} width={24} />
 							<span
 								className={cn(
-									'text-xl xs:text-2xl hidden font-bold 2xs:inline-block',
+									'hidden text-xl font-bold 2xs:inline-block xs:text-2xl',
 									chewy.className,
 								)}
 							>
@@ -45,7 +45,7 @@ const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
 					</div>
 
 					<div className='flex-1'>
-						<div className='text-lg hidden h-full w-full items-center justify-center space-x-6 font-medium md:flex'>
+						<div className='hidden h-full w-full items-center justify-center space-x-6 text-lg font-medium md:flex'>
 							<NavbarLinks initialSession={session} />
 						</div>
 					</div>

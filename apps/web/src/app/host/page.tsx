@@ -14,7 +14,7 @@ type TypeGetData =
 	| ['UNKNOWN', undefined, undefined];
 async function getData(session: Session): Promise<TypeGetData> {
 	try {
-		const res = await serverClientSession(session).loteria.startLoteriaHost();
+		const res = await serverClientSession(session).loteria.createLoteriaGame();
 		const playersOnline =
 			await serverClientSession(session).loteria.getPlayesrOnline();
 		return [undefined, res, playersOnline];

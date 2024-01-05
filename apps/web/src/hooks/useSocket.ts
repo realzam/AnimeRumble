@@ -1,4 +1,4 @@
-'use  client';
+'use client';
 
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -16,18 +16,13 @@ interface Props {
 	autoConnect?: boolean;
 }
 
-/*
-
-	const URL = process.env.NODE_ENV === 'production'
-			? 'https://socket.anime-rumble.com/'
-			: 'http://localhost:4000/';
-			
-*/
 const useSocket = <
 	T extends AnimeSocketsClient | null = AnimeDeafultSocketClient,
 >({
 	onConnect,
 	onDisconnect,
+	room,
+	autoConnect = false,
 }: Props) => {
 	const [socket, setSocket] = useState<AnimeDeafultSocketClient | null>(null);
 	const [isConnected, setIsConnected] = useState(false);
@@ -38,10 +33,7 @@ const useSocket = <
 				? window.localStorage.getItem('anime.player')
 				: undefined;
 
-		const URL =
-			process.env.NODE_ENV === 'production'
-				? 'https://socket.anime-rumble.com/loteria'
-				: 'http://localhost:4000/loteria';
+		const URL = `https://socket.anime-rumble.com/${room}`;
 		const socketTemp = io(URL, {
 			transports: ['websocket', 'polling'],
 			autoConnect: true,
@@ -51,33 +43,11 @@ const useSocket = <
 			},
 		});
 		setSocket(socketTemp);
-	}, []);
+	}, [room]);
 
 	const desconectarSocket = useCallback(() => {
 		socket?.disconnect();
 	}, [socket]);
-
-	// useEffect(() => {
-	// 	if (autoConnect) {
-	// 		const query = {
-	// 			'x-token': token,
-	// 		};
-	// 		const socketInstance: AnimeDeafultSocketClient = io(
-	// 			'http://localhost:4000/loteria',
-	// 			{
-	// 				transports: ['websocket', 'polling'],
-	// 				autoConnect: true,
-	// 				forceNew: true,
-	// 				query: token ? query : undefined,
-	// 			},
-	// 		);
-
-	// 		setSocket(socketInstance);
-	// 	}
-	// 	return () => {
-	// 		socket?.disconnect();
-	// 	};
-	// }, [URL, setSocket, room, token, autoConnect]);
 
 	useEffect(() => {
 		socket?.on('connect', () => {
@@ -94,6 +64,12 @@ const useSocket = <
 			onDisconnect?.();
 		});
 	}, [socket, onDisconnect]);
+
+	useEffect(() => {
+		if (autoConnect) {
+			conectarSocket();
+		}
+	}, [autoConnect, conectarSocket]);
 
 	return {
 		isConnected,

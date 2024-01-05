@@ -55,7 +55,18 @@ const isAdim = t.middleware(({ next, ctx }) => {
 	});
 });
 
+const isDev = t.middleware(({ next }) => {
+	if (process.env.NODE_ENV === 'development') {
+		return next();
+	}
+	throw new TRPCError({
+		code: 'FORBIDDEN',
+		cause: 'No permitido',
+	});
+});
+
 export const router = t.router;
 export const publicProcedure = t.procedure;
+export const devProcedure = t.procedure.use(isDev);
 export const userProcedure = t.procedure.use(isAuthed);
 export const adminProcedure = t.procedure.use(isAuthed).use(isAdim);

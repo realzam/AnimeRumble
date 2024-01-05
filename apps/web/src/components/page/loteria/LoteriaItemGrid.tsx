@@ -1,63 +1,59 @@
 import Image from 'next/image';
-import { type ObservableObject } from '@legendapp/state';
-import { Computed, Show, useComputed } from '@legendapp/state/react';
+import { Memo, Show, useComputed } from '@legendapp/state/react';
 
-import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
-import { cn } from '@/lib/utils';
-import usePlayLoteria from '@/hooks/usePlayLoteria';
-// import CreateLoteriaDialog from './CreateLoteriaDialog';
+import { type LoteriaCardDataType } from '@/types/loteriaQuery';
+import { cn, getStyleClassCardFit } from '@/lib/utils';
 import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
 import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Card } from '@/components/ui/Card';
 
 import LoteriaEditCardButton from './LoteriaEditCardButton';
 
-interface Props {
-	id: string;
-	item: ObservableObject<LoteriaCardsDataType[0]>;
-}
-const LoteriaItemGrid = ({ item: card, id }: Props) => {
-	const { stateGame } = usePlayLoteria();
-	const { ractivesMarked, toggleActiveCard, props, playMode } =
-		usePlayLoteriaUI();
+type Props = LoteriaCardDataType;
+const LoteriaItemGrid = (card: Props) => {
+	const {
+		allowEditPlantilla,
+		plantillaChecks,
+		isGenerationRandomTable,
+		isPlaying,
+	} = usePlayLoteriaUI();
 
 	const overlay = useComputed(
-		() => ractivesMarked[id].get() || props.isFetching.get(),
+		() => plantillaChecks[card.id].get() || isGenerationRandomTable.get(),
 	);
-	const edit = useComputed(
-		() => stateGame.get() === 'lobby' && !props.isFetching.get(),
+
+	const isClickable = useComputed(
+		() => isPlaying.get() && !plantillaChecks[card.id].get(),
 	);
 	return (
-		<Computed>
+		<Memo>
 			{() => (
 				<Card
 					className={cn(
 						'flex select-none shadow-lg transition-all duration-300 xs:p-2',
-						playMode.get() &&
+						isClickable.get() &&
 							'cursor-pointer xs:hover:scale-[1.05] xs:hover:ring xs:hover:ring-primary',
 					)}
-					onClick={() => {
-						if (playMode.get()) {
-							toggleActiveCard(id);
-						}
-					}}
+					// onClick={() => {
+					// 	if (playMode.get() && !overlay.get()) {
+					// 		toggleActiveCard(id);
+					// 	}
+					// }}
 				>
 					<AspectRatio ratio={3 / 5}>
 						<Image
 							alt='up'
-							src={card.img.get()}
-							className={cn(
-								'rounded-sm',
-								card.fit.get() === 'cover' ? 'object-cover' : 'object-fit',
-							)}
+							src={card.img}
+							className={cn('rounded-sm', getStyleClassCardFit(card.fit))}
+							sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
 							fill
 							priority
 						/>
-						<Show if={edit}>
-							<LoteriaEditCardButton id={card.id.get()} />
+						<Show if={allowEditPlantilla}>
+							<LoteriaEditCardButton id={card.id} />
 						</Show>
 						<div className='absolute bottom-0 w-full bg-slate-900/80 px-3 text-center text-2xs font-semibold capitalize tracking-wider text-white backdrop-blur-sm xs:text-xs sm:text-sm'>
-							{card.title.get()}
+							{card.title}
 						</div>
 
 						<Show if={overlay}>
@@ -66,7 +62,7 @@ const LoteriaItemGrid = ({ item: card, id }: Props) => {
 					</AspectRatio>
 				</Card>
 			)}
-		</Computed>
+		</Memo>
 	);
 };
 

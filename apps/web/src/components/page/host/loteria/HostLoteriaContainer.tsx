@@ -9,7 +9,7 @@ import HostLoteriaPlayersCard from './HostLoteriaPlayersCard';
 
 const HostLoteriaContainer = () => {
 	const { stateGame, startGame, goToLobbyGame } = useHostLoteria();
-	const playGame = useComputed(() => stateGame.get() === 'play');
+	const playGame = useComputed(() => stateGame.get() !== 'lobby');
 	return (
 		<div className='container mt-5 space-y-3'>
 			<HostLoteriaPlayersCard />

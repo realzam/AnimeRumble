@@ -38,19 +38,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install",
     "co": "sui-mono commit",
-    "clean": "rimraf pnpm-lock.yaml && rimraf node_modules && rimraf .turbo && rimraf apps/web/node_modules  && rimraf apps/socketServer/node_modules",
+    "clean": "turbo clean --filter=web --filter=socket-anime && rimraf node_modules && rimraf .turbo && rimraf pnpm-lock.yaml",
     "pre-commit": "turbo --filter=web pre-commit"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@s-ui/mono": "^2.41.0",
     "dotenv-cli": "^7.3.0",
     "husky": "^8.0.3",
     "prettier": "^3.1.0",
-    "turbo": "latest"
+    "turbo": "^1.11.3"
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {

@@ -23,3 +23,9 @@ export const JoinToLoteriaSchema = z.object({
 export const LoginToLoteriaSchema = z.object({
 	jwt: z.string().min(10),
 });
+
+export const UpdatePlantillaCardSchema = z.object({
+	jwt: z.string().min(10),
+	from: z.string().min(1),
+	to: z.string().min(1),
+});

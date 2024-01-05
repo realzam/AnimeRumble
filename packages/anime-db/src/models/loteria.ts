@@ -1,12 +1,23 @@
 import { relations } from "drizzle-orm";
 import {
   boolean,
-  json,
   mysqlTable,
   primaryKey,
   smallint,
+  timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { users } from "./users";
+
+export const loteriaPlayer = mysqlTable("loteriaPlayer", {
+  id: varchar("userId", { length: 60 }).primaryKey().notNull(),
+  nickName: varchar("nickName", { length: 100 }).notNull(),
+  online: boolean("online").default(false).notNull(),
+  userType: varchar("userType", {
+    length: 8,
+    enum: ["guest", "register"],
+  }).notNull(),
+});
 
 export const loteriaCards = mysqlTable("loteriaCards", {
   id: varchar("id", { length: 30 }).primaryKey().notNull(),
@@ -20,20 +31,22 @@ export const loteriaCards = mysqlTable("loteriaCards", {
 });
 
 export const loteriaGame = mysqlTable("loteriaGame", {
-  id: varchar("id", { length: 30 }).primaryKey().notNull(),
+  id: varchar("id", { length: 50 }).primaryKey().notNull(),
   state: varchar("state", {
     length: 9,
     enum: ["lobby", "play", "countdown", "finish"],
   })
     .default("lobby")
     .notNull(),
-  currentCard: smallint("index").default(0).notNull(),
+  currentCard: smallint("currentCard").default(0).notNull(),
+  isPaused: boolean("isPaused").default(true).notNull(),
+  date: timestamp("date").notNull(),
 });
 
-export const loteriaCardsToLoteriaGames = mysqlTable(
-  "loteriaCardsToLoteriaGames",
+export const loteriaDeck = mysqlTable(
+  "loteriaDeck",
   {
-    cardId: varchar("cardId", { length: 30 }).notNull(),
+    cardId: varchar("cardId", { length: 50 }).notNull(),
     gameId: varchar("gameId", { length: 50 }).notNull(),
     order: smallint("order").notNull(),
   },
@@ -42,86 +55,121 @@ export const loteriaCardsToLoteriaGames = mysqlTable(
   })
 );
 
-export const playerLoteria = mysqlTable(
-  "playerLoteria",
-  {
-    gameId: varchar("gameId", { length: 50 }).notNull(),
-    userId: varchar("userId", { length: 60 }).notNull(),
-    nickName: varchar("nickName", { length: 100 }).notNull(),
-    online: boolean("isCorrect").default(false).notNull(),
-    userType: varchar("userType", {
-      length: 8,
-      enum: ["guest", "register"],
-    }).notNull(),
-    tableCheck: json("correctAnswers").$type<boolean[]>().notNull(),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.gameId] }),
-  })
-);
-
-export const loteriaCardsToPlayerLoteria = mysqlTable(
-  "loteriaCardsToPlayerLoteria",
+export const loteriaPlantilla = mysqlTable(
+  "loteriaPlantilla",
   {
     cardId: varchar("cardId", { length: 30 }).notNull(),
     gameId: varchar("gameId", { length: 50 }).notNull(),
     playerId: varchar("playerId", { length: 50 }).notNull(),
+    order: smallint("order").notNull(),
+    checked: boolean("checked").default(false).notNull(),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.cardId, t.gameId, t.playerId] }),
   })
 );
 
+export const loteriaWinners = mysqlTable(
+  "loteriaWinners",
+  {
+    playerId: varchar("playerId", { length: 50 }).notNull(),
+    gameId: varchar("gameId", { length: 50 }).notNull(),
+    place: smallint("place").notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.playerId, t.gameId] }),
+  })
+);
+
+export const loteriaSessions = mysqlTable(
+  "loteriaSessions",
+  {
+    playerId: varchar("playerId", { length: 50 }).notNull(),
+    gameId: varchar("gameId", { length: 50 }).notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.playerId, t.gameId] }),
+  })
+);
+
+export const loteriaPlayerRelations = relations(
+  loteriaPlayer,
+  ({ one, many }) => ({
+    winner: one(loteriaWinners, {
+      fields: [loteriaPlayer.id],
+      references: [loteriaWinners.playerId],
+    }),
+    user: one(users, {
+      fields: [loteriaPlayer.id],
+      references: [users.id],
+    }),
+    sessions: many(loteriaSessions),
+    plantillas: many(loteriaPlantilla),
+  })
+);
+
 export const loteriaGameRelations = relations(loteriaGame, ({ many }) => ({
-  cards: many(loteriaCardsToLoteriaGames),
-  players: many(playerLoteria),
-  cardsPlayer: many(loteriaCardsToPlayerLoteria),
+  deck: many(loteriaDeck),
+  players: many(loteriaSessions),
+  winners: many(loteriaWinners),
+  plantilla: many(loteriaPlantilla),
 }));
 
 export const loteriaCardsRelations = relations(loteriaCards, ({ many }) => ({
-  games: many(loteriaCardsToLoteriaGames),
-  cardsPlayer: many(loteriaCardsToPlayerLoteria),
+  game: many(loteriaDeck),
+  plantilla: many(loteriaPlantilla),
 }));
 
-export const loteriaCardsToLoteriaGamesRelations = relations(
-  loteriaCardsToLoteriaGames,
+export const loteriaDeckRelations = relations(loteriaDeck, ({ one }) => ({
+  card: one(loteriaCards, {
+    fields: [loteriaDeck.cardId],
+    references: [loteriaCards.id],
+  }),
+  game: one(loteriaGame, {
+    fields: [loteriaDeck.gameId],
+    references: [loteriaGame.id],
+  }),
+}));
+
+export const loteriaWinnersRelations = relations(loteriaWinners, ({ one }) => ({
+  game: one(loteriaGame, {
+    fields: [loteriaWinners.gameId],
+    references: [loteriaGame.id],
+  }),
+  player: one(loteriaPlayer, {
+    fields: [loteriaWinners.playerId],
+    references: [loteriaPlayer.id],
+  }),
+}));
+
+export const loteriaSessionsRelations = relations(
+  loteriaSessions,
   ({ one }) => ({
-    card: one(loteriaCards, {
-      fields: [loteriaCardsToLoteriaGames.cardId],
-      references: [loteriaCards.id],
-    }),
     game: one(loteriaGame, {
-      fields: [loteriaCardsToLoteriaGames.gameId],
+      fields: [loteriaSessions.gameId],
       references: [loteriaGame.id],
+    }),
+    player: one(loteriaPlayer, {
+      fields: [loteriaSessions.playerId],
+      references: [loteriaPlayer.id],
     }),
   })
 );
 
-export const playerLoteriaRelations = relations(
-  playerLoteria,
-  ({ one, many }) => ({
-    game: one(loteriaGame, {
-      fields: [playerLoteria.gameId],
-      references: [loteriaGame.id],
-    }),
-    cards: many(loteriaCardsToPlayerLoteria),
-  })
-);
-
-export const loteriaCardsToPlayerLoteriaRelations = relations(
-  loteriaCardsToPlayerLoteria,
+export const loteriaPlantillaRelations = relations(
+  loteriaPlantilla,
   ({ one }) => ({
     card: one(loteriaCards, {
-      fields: [loteriaCardsToPlayerLoteria.cardId],
+      fields: [loteriaPlantilla.cardId],
       references: [loteriaCards.id],
     }),
     game: one(loteriaGame, {
-      fields: [loteriaCardsToPlayerLoteria.gameId],
+      fields: [loteriaPlantilla.gameId],
       references: [loteriaGame.id],
     }),
-    player: one(playerLoteria, {
-      fields: [loteriaCardsToPlayerLoteria.playerId],
-      references: [playerLoteria.userId],
+    player: one(loteriaPlayer, {
+      fields: [loteriaPlantilla.playerId],
+      references: [loteriaPlayer.id],
     }),
   })
 );

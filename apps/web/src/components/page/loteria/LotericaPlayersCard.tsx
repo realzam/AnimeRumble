@@ -1,3 +1,5 @@
+import { Memo } from '@legendapp/state/react';
+
 import { cn } from '@/lib/utils';
 import usePlayLoteria from '@/hooks/usePlayLoteria';
 import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
@@ -12,18 +14,24 @@ const LotericaPlayersCard = () => {
 				<CardTitle>Jugadores:</CardTitle>
 			</CardHeader>
 			<CardContent className='flex flex-wrap justify-center p-1'>
-				{playersList.map((player, i) => (
-					<span
-						key={`${i}-${player}`}
-						className={cn(
-							'm-3 h-fit rounded-full bg-animePink px-5 py-1 text-white shadow-md',
-							userInfo.get()!.nickname === player &&
-								'bg-gradient-to-r from-primary via-sakura-darken via-40% to-primary ring-2 ring-primary ring-offset-2',
-						)}
-					>
-						{player}
-					</span>
-				))}
+				<Memo>
+					{() => (
+						<>
+							{playersList.get().map((player, i) => (
+								<span
+									key={`${i}-${player}`}
+									className={cn(
+										'm-3 h-fit rounded-full bg-animePink px-5 py-1 text-white shadow-md',
+										userInfo.get()!.nickname === player &&
+											'bg-gradient-to-r from-primary via-sakura-darken via-40% to-primary ring-2 ring-primary ring-offset-2',
+									)}
+								>
+									{player}
+								</span>
+							))}
+						</>
+					)}
+				</Memo>
 			</CardContent>
 		</Card>
 	);

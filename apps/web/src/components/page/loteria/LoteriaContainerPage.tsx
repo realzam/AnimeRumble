@@ -12,22 +12,15 @@ import LoteriaSwitcherScreen from './LoteriaSwitcherScreen';
 
 interface Props {
 	allCards: LoteriaCardsDataType;
-	session: Session | null;
 	currentGame: LoteriaCurrentGameDataType;
-	playersOnline: string[];
+	session: Session | null;
 }
-const LoteriaContainerPage = ({
-	currentGame,
-	session,
-	allCards,
-	playersOnline,
-}: Props) => {
+const LoteriaContainerPage = ({ currentGame, session, allCards }: Props) => {
 	return (
 		<PlayLoteriaProvider
 			initialCurrentGame={currentGame}
 			initalSession={session}
 			allCards={allCards}
-			playersOnline={playersOnline}
 		>
 			<LoteriaSwitcherScreen />
 		</PlayLoteriaProvider>

@@ -1,11 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
-import { Pause, SkipForward } from 'lucide-react';
+import { Memo } from '@legendapp/state/react';
+import { Pause, Play, SkipForward } from 'lucide-react';
 
+import { getStyleClassCardFit } from '@/lib/utils';
 import useHostLoteria from '@/hooks/useHostLoteria';
 import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Progress } from '@/components/ui/Progress';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Separator } from '@/components/ui/Separator';
 
@@ -28,7 +31,7 @@ const PassCardsLoteria = () => {
 			</CardHeader>
 			<CardContent className='p-1 pb-4'>
 				<ScrollArea className='h-72 w-full px-5' type='always'>
-					{cardsPassed.reverse().map((card) => (
+					{cardsPassed.map((card) => (
 						<>
 							<div className='flex items-center space-x-3'>
 								<Card className='w-1/3 overflow-hidden rounded-sm'>
@@ -50,31 +53,56 @@ const PassCardsLoteria = () => {
 };
 
 const CurrentLoteria = () => {
-	const { currentCard, game, nextCard } = useHostLoteria();
+	const {
+		currentCard,
+		nextCard,
+		cardsMissed,
+		togglePauseLoteria,
+		updateProgress,
+		isPaused,
+		cards,
+	} = useHostLoteria();
 	return (
-		<Card className='col-span-3 flex flex-col items-center justify-center space-y-2 p-2'>
+		<Card className='relative col-span-3 flex flex-col items-center justify-center space-y-2 p-2'>
+			<Memo>
+				{() => (
+					<Progress className='absolute top-0' value={updateProgress.get()} />
+				)}
+			</Memo>
 			<Card className='flex w-[180px] bg-primary p-2'>
 				<AspectRatio ratio={3 / 5}>
 					<div className='relative h-full overflow-hidden rounded-sm'>
 						<Image
-							alt='up'
-							src={game.cards[currentCard].img}
-							className={game.cards[currentCard].fit}
+							alt={cards[currentCard].title}
+							src={cards[currentCard].img}
+							className={getStyleClassCardFit(cards[currentCard].fit)}
+							sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
 							fill
+							priority
 						/>
 						<div className='absolute bottom-0 w-full bg-slate-900/70 text-center text-white'>
-							{`${game.cards[currentCard].index}. ${game.cards[currentCard].title}`}
+							{`${cards[currentCard].index}. ${cards[currentCard].title}`}
 						</div>
 					</div>
 				</AspectRatio>
 			</Card>
 			<div className='flex space-x-2'>
-				<Button variant='ghost' size='icon'>
-					<Pause className='fill-current' />
+				<Button
+					variant='ghost'
+					size='icon'
+					onClick={() => togglePauseLoteria()}
+				>
+					{isPaused ? (
+						<Play className='fill-current' />
+					) : (
+						<Pause className='fill-current' />
+					)}
 				</Button>
-				<Button variant='ghost' size='icon' onClick={() => nextCard()}>
-					<SkipForward className='fill-current' />
-				</Button>
+				{cardsMissed.length > 0 && (
+					<Button variant='ghost' size='icon' onClick={() => nextCard()}>
+						<SkipForward className='fill-current' />
+					</Button>
+				)}
 			</div>
 		</Card>
 	);

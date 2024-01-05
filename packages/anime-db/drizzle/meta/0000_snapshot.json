@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "0fd5bf39-83c8-42e5-b074-d55ddca7e84f",
+  "id": "fb0e35c5-dec4-4de8-b6ad-c697ec112748",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -107,12 +107,12 @@
       },
       "uniqueConstraints": {}
     },
-    "loteriaCardsToLoteriaGames": {
-      "name": "loteriaCardsToLoteriaGames",
+    "loteriaDeck": {
+      "name": "loteriaDeck",
       "columns": {
         "cardId": {
           "name": "cardId",
-          "type": "varchar(30)",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -135,8 +135,8 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "loteriaCardsToLoteriaGames_cardId_gameId_pk": {
-          "name": "loteriaCardsToLoteriaGames_cardId_gameId_pk",
+        "loteriaDeck_cardId_gameId_pk": {
+          "name": "loteriaDeck_cardId_gameId_pk",
           "columns": [
             "cardId",
             "gameId"
@@ -145,8 +145,62 @@
       },
       "uniqueConstraints": {}
     },
-    "loteriaCardsToPlayerLoteria": {
-      "name": "loteriaCardsToPlayerLoteria",
+    "loteriaGame": {
+      "name": "loteriaGame",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "varchar(9)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'lobby'"
+        },
+        "currentCard": {
+          "name": "currentCard",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "isPaused": {
+          "name": "isPaused",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "loteriaGame_id": {
+          "name": "loteriaGame_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "loteriaPlantilla": {
+      "name": "loteriaPlantilla",
       "columns": {
         "cardId": {
           "name": "cardId",
@@ -168,13 +222,28 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "checked": {
+          "name": "checked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "loteriaCardsToPlayerLoteria_cardId_gameId_playerId_pk": {
-          "name": "loteriaCardsToPlayerLoteria_cardId_gameId_playerId_pk",
+        "loteriaPlantilla_cardId_gameId_playerId_pk": {
+          "name": "loteriaPlantilla_cardId_gameId_playerId_pk",
           "columns": [
             "cardId",
             "gameId",
@@ -184,55 +253,9 @@
       },
       "uniqueConstraints": {}
     },
-    "loteriaGame": {
-      "name": "loteriaGame",
+    "loteriaPlayer": {
+      "name": "loteriaPlayer",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(30)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "state": {
-          "name": "state",
-          "type": "varchar(9)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'lobby'"
-        },
-        "index": {
-          "name": "index",
-          "type": "smallint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "loteriaGame_id": {
-          "name": "loteriaGame_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-    "playerLoteria": {
-      "name": "playerLoteria",
-      "columns": {
-        "gameId": {
-          "name": "gameId",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "userId": {
           "name": "userId",
           "type": "varchar(60)",
@@ -247,8 +270,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "isCorrect": {
-          "name": "isCorrect",
+        "online": {
+          "name": "online",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -261,10 +284,33 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "loteriaPlayer_userId": {
+          "name": "loteriaPlayer_userId",
+          "columns": [
+            "userId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "loteriaSessions": {
+      "name": "loteriaSessions",
+      "columns": {
+        "playerId": {
+          "name": "playerId",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         },
-        "correctAnswers": {
-          "name": "correctAnswers",
-          "type": "json",
+        "gameId": {
+          "name": "gameId",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -273,10 +319,48 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "playerLoteria_userId_gameId_pk": {
-          "name": "playerLoteria_userId_gameId_pk",
+        "loteriaSessions_playerId_gameId_pk": {
+          "name": "loteriaSessions_playerId_gameId_pk",
           "columns": [
-            "userId",
+            "playerId",
+            "gameId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "loteriaWinners": {
+      "name": "loteriaWinners",
+      "columns": {
+        "playerId": {
+          "name": "playerId",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "gameId": {
+          "name": "gameId",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "place": {
+          "name": "place",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "loteriaWinners_playerId_gameId_pk": {
+          "name": "loteriaWinners_playerId_gameId_pk",
+          "columns": [
+            "playerId",
             "gameId"
           ]
         }
