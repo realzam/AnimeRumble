@@ -76,6 +76,7 @@ const LoteriaCardEditDialog = () => {
 													alt={card.title}
 													src={card.img}
 													sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+													draggable='false'
 													fill
 													priority
 												/>

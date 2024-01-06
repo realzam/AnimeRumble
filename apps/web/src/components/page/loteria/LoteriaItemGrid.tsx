@@ -16,6 +16,7 @@ const LoteriaItemGrid = (card: Props) => {
 		plantillaChecks,
 		isGenerationRandomTable,
 		isPlaying,
+		checkCard,
 	} = usePlayLoteriaUI();
 
 	const overlay = useComputed(
@@ -34,20 +35,21 @@ const LoteriaItemGrid = (card: Props) => {
 						isClickable.get() &&
 							'cursor-pointer xs:hover:scale-[1.05] xs:hover:ring xs:hover:ring-primary',
 					)}
-					// onClick={() => {
-					// 	if (playMode.get() && !overlay.get()) {
-					// 		toggleActiveCard(id);
-					// 	}
-					// }}
+					onClick={() => {
+						if (isPlaying.get() && !overlay.get()) {
+							checkCard(card.id);
+						}
+					}}
 				>
 					<AspectRatio ratio={3 / 5}>
 						<Image
-							alt='up'
+							alt={card.title}
 							src={card.img}
 							className={cn('rounded-sm', getStyleClassCardFit(card.fit))}
 							sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
 							fill
 							priority
+							draggable='false'
 						/>
 						<Show if={allowEditPlantilla}>
 							<LoteriaEditCardButton id={card.id} />

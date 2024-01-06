@@ -39,6 +39,7 @@ export const loteriaGame = mysqlTable("loteriaGame", {
     .default("lobby")
     .notNull(),
   currentCard: smallint("currentCard").default(0).notNull(),
+  currentCardPlayer: smallint("currentCardPlayer").default(0).notNull(),
   isPaused: boolean("isPaused").default(true).notNull(),
   date: timestamp("date").notNull(),
 });

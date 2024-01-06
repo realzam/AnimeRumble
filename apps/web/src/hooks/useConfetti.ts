@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 
 interface Props {
 	onEnd?: () => void;
+	duration?: number;
 }
 const useConfetti = (props?: Props) => {
 	const isPlaying = useObservable(false);

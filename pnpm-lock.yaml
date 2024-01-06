@@ -269,7 +269,7 @@ importers:
         version: 0.29.3(@types/react@18.2.46)(react@18.2.0)
       framer-motion:
         specifier: ^10.16.5
-        version: 10.17.6(react-dom@18.2.0)(react@18.2.0)
+        version: 10.17.9(react-dom@18.2.0)(react@18.2.0)
       jose:
         specifier: ^5.1.3
         version: 5.2.0
@@ -460,7 +460,7 @@ importers:
         version: 6.17.0(eslint@8.56.0)(typescript@5.3.3)
       drizzle-kit:
         specifier: ^0.20.4
-        version: 0.20.9
+        version: 0.20.10
       eslint:
         specifier: ^8.55.0
         version: 8.56.0
@@ -705,7 +705,7 @@ packages:
       '@panva/hkdf': 1.1.1
       cookie: 0.5.0
       jose: 5.2.0
-      oauth4webapi: 2.4.1
+      oauth4webapi: 2.4.2
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
     dev: false
@@ -5734,7 +5734,7 @@ packages:
       eslint-plugin-tsdoc: 0.2.17
       eslint-plugin-unicorn: 48.0.1(eslint@8.56.0)
       prettier: 3.1.1
-      prettier-plugin-packagejson: 2.4.8(prettier@3.1.1)
+      prettier-plugin-packagejson: 2.4.9(prettier@3.1.1)
       typescript: 5.3.3
     transitivePeerDependencies:
       - eslint-import-resolver-node
@@ -8093,8 +8093,8 @@ packages:
       wordwrap: 1.0.0
     dev: true
 
-  /drizzle-kit@0.20.9:
-    resolution: {integrity: sha512-5oIbPFdfEEfzVSOB3MWGt70VSHv6W7qMAWCJ5xc6W1BxgGASipxuAuyXD59fx9S6QYTNNnuSuQFoIdnNTRWY2A==}
+  /drizzle-kit@0.20.10:
+    resolution: {integrity: sha512-GoBmfAWrZiX2ZHMGlVg7w34bnJw1gbQIzhGr1cROK6+0eikhFNSR4a4G8jtD3FO5JZKbbWHuNA5YFDJu6Us0Tw==}
     hasBin: true
     dependencies:
       '@drizzle-team/studio': 0.0.37
@@ -10054,8 +10054,8 @@ packages:
       map-cache: 0.2.2
     dev: true
 
-  /framer-motion@10.17.6(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-WPPm0vLGTbhLOsD7v1fEv3yjX1RrmzsVI3CZ6dpBJvVb7wKMA6mpZsQzTYiSUDz/YIlvTUHHY0Jum7iEHnLHDA==}
+  /framer-motion@10.17.9(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-z2NpP8r+XuALoPA7ZVZHm/OoTnwkQNJFBu91sC86o/FYvJ4x7ar3eQnixgwYWFK7kEqOtQ6whtNM37tn1KrOOA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -13456,7 +13456,7 @@ packages:
       jose: 4.15.4
       next: 14.0.1(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
       oauth: 0.9.15
-      openid-client: 5.6.2
+      openid-client: 5.6.3
       preact: 10.19.3
       preact-render-to-string: 5.2.6(preact@10.19.3)
       react: 18.2.0
@@ -13666,8 +13666,8 @@ packages:
     resolution: {integrity: sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==}
     dev: true
 
-  /oauth4webapi@2.4.1:
-    resolution: {integrity: sha512-qor45aeDGaGqDOizwut+Q/rZ+J6BIJvOp7U0LtHfbFhg3O7JV5lvQFDXPNqSmcUjuq/Zeq8CIII4RD0sWLOdSQ==}
+  /oauth4webapi@2.4.2:
+    resolution: {integrity: sha512-IpqlrKf/Y57dxRQmfCh9S74ako9Tm+Jdf6GxsN2LEF1EwT8xhiHMjD6Q2WVX/plCcJC+72mZtoaMwhlMUWm7Yw==}
     dev: false
 
   /oauth@0.9.15:
@@ -13844,8 +13844,8 @@ packages:
       - encoding
     dev: false
 
-  /openid-client@5.6.2:
-    resolution: {integrity: sha512-TIVimoK/fAvpiISLcoGZyNJx2TOfd5AE6TXn58FFj6Y8qbU/jqky54Aws7sYKuCph1bLPWSRUa1r/Rd6K21bhg==}
+  /openid-client@5.6.3:
+    resolution: {integrity: sha512-lZrvkveRtmeVq2LBJbdI7UcTlAOz0YXeWd2gEfc9Nj6NUinX/HdfKN2RnDqwRy5jnGxXUWAKyg3xYDwF/LuKNw==}
     dependencies:
       jose: 4.15.4
       lru-cache: 6.0.0
@@ -14455,8 +14455,8 @@ packages:
       typescript: 5.3.3
     dev: true
 
-  /prettier-plugin-packagejson@2.4.8(prettier@3.1.1):
-    resolution: {integrity: sha512-ZK37c6pRUKeUIpQWNEdMgNUiGSG5BTfeeAIA01mRjVGTfWxxVzM55Cs+LaHyweFJbEgkgCNsqMA3LGEAjfOPtA==}
+  /prettier-plugin-packagejson@2.4.9(prettier@3.1.1):
+    resolution: {integrity: sha512-b3Q7agXVqxK3UpYEJr0xLD51SxriYXESWUCjmxOBUGqnPFZOg9jZGZ+Ptzq252I6OqzXN2rj1tJIFq6KOGLLJw==}
     peerDependencies:
       prettier: '>= 1.16.0'
     peerDependenciesMeta:
@@ -14465,7 +14465,7 @@ packages:
     dependencies:
       prettier: 3.1.1
       sort-package-json: 2.6.0
-      synckit: 0.8.8
+      synckit: 0.9.0
     dev: true
 
   /prettier-plugin-style-order@0.2.2(prettier@3.1.1):
@@ -16311,6 +16311,14 @@ packages:
 
   /synckit@0.8.8:
     resolution: {integrity: sha512-HwOKAP7Wc5aRGYdKH+dw0PRRpbO841v2DENBtjnR5HFWoiNByAl7vrx3p0G/rCyYXQsrxqtX48TImFtPcIHSpQ==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    dependencies:
+      '@pkgr/core': 0.1.0
+      tslib: 2.6.2
+    dev: true
+
+  /synckit@0.9.0:
+    resolution: {integrity: sha512-7RnqIMq572L8PeEzKeBINYEJDDxpcH8JEgLwUqBd3TkofhFRbkq4QLR0u+36avGAhCRbk2nnmjcW9SE531hPDg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/core': 0.1.0

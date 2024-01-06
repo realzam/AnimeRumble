@@ -8,7 +8,9 @@ import { type Server } from 'socket.io';
 import {
 	finishGameLoteria,
 	getOnlinePlayersGameLoteria,
+	getWinners,
 	nextCardGameLoteria,
+	placeWinning,
 	setOnlinePlayerLoteria,
 } from '../controllers/loteria';
 import {
@@ -24,6 +26,22 @@ import { sleep } from '../lib/utils';
 import { LoteriaTask, TimeManager } from '../TimerManager';
 import { type JwtAnimePlayer } from '../types/jwt';
 
+const joinPlayer = async (
+	loteria: LoteriaIONamesapce,
+	socket: LoteriaServerSocket,
+) => {
+	await setOnlinePlayerLoteria(socket.data.userId, true);
+	loteria.emit('joinPlayer');
+	const task = TimeManager.getInstance().getTask();
+	socket.emit('updateProgress', task?.getProgress() || 0);
+	const place = await placeWinning(socket.data.userId);
+	if (place > 0) {
+		socket.emit('winner', place);
+	}
+	const winners = await getWinners();
+	socket.emit('winnersList', winners);
+};
+
 const loteriaSocket = async (io: Server): Promise<void> => {
 	const loteria: LoteriaIONamesapce = io.of('/loteria');
 
@@ -31,10 +49,11 @@ const loteriaSocket = async (io: Server): Promise<void> => {
 		loteria,
 		async () => {
 			console.log('call nextCardLoteriaTask from startGame');
-			const index = await nextCardGameLoteria();
-			if (index) {
-				loteria.emit('updateCurrentCard', index);
-				loteria.emit('updateProgress', 100);
+			const res = await nextCardGameLoteria();
+			if (res) {
+				const [indexAdmin, indexPlayer] = res;
+				loteria.emit('updateCurrentCard', indexAdmin);
+				loteria.emit('playerCurrentCard', indexPlayer);
 				await sleep(600);
 			} else {
 				await finishGameLoteria();
@@ -65,8 +84,7 @@ const loteriaSocket = async (io: Server): Promise<void> => {
 	});
 
 	loteria.on('connection', async (socket: LoteriaServerSocket) => {
-		await setOnlinePlayerLoteria(socket.data.userId, true);
-		loteria.emit('joinPlayer');
+		await joinPlayer(loteria, socket);
 		loteria.emit('players', await getOnlinePlayersGameLoteria());
 
 		socket.on('disconnect', () => loteriaDisconnectEvent(loteria, socket));
@@ -83,8 +101,8 @@ const loteriaSocket = async (io: Server): Promise<void> => {
 
 		socket.on('nextCard', () => loteriaNextCardEvent(loteria, socket));
 
-		socket.on('checkCard', (target: string, index: number) => {
-			loteriaCheckCardEvent(loteria, socket, target, index);
+		socket.on('checkCard', (target: string) => {
+			loteriaCheckCardEvent(loteria, socket, target);
 		});
 	});
 };

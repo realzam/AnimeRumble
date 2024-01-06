@@ -25,7 +25,6 @@ interface CheckEvent {
 		loteria: LoteriaIONamesapce,
 		socket: LoteriaServerSocket,
 		target: string,
-		index: number,
 	): void;
 }
 
@@ -43,7 +42,7 @@ export const loteriaStartGameEvent: Event = async (loteria, socket) => {
 				await sleep(750);
 			}
 			loteria.emit('showCountdownDialog', false);
-			// loteria.emit('gameState', 'play');
+			loteria.emit('gameState', 'play');
 			// const task = TimeManager.getInstance().getTask();
 			// await isPlayLoteriaGame();
 			// task?.start();
@@ -90,10 +89,12 @@ export const loteriaNextCardEvent: Event = async (loteria, socket) => {
 	if (socket.data.role === 'admin') {
 		const task = TimeManager.getInstance().getTask();
 
-		const index = await nextCardGameLoteria();
-		if (index) {
+		const res = await nextCardGameLoteria();
+		if (res) {
+			const [indexAdmin, indexPlayer] = res;
 			task?.reset();
-			loteria.emit('updateCurrentCard', index);
+			loteria.emit('updateCurrentCard', indexAdmin);
+			loteria.emit('playerCurrentCard', indexPlayer);
 			loteria.emit('isPausedGame', false);
 		} else {
 			task?.cancelInterval();
@@ -103,32 +104,22 @@ export const loteriaNextCardEvent: Event = async (loteria, socket) => {
 	}
 };
 
-export const loteriaCheckCardEvent: CheckEvent = async (
-	_,
-	socket,
-	target,
-	index,
-) => {
+export const loteriaCheckCardEvent: CheckEvent = async (_, socket, target) => {
 	if (socket.data.role === 'player') {
-		const res = await checkCellCardGameLoteria(
-			socket.data.userId,
-			target,
-			index,
-		);
-		console.log('checkCard ress', res);
+		const res = await checkCellCardGameLoteria(socket.data.userId, target);
 		if (res !== undefined) {
 			socket.emit('checkCardPlayer', target);
 
 			if (res === 0) {
-				console.log('call addWinnerLoteria');
-
 				const place = await addWinnerLoteria(socket.data.userId);
 
+				console.log('player winner', place);
+
 				if (place > 0) {
-					socket.emit('winner', res);
+					socket.emit('winner', place);
+					socket.broadcast.except('');
 				}
 			}
-			1;
 		}
 	}
 };

@@ -69,19 +69,26 @@ export const setOfflineAllUsers = async () => {
 	await db.update(loteriaPlayer).set({ online: false });
 };
 
-export const nextCardGameLoteria = async () => {
+export const nextCardGameLoteria = async (): Promise<
+	[number, number] | undefined
+> => {
 	const currentGame = await getCurrentGameLoteria();
 	if (currentGame) {
 		const deck = await db.query.loteriaDeck.findMany({
 			orderBy: asc(loteriaDeck.order),
 			where: eq(loteriaDeck.gameId, currentGame.id),
+			with: {
+				card: true,
+			},
 		});
-		if (currentGame.currentCard + 1 < deck.length) {
+		const nextCard = currentGame.currentCard + 1;
+		if (nextCard < deck.length && [nextCard]) {
+			const indexPlayer = deck[nextCard]!.card.index;
 			await db
 				.update(loteriaGame)
-				.set({ currentCard: currentGame.currentCard + 1 })
+				.set({ currentCard: nextCard, currentCardPlayer: indexPlayer })
 				.where(eq(loteriaGame.id, currentGame.id));
-			return currentGame.currentCard + 1;
+			return [nextCard, indexPlayer];
 		} else {
 			const task = TimeManager.getInstance().getTask();
 			task?.cancelInterval();
@@ -92,10 +99,7 @@ export const nextCardGameLoteria = async () => {
 export const checkCellCardGameLoteria = async (
 	playerId: string,
 	target: string,
-	index: number,
 ) => {
-	console.log('checkCellCardGameLoteria', playerId, target, index);
-
 	const currentGame = await getCurrentGameLoteria();
 	if (currentGame) {
 		const deck = await db.query.loteriaDeck.findMany({
@@ -113,25 +117,36 @@ export const checkCellCardGameLoteria = async (
 				},
 			});
 			if (player) {
-				db.update(loteriaPlantilla)
-					.set({ checked: true })
-					.where(
-						and(
-							eq(loteriaPlantilla.cardId, target),
+				const card = await db.query.loteriaPlantilla.findFirst({
+					where: and(
+						eq(loteriaPlantilla.cardId, target),
+						eq(loteriaPlantilla.gameId, currentGame.id),
+						eq(loteriaPlantilla.playerId, playerId),
+					),
+				});
+				if (card) {
+					console.log('card to check', card);
+					await db
+						.update(loteriaPlantilla)
+						.set({ checked: true })
+						.where(
+							and(
+								eq(loteriaPlantilla.cardId, target),
+								eq(loteriaPlantilla.playerId, playerId),
+								eq(loteriaPlantilla.gameId, currentGame.id),
+							),
+						);
+
+					const checks = await db.query.loteriaPlantilla.findMany({
+						where: and(
+							eq(loteriaPlantilla.checked, false),
 							eq(loteriaPlantilla.playerId, playerId),
 							eq(loteriaPlantilla.gameId, currentGame.id),
 						),
-					);
+					});
 
-				const checks = await db.query.loteriaPlantilla.findMany({
-					where: and(
-						eq(loteriaPlantilla.checked, false),
-						eq(loteriaPlantilla.playerId, playerId),
-						eq(loteriaPlantilla.gameId, currentGame.id),
-					),
-				});
-
-				return checks.length;
+					return checks.length;
+				}
 			}
 		}
 	}
@@ -187,4 +202,53 @@ export const finishGameLoteria = async () => {
 		return true;
 	}
 	return false;
+};
+
+export const placeWinning = async (player: string) => {
+	const currentGame = await getCurrentGameLoteria();
+	if (currentGame) {
+		const playerPlace = await db.query.loteriaWinners.findFirst({
+			where: and(
+				eq(loteriaWinners.gameId, currentGame.id),
+				eq(loteriaWinners.playerId, player),
+			),
+		});
+		if (playerPlace) {
+			return playerPlace.place;
+		}
+	}
+	return 0;
+};
+
+export const getWinners = async () => {
+	const currentGame = await db.query.loteriaGame.findFirst({
+		where: ne(loteriaGame.state, 'finish'),
+		with: {
+			deck: {
+				columns: {},
+				orderBy: (cTg, { asc }) => [asc(cTg.order)],
+				with: {
+					card: true,
+				},
+			},
+		},
+	});
+
+	if (!currentGame) {
+		return [];
+	}
+	const winners = await db.query.loteriaWinners.findMany({
+		columns: {},
+		with: {
+			player: {
+				columns: {
+					id: true,
+					nickName: true,
+				},
+			},
+		},
+		orderBy: asc(loteriaWinners.place),
+		where: eq(loteriaWinners.gameId, currentGame.id),
+	});
+	return winners;
 };

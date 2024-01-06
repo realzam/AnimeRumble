@@ -9,8 +9,8 @@ interface WaitRoomSpecificSocketData {
 }
 
 interface WaitRoomServerToClientEvents {
-  loteriaRoomCreated: () => void;
-  bingoRoomCreated: () => void;
+  loteriaRoomCreated: (_: void) => void;
+  bingoRoomCreated: (_: void) => void;
 }
 interface WaitRoomClientToServerEvents {
   createLoteria: () => void;

@@ -166,7 +166,6 @@ export const getStyleClassCardFit = (fit: LoteriaCardDataType['fit']) => {
 	switch (fit) {
 		case 'fill':
 			return 'object-fill';
-
 		case 'contain':
 			return 'object-contain';
 		default:
@@ -175,4 +174,9 @@ export const getStyleClassCardFit = (fit: LoteriaCardDataType['fit']) => {
 };
 
 export const clearText = (text: string) =>
-	quitarAcentos(text.toLowerCase().trim().replace(/\s+/g, ''));
+	quitarAcentos(
+		text
+			.toLowerCase()
+			.trim()
+			.replace(/\s+|[^a-zA-Z]+/g, ''),
+	);

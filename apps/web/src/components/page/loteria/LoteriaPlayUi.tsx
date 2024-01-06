@@ -5,7 +5,8 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import LoteriaCardEditDialog from './LoteriaCardEditDialog';
 import LoteriaCountDownDialog from './LoteriaCountDownDialog';
 import LoteriaGrid from './LoteriaGrid';
-import LotericaPlayersCard from './LotericaPlayersCard';
+import LoteriaInfo from './LoteriaInfo';
+import LoteriaWinner from './LoteriaWinner';
 
 const LoteriaPlayUi = () => {
 	return (
@@ -13,9 +14,10 @@ const LoteriaPlayUi = () => {
 			<div className='flex h-[calc(100vh-3.5rem-1px)] w-full'>
 				<LoteriaCountDownDialog />
 				<LoteriaCardEditDialog />
+				<LoteriaWinner />
 				<ScrollArea className='h-full w-full' type='always'>
 					<div className='flex w-full flex-col p-1 xs:p-2'>
-						<LotericaPlayersCard />
+						<LoteriaInfo />
 						<LoteriaGrid />
 					</div>
 				</ScrollArea>

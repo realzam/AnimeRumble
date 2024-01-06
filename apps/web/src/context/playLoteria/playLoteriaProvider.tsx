@@ -155,6 +155,7 @@ const PlayLoteriaProvider: FC<Props> = ({
 				userInfo,
 				login,
 				allCards,
+				initialGame: initialCurrentGame,
 			}}
 		>
 			{children}

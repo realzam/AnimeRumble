@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "fb0e35c5-dec4-4de8-b6ad-c697ec112748",
+  "id": "da983045-29ad-4f03-8015-15a26a794c56",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bingoReactives": {
@@ -165,6 +165,14 @@
         },
         "currentCard": {
           "name": "currentCard",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "currentCardPlayer": {
+          "name": "currentCardPlayer",
           "type": "smallint",
           "primaryKey": false,
           "notNull": true,

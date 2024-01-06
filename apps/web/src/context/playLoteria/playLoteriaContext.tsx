@@ -3,9 +3,10 @@ import { type Observable, type ObservablePrimitive } from '@legendapp/state';
 import { type loteriaGame } from 'anime-db';
 import { type LoteriaClientSocket } from 'anime-sockets-types';
 
-import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
-
-// import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
+import {
+	type LoteriaCardsDataType,
+	type LoteriaCurrentGameDataType,
+} from '@/types/loteriaQuery';
 
 export type TypeLoteriaGameTableState = typeof loteriaGame.$inferSelect.state;
 
@@ -30,7 +31,7 @@ interface PlayLoteriaState {
 	userInfo: Observable<TypeUserInfo | undefined>;
 	cardsPlayer: LoteriaCardsDataType;
 	allCards: LoteriaCardsDataType;
-
+	initialGame: LoteriaCurrentGameDataType;
 	initialReactives: RactivesMarkedRecord;
 	login: (
 		jwt: string,

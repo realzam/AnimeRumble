@@ -7,13 +7,16 @@ import { Spinner } from '@/components/web/Spinner';
 
 import LoteriaGridGererateButtons from './LoteriaGridGererateButtons';
 import LoteriaItemGrid from './LoteriaItemGrid';
+import LoteriaPlaceBandge from './LoteriaPlaceBandge';
 
 const LoteriaGrid = () => {
 	const { plantilla, isGenerationRandomTable } = usePlayLoteriaUI();
 
 	return (
-		<div className='container mb-4 mt-3 max-w-[660px] p-1 xs:p-2'>
+		<div className='container mb-4 mt-3 max-w-[650px] p-1 xs:p-2'>
 			<LoteriaGridGererateButtons />
+			<LoteriaPlaceBandge />
+
 			<div className='relative mt-3 grid grid-cols-4 gap-2 xs:gap-5'>
 				<Memo>
 					{() => (

@@ -8,6 +8,13 @@ interface LoteriaSpecificSocketData {
   role: "player" | "admin";
 }
 
+type TypeWinners = {
+  player: {
+    id: string;
+    nickName: string;
+  };
+}[];
+
 export type TypeIsRoomCreated =
   | {
       created: false;
@@ -18,25 +25,27 @@ export type TypeIsRoomCreated =
     };
 export interface LoteriaServerToClientEvents {
   invalidToken: () => void;
-  joinPlayer: () => void;
-  leavePlayer: () => void;
+  joinPlayer: (_: void) => void;
+  leavePlayer: (_: void) => void;
   players: (players: string[]) => void;
   gameState: (status: "lobby" | "play" | "finish") => void;
   startCountdown: (value: number) => void;
   countdown: (value: number) => void;
-  preAnimeCountdown: () => void;
+  preAnimeCountdown: (_: void) => void;
   showCountdownDialog: (show: boolean) => void;
   updateCurrentCard: (index: number) => void;
+  playerCurrentCard: (index: number) => void;
   checkCardPlayer: (key: string) => void;
   winner: (place: number) => void;
   isPausedGame: (isPaused: boolean) => void;
   updateProgress: (value: number) => void;
+  winnersList: (winners: TypeWinners) => void;
 }
 export interface LoteriaClientToServerEvents {
   startGame: () => void;
   goToLobbyGame: () => void;
   nextCard: () => void;
-  checkCard: (target: string, index: number) => void;
+  checkCard: (target: string) => void;
   gameCreated: () => void;
   togglePause: () => void;
 }

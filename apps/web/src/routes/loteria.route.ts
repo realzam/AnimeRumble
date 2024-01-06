@@ -22,6 +22,7 @@ import {
 	loteriaPlantilla,
 	loteriaPlayer,
 	loteriaSessions,
+	loteriaWinners,
 	users,
 } from 'anime-db';
 import { and, asc, eq, ne } from 'drizzle-orm';
@@ -119,6 +120,7 @@ export const loteriaRouter = router({
 		await db.insert(loteriaGame).values({
 			id: idLoteriaGame,
 			date: dateMX.toDate(),
+			currentCardPlayer: allCardsRandom[0].index,
 		});
 		await db.insert(loteriaDeck).values(deck);
 		const game = await db.query.loteriaGame.findFirst({
@@ -575,6 +577,35 @@ export const loteriaRouter = router({
 			});
 			return { reactive, playerCards };
 		}),
+	getWinners: publicProcedure.query(async () => {
+		const currentGame = await db.query.loteriaGame.findFirst({
+			where: ne(loteriaGame.state, 'finish'),
+			with: {
+				deck: {
+					columns: {},
+					orderBy: (cTg, { asc }) => [asc(cTg.order)],
+					with: {
+						card: true,
+					},
+				},
+			},
+		});
+
+		if (!currentGame) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'No hay juego',
+			});
+		}
+		const winners = await db.query.loteriaWinners.findMany({
+			with: {
+				player: true,
+			},
+			orderBy: asc(loteriaWinners.place),
+			where: eq(loteriaWinners.gameId, currentGame.id),
+		});
+		return winners.map((w) => w.player.nickName);
+	}),
 });
 
 const generateRandomTable = async () => {

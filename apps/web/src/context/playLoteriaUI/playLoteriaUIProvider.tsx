@@ -3,12 +3,16 @@ import { trpc } from '@/trpc/client/client';
 import { useComputed, useMount, useObservable } from '@legendapp/state/react';
 import { useAudioPlayer } from 'react-use-audio-player';
 
-import { type LoteriaCardsDataType } from '@/types/loteriaQuery';
+import {
+	type LoteriaCardDataType,
+	type LoteriaCardsDataType,
+} from '@/types/loteriaQuery';
 import { clearText } from '@/lib/utils';
+import useConfetti from '@/hooks/useConfetti';
 import usePlayLoteria from '@/hooks/usePlayLoteria';
 
 import { type RactivesMarkedRecord } from '../playLoteria/playLoteriaContext';
-import { PlayLoteriaUIContext } from './playLoteriaUIContext';
+import { PlayLoteriaUIContext, type TypeWinners } from './playLoteriaUIContext';
 
 interface Props {
 	children: React.ReactNode;
@@ -18,11 +22,16 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 	const soundCounter = useAudioPlayer();
 	const soundLeavePlayer = useAudioPlayer();
 	const soundJoinPlayer = useAudioPlayer();
+	const soundCheckCard = useAudioPlayer();
+	const soundNextCard = useAudioPlayer();
+	const soundWinGame = useAudioPlayer();
+
 	const {
 		socket,
 		userInfo,
 		cardsPlayer,
 		initialReactives,
+		initialGame,
 		stateGame,
 		allCards,
 	} = usePlayLoteria();
@@ -30,14 +39,22 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 	const generateRandomTableMutation =
 		trpc.loteria.generateRandomTable.useMutation();
 	const updatePlantillaCard = trpc.loteria.updatePlantillaCard.useMutation();
+	const { startConfetti } = useConfetti();
 
 	const showCountdownDialog = useObservable(false);
 	const showEditPlantillaDialog = useObservable(false);
 	const showLoteriaWinnerDialog = useObservable(false);
 	const isGenerationRandomTable = useObservable(false);
 	const placeWinning = useObservable(0);
-
+	const passCards = useObservable(
+		allCards.length - initialGame!.currentCard - 1,
+	);
+	const updateProgress = useObservable(100);
+	const currentCard = useObservable<LoteriaCardDataType>(
+		allCards[Math.max(0, initialGame!.currentCardPlayer - 1)],
+	);
 	const playersList = useObservable<string[]>([]);
+	const winnersList = useObservable<TypeWinners>([]);
 	const editCard = useObservable({ id: '', index: 0 });
 	const plantilla = useObservable<LoteriaCardsDataType>([...cardsPlayer]);
 	const plantillaChecks = useObservable<RactivesMarkedRecord>(initialReactives);
@@ -68,9 +85,11 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 		soundCounter.load('/sounds/countdown.mp3');
 		soundLeavePlayer.load('/sounds/leavePlayer.mp3');
 		soundJoinPlayer.load('/sounds/joinPlayer.mp3');
+		soundCheckCard.load('/sounds/cardCheck.wav');
+		soundNextCard.load('/sounds/nextCard.mp3');
+		soundWinGame.load('/sounds/winGame.mp3');
 	});
 
-	/*Dialogs events */
 	useEffect(() => {
 		socket?.removeListener('showCountdownDialog');
 		socket?.on('showCountdownDialog', (show) => {
@@ -79,10 +98,76 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 	}, [socket, showCountdownDialog]);
 
 	useEffect(() => {
+		socket?.removeListener('players');
 		socket?.on('players', (players) => {
 			playersList.set(players);
 		});
 	}, [socket, playersList]);
+
+	useEffect(() => {
+		socket?.removeListener('gameState');
+		socket?.on('gameState', (state) => {
+			stateGame.set(state);
+		});
+	}, [socket, stateGame]);
+
+	useEffect(() => {
+		socket?.removeListener('playerCurrentCard');
+		socket?.on('playerCurrentCard', (index) => {
+			const i = Math.max(0, index - 1);
+			currentCard.set(allCards[i]);
+			soundNextCard.play();
+		});
+	}, [socket, currentCard, allCards, soundNextCard]);
+
+	useEffect(() => {
+		socket?.removeListener('updateProgress');
+		socket?.on('updateProgress', (value) => {
+			updateProgress.set(value);
+		});
+	}, [socket, updateProgress]);
+
+	useEffect(() => {
+		socket?.removeListener('checkCardPlayer');
+		socket?.on('checkCardPlayer', (id) => {
+			plantillaChecks[id].set(true);
+			soundCheckCard.play();
+		});
+	}, [socket, updateProgress, plantillaChecks, soundCheckCard]);
+
+	useEffect(() => {
+		socket?.removeListener('updateCurrentCard');
+		socket?.on('updateCurrentCard', (i) => {
+			passCards.set(allCards.length - i - 1);
+		});
+	}, [socket, passCards, allCards]);
+
+	useEffect(() => {
+		socket?.removeListener('winnersList');
+		socket?.on('winnersList', (winners) => {
+			winnersList.set(winners);
+		});
+	}, [socket, winnersList]);
+
+	useEffect(() => {
+		socket?.removeListener('winner');
+		socket?.on('winner', (place) => {
+			soundWinGame.play();
+			showLoteriaWinnerDialog.set(true);
+			placeWinning.set(place);
+			startConfetti();
+			setTimeout(() => {
+				showLoteriaWinnerDialog.set(false);
+			}, 1000 * 10);
+		});
+	}, [
+		socket,
+		updateProgress,
+		showLoteriaWinnerDialog,
+		placeWinning,
+		soundWinGame,
+		startConfetti,
+	]);
 
 	const generateRandomTable = () => {
 		console.log('generateRandomTable');
@@ -144,6 +229,10 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 		}
 	};
 
+	const checkCard = (id: string) => {
+		socket?.emit('checkCard', id);
+	};
+
 	return (
 		<PlayLoteriaUIContext.Provider
 			value={{
@@ -163,6 +252,11 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 				closeEditPlantillaDialog,
 				editCardPlantilla,
 				allCardsSearch,
+				currentCard,
+				updateProgress,
+				checkCard,
+				passCards,
+				winnersList,
 			}}
 		>
 			{children}

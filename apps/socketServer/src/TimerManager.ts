@@ -58,7 +58,6 @@ class LoteriaTask {
 			this.timeElapsed = this.timeElapsed + 100;
 
 			const progress = Math.max(100 - (this.timeElapsed * 100) / this.time, 0);
-			console.log('timeElapsed', this.timeElapsed, progress);
 			this.loteria.emit('updateProgress', progress);
 			if (progress === 0) {
 				this.stop();
@@ -66,6 +65,10 @@ class LoteriaTask {
 			}
 		}, 100);
 		this.isPlaying = true;
+	}
+
+	public getProgress() {
+		return Math.max(100 - (this.timeElapsed * 100) / this.time, 0);
 	}
 
 	public cancelInterval() {

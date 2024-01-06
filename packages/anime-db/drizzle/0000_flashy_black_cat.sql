@@ -27,6 +27,7 @@ CREATE TABLE `loteriaGame` (
 	`id` varchar(50) NOT NULL,
 	`state` varchar(9) NOT NULL DEFAULT 'lobby',
 	`currentCard` smallint NOT NULL DEFAULT 0,
+	`currentCardPlayer` smallint NOT NULL DEFAULT 0,
 	`isPaused` boolean NOT NULL DEFAULT true,
 	`date` timestamp NOT NULL,
 	CONSTRAINT `loteriaGame_id` PRIMARY KEY(`id`)
