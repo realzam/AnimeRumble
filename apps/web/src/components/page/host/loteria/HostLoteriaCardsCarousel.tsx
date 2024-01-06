@@ -6,6 +6,7 @@ import { Pause, Play, SkipForward } from 'lucide-react';
 import { getStyleClassCardFit } from '@/lib/utils';
 import useHostLoteria from '@/hooks/useHostLoteria';
 import { AspectRatio } from '@/components/ui/AspectRatio';
+import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Progress } from '@/components/ui/Progress';
@@ -61,50 +62,73 @@ const CurrentLoteria = () => {
 		updateProgress,
 		isPaused,
 		cards,
+		winnersList,
 	} = useHostLoteria();
 	return (
-		<Card className='relative col-span-3 flex flex-col items-center justify-center space-y-2 p-2'>
+		<div className='col-span-3 grid grid-cols-3 gap-2'>
+			<Card className='relative col-span-2 flex flex-col items-center justify-center space-y-2 p-2'>
+				<Memo>
+					{() => (
+						<Progress className='absolute top-0' value={updateProgress.get()} />
+					)}
+				</Memo>
+				<Card className='flex w-[180px] bg-primary p-2'>
+					<AspectRatio ratio={3 / 5}>
+						<div className='relative h-full overflow-hidden rounded-sm'>
+							<Image
+								alt={cards[currentCard].title}
+								src={cards[currentCard].img}
+								className={getStyleClassCardFit(cards[currentCard].fit)}
+								sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+								fill
+								priority
+							/>
+							<div className='absolute bottom-0 w-full bg-slate-900/70 text-center text-white'>
+								{`${cards[currentCard].index}. ${cards[currentCard].title}`}
+							</div>
+						</div>
+					</AspectRatio>
+				</Card>
+				<div className='flex space-x-2'>
+					<Button
+						variant='ghost'
+						size='icon'
+						onClick={() => togglePauseLoteria()}
+					>
+						{isPaused ? (
+							<Play className='fill-current' />
+						) : (
+							<Pause className='fill-current' />
+						)}
+					</Button>
+					{cardsMissed.length > 0 && (
+						<Button variant='ghost' size='icon' onClick={() => nextCard()}>
+							<SkipForward className='fill-current' />
+						</Button>
+					)}
+				</div>
+			</Card>
 			<Memo>
 				{() => (
-					<Progress className='absolute top-0' value={updateProgress.get()} />
+					<Card className='col-span-1'>
+						<CardHeader>
+							<CardTitle>Podio:</CardTitle>
+						</CardHeader>
+						<CardContent className='p-1 pb-4'>
+							<ScrollArea className='h-72 w-full px-5' type='always'>
+								<div className='flex h-full flex-col space-y-3'>
+									{winnersList.get().map(({ player }, i) => (
+										<Badge className='text-base' key={player.id}>{`${i + 1}° ${
+											player.nickName
+										}`}</Badge>
+									))}
+								</div>
+							</ScrollArea>
+						</CardContent>
+					</Card>
 				)}
 			</Memo>
-			<Card className='flex w-[180px] bg-primary p-2'>
-				<AspectRatio ratio={3 / 5}>
-					<div className='relative h-full overflow-hidden rounded-sm'>
-						<Image
-							alt={cards[currentCard].title}
-							src={cards[currentCard].img}
-							className={getStyleClassCardFit(cards[currentCard].fit)}
-							sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-							fill
-							priority
-						/>
-						<div className='absolute bottom-0 w-full bg-slate-900/70 text-center text-white'>
-							{`${cards[currentCard].index}. ${cards[currentCard].title}`}
-						</div>
-					</div>
-				</AspectRatio>
-			</Card>
-			<div className='flex space-x-2'>
-				<Button
-					variant='ghost'
-					size='icon'
-					onClick={() => togglePauseLoteria()}
-				>
-					{isPaused ? (
-						<Play className='fill-current' />
-					) : (
-						<Pause className='fill-current' />
-					)}
-				</Button>
-				{cardsMissed.length > 0 && (
-					<Button variant='ghost' size='icon' onClick={() => nextCard()}>
-						<SkipForward className='fill-current' />
-					</Button>
-				)}
-			</div>
-		</Card>
+		</div>
 	);
 };
 
@@ -117,7 +141,7 @@ const NextCardsLoteria = () => {
 					ratio={3 / 5}
 					className='flex flex-col items-center justify-center space-y-2'
 				>
-					<CardTitle>Cartas Faltantes:</CardTitle>
+					<CardTitle className='text-center'>Cartas Faltantes:</CardTitle>
 					<CardTitle>{cardsMissed.length}</CardTitle>
 				</AspectRatio>
 			</Card>

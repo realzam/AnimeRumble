@@ -1,5 +1,9 @@
 import { createContext } from 'react';
-import { type ObservablePrimitive } from '@legendapp/state';
+import {
+	type ObservableArray,
+	type ObservablePrimitive,
+} from '@legendapp/state';
+import { type TypeWinners } from 'anime-sockets-types';
 
 import {
 	type LoteriaCardsDataType,
@@ -18,6 +22,8 @@ interface State {
 	currentCard: number;
 	isPaused: boolean;
 	updateProgress: ObservablePrimitive<number>;
+	winnersList: ObservableArray<TypeWinners>;
+
 	startGame: () => void;
 	goToLobbyGame: () => void;
 	nextCard: () => void;

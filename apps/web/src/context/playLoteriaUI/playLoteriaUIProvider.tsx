@@ -10,6 +10,7 @@ import {
 import { clearText } from '@/lib/utils';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayLoteria from '@/hooks/usePlayLoteria';
+import { useToast } from '@/hooks/useToast';
 
 import { type RactivesMarkedRecord } from '../playLoteria/playLoteriaContext';
 import { PlayLoteriaUIContext, type TypeWinners } from './playLoteriaUIContext';
@@ -25,6 +26,7 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 	const soundCheckCard = useAudioPlayer();
 	const soundNextCard = useAudioPlayer();
 	const soundWinGame = useAudioPlayer();
+	const { toast } = useToast();
 
 	const {
 		socket,
@@ -145,9 +147,17 @@ const PlayLoteriaUIProvider: FC<Props> = ({ children }) => {
 	useEffect(() => {
 		socket?.removeListener('winnersList');
 		socket?.on('winnersList', (winners) => {
-			winnersList.set(winners);
+			winnersList.set(winners.slice(0, 3));
+			const place = winners.length;
+			if (place > 1) {
+				const { player } = winners[place - 1];
+				toast({
+					title: `${player.nickName} logró el ${place}° lugar`,
+					description: 'No te quedes atrás',
+				});
+			}
 		});
-	}, [socket, winnersList]);
+	}, [socket, winnersList, toast]);
 
 	useEffect(() => {
 		socket?.removeListener('winner');

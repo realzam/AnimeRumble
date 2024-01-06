@@ -1,8 +1,10 @@
 import Image from 'next/image';
-import { Memo } from '@legendapp/state/react';
+import { Memo, Show, useComputed } from '@legendapp/state/react';
 
 import { cn, getStyleClassCardFit } from '@/lib/utils';
+import usePlayLoteria from '@/hooks/usePlayLoteria';
 import usePlayLoteriaUI from '@/hooks/usePlayLoteriaUI';
+import { Badge } from '@ui/Badge';
 import { Progress } from '@ui/Progress';
 import { AspectRatio } from '@/components/ui/AspectRatio';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -10,6 +12,8 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 const LoteriaGameInfo = () => {
 	const { currentCard, updateProgress, passCards, winnersList } =
 		usePlayLoteriaUI();
+	const { userInfo } = usePlayLoteria();
+	const showPodio = useComputed(() => winnersList.get().length > 0);
 	return (
 		<Card className='relative mx-auto shrink-0'>
 			<Memo>
@@ -63,21 +67,29 @@ const LoteriaGameInfo = () => {
 							</CardTitle>
 						</AspectRatio>
 					</Card>
-
-					<div>
-						<CardTitle>Podio:</CardTitle>
-						<div className='mt-2 shrink-0 space-y-3'>
-							{winnersList.get().map(({ player }, i) => (
-								<div
-									key={player.id}
-									className='w-fit rounded-full bg-slate-800 p-2 px-4'
-								>{`${i + 1}° ${player.nickName}`}</div>
-							))}
+					<Show if={showPodio}>
+						<div>
+							<CardTitle>Podio:</CardTitle>
+							<div className='mt-2 flex shrink-0 flex-col space-y-3'>
+								{winnersList.get().map(({ player }, i) => (
+									<Memo key={player.id}>
+										{() => (
+											<Badge
+												variant={
+													player.id === userInfo.get()!.userId
+														? 'default'
+														: 'secondary'
+												}
+												className='w-fit text-base'
+											>{`${i + 1}° ${player.nickName}`}</Badge>
+										)}
+									</Memo>
+								))}
+							</div>
 						</div>
-					</div>
+					</Show>
 				</div>
 			</CardHeader>
-			{/* <CardContent className='flex flex-wrap justify-center p-1'></CardContent> */}
 		</Card>
 	);
 };

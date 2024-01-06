@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMount, useObservable } from '@legendapp/state/react';
 import {
 	type LoteriaClientSocket,
+	type TypeWinners,
 	type WaitRoomClientSocket,
 } from 'anime-sockets-types';
 import { useAudioPlayer } from 'react-use-audio-player';
@@ -9,6 +10,7 @@ import { useAudioPlayer } from 'react-use-audio-player';
 import { type LoteriaStartLoteriaHostDataType } from '@/types/loteriaQuery';
 import { sleep } from '@/lib/utils';
 import useSocket from '@/hooks/useSocket';
+import { useToast } from '@/hooks/useToast';
 
 import { type TypeStateGame } from '../playLoteria/playLoteriaContext';
 import { HostLoteriaIContext } from './HostLoteriaContex';
@@ -29,8 +31,10 @@ const HostLoteriaProvider = ({
 	const soundCounter = useAudioPlayer();
 	const soundLeavePlayer = useAudioPlayer();
 	const soundJoinPlayer = useAudioPlayer();
+	const { toast } = useToast();
 
 	const stateGame = useObservable<TypeStateGame>('initializing');
+	const winnersList = useObservable<TypeWinners>([]);
 	const [currentCard, setCurrenCard] = useState(game.currentCard);
 	const [playersList, setPlayersList] = useState(playersOnline);
 	const [cardsPassed, setCardsPassed] = useState(
@@ -124,6 +128,21 @@ const HostLoteriaProvider = ({
 	}, [socket, cards]);
 
 	useEffect(() => {
+		socket?.removeListener('winnersList');
+		socket?.on('winnersList', (winners) => {
+			winnersList.set(winners);
+			const place = winners.length;
+			if (place > 1) {
+				const { player } = winners[place - 1];
+				toast({
+					title: `${player.nickName} logró el ${place}° lugar`,
+					description: 'No te quedes atrás',
+				});
+			}
+		});
+	}, [socket, winnersList, toast]);
+
+	useEffect(() => {
 		window.localStorage.setItem('anime.player', token);
 		conectarSocket();
 	}, [token, conectarSocket]);
@@ -164,6 +183,7 @@ const HostLoteriaProvider = ({
 				isPaused,
 				updateProgress,
 				cards,
+				winnersList,
 			}}
 		>
 			{children}

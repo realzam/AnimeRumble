@@ -8,6 +8,7 @@ import {
 	checkCellCardGameLoteria,
 	finishGameLoteria,
 	getOnlinePlayersGameLoteria,
+	getWinners,
 	goToLobbyGameLoteria,
 	isPlayLoteriaGame,
 	nextCardGameLoteria,
@@ -104,7 +105,11 @@ export const loteriaNextCardEvent: Event = async (loteria, socket) => {
 	}
 };
 
-export const loteriaCheckCardEvent: CheckEvent = async (_, socket, target) => {
+export const loteriaCheckCardEvent: CheckEvent = async (
+	loteria,
+	socket,
+	target,
+) => {
 	if (socket.data.role === 'player') {
 		const res = await checkCellCardGameLoteria(socket.data.userId, target);
 		if (res !== undefined) {
@@ -116,8 +121,13 @@ export const loteriaCheckCardEvent: CheckEvent = async (_, socket, target) => {
 				console.log('player winner', place);
 
 				if (place > 0) {
-					socket.emit('winner', place);
-					socket.broadcast.except('');
+					const winnersList = await getWinners();
+					if (place < 4) {
+						socket.emit('winner', place);
+						socket.broadcast.emit('winnersList', winnersList);
+					} else {
+						loteria.emit('winnersList', winnersList);
+					}
 				}
 			}
 		}
