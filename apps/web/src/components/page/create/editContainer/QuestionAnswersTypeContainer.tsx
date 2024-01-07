@@ -1,6 +1,12 @@
 'use client';
 
-import { Computed, Switch, useObservable } from '@legendapp/state/react';
+import { trpc } from '@/trpc/client/client';
+import {
+	Computed,
+	Switch,
+	useObservable,
+	useObserve,
+} from '@legendapp/state/react';
 
 import useQuiz from '@/hooks/useQuiz';
 import { RadioGroup } from '@ui/RadioGroup';
@@ -8,25 +14,37 @@ import { RadioGroup } from '@ui/RadioGroup';
 import { AnswerCard, AnswerTFCard } from './AnswerCard';
 
 const QuestionAnswersTypeContainer = () => {
-	const { ui } = useQuiz();
+	const updateQuestion = trpc.quizz.updateQuestion.useMutation();
+	const { ui, quiz, props } = useQuiz();
 	const correctAnswerTF = useObservable(() => {
 		if (ui.question.correctAnswerTF.get() !== null) {
 			return ui.question.correctAnswerTF.get() ? 'True' : 'False';
 		}
 		return undefined;
 	});
+	useObserve(ui.question, () => {
+		let checked = undefined;
+		if (ui.question.correctAnswerTF.get() !== null) {
+			checked = ui.question.correctAnswerTF.get() ? 'True' : 'False';
+		}
+
+		correctAnswerTF.set(checked);
+	});
 
 	const onChange = (v: string) => {
 		correctAnswerTF.set(v);
-		// trpcUtils.client.quizz.updateQuestion
-		// 	.mutate({
-		// 		questionId: ui.question.id.get(),
-		// 		quizId: id,
-		// 		correctAnswerTF: v === 'True',
-		// 	})
-		// 	.then(() => {
-		// 		props$.refetch();
-		// 	});
+		updateQuestion.mutate(
+			{
+				questionId: ui.question.id.get(),
+				quizId: quiz.id.get(),
+				correctAnswerTF: v === 'True',
+			},
+			{
+				onSuccess: () => {
+					props.refetch();
+				},
+			},
+		);
 	};
 
 	return (

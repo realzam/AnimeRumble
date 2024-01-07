@@ -653,7 +653,7 @@ const validateQuestion = (
 
 	if (q.questionType === 'TF') {
 		hasCorrectAnswer =
-			q.correctAnswerTF !== null || q.correctAnswerTF !== undefined;
+			q.correctAnswerTF !== null && q.correctAnswerTF !== undefined;
 		if (!hasCorrectAnswer) {
 			hasError = true;
 			errors[2] = 'Es necesaria seleccionar la respuesta correcta';

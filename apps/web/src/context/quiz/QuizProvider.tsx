@@ -29,6 +29,8 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 		isDragging: false,
 		scroll: n > 0,
 		scrollToQuestion: initialQuiz.questions[n].id,
+		showDeleteQuestionAlert: false,
+		targetDeleteQuestion: '',
 	});
 
 	const quiz = useObservable<QuizDataType>(initialQuiz);
@@ -64,6 +66,32 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 		}
 	};
 
+	const setQuestionUiAfterDelete = () => {
+		const index = quiz.questions
+			.get()
+			.findIndex((q) => q.id === ui.targetDeleteQuestion.get());
+		let question = quiz.questions[0].get();
+		if (index > 0) {
+			question = quiz.questions[index - 1].get();
+		}
+		ui.question.set(question);
+		ui.questionId.set(question.id);
+	};
+
+	const openDeleteQuestion = (id: string) => {
+		ui.targetDeleteQuestion.set(id);
+		ui.showDeleteQuestionAlert.set(true);
+	};
+
+	const closeDeleteQuestion = () => {
+		ui.showDeleteQuestionAlert.set(false);
+	};
+
+	const clearScroll = () => {
+		ui.scroll.set(false);
+		ui.scrollToQuestion.set('');
+	};
+
 	return (
 		<QuizContex.Provider
 			value={{
@@ -73,6 +101,10 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 				ui,
 				//functions
 				setQuestionUi,
+				setQuestionUiAfterDelete,
+				openDeleteQuestion,
+				closeDeleteQuestion,
+				clearScroll,
 			}}
 		>
 			{children}

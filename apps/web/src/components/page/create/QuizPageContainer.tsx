@@ -7,6 +7,7 @@ import { type QuizDataType } from '@/types/quizQuery';
 import BackButton from '@/components/web/BackButton';
 
 import QuizEditContainer from './editContainer/QuizEditContainer';
+import QuestionDeleteAlert from './sidebar/QuestionDeleteAlert';
 import QuizSideBar from './sidebar/QuizSideBar';
 
 interface Props {
@@ -27,6 +28,7 @@ const QuizPageContainer = ({ initialQuiz }: Props) => {
 
 	return (
 		<QuizProvider initialQuiz={initialQuiz} index={indexNum}>
+			<QuestionDeleteAlert />
 			<div className='h-[calc(100vh-3.5rem-1px)] sm:p-2'>
 				<div className='w-full'>
 					<BackButton />

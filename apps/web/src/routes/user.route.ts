@@ -1,5 +1,5 @@
 import { UserUpdateSchema } from '@/schema/user';
-import { router, userProcedure } from '@/trpc/server/trpc';
+import { adminProcedure, router, userProcedure } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { users } from 'anime-db';
 import { eq } from 'drizzle-orm';
@@ -30,5 +30,14 @@ export const userRouter = router({
 		return {
 			message: 'goodbye!',
 		};
+	}),
+	getMemembers: adminProcedure.query(async () => {
+		const members = await db.query.users.findMany({
+			columns: {
+				password: false,
+				emailVerified: false,
+			},
+		});
+		return members;
 	}),
 });

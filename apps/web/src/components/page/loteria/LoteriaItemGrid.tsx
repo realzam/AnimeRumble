@@ -31,7 +31,7 @@ const LoteriaItemGrid = (card: Props) => {
 			{() => (
 				<Card
 					className={cn(
-						'flex select-none shadow-lg transition-all duration-300 xs:p-2',
+						'flex select-none overflow-hidden rounded-none border-none shadow-lg transition-all duration-300 xs:rounded-sm xs:border xs:p-2',
 						isClickable.get() &&
 							'cursor-pointer xs:hover:scale-[1.05] xs:hover:ring xs:hover:ring-primary',
 					)}
@@ -54,7 +54,7 @@ const LoteriaItemGrid = (card: Props) => {
 						<Show if={allowEditPlantilla}>
 							<LoteriaEditCardButton id={card.id} />
 						</Show>
-						<div className='absolute bottom-0 w-full bg-slate-900/80 px-3 text-center text-2xs font-semibold capitalize tracking-wider text-white backdrop-blur-sm xs:text-xs sm:text-sm'>
+						<div className='absolute bottom-0 w-full rounded-b-sm bg-slate-900/80 px-3 text-center text-2xs font-semibold capitalize tracking-wider text-white backdrop-blur-sm sm:text-sm'>
 							{card.title}
 						</div>
 

@@ -15,9 +15,3 @@ const QuizSideBar = () => {
 };
 
 export default QuizSideBar;
-
-/* 
-<Card className='mr-4 h-full w-80  flex-col'> 
-
-<div className='order-2 col-span-2 flex h-full flex-col space-y-1 2md:order-1'>
-*/

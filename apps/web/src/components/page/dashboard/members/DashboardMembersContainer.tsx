@@ -1,7 +1,12 @@
+import { type serverClient } from '@/trpc/client/serverClient';
+
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@ui/Card';
 import { ScrollArea } from '@ui/ScrollArea';
 
-function DashboardConfigContainer() {
+interface Props {
+	members: Awaited<ReturnType<typeof serverClient.user.getMemembers>>;
+}
+const DashboardMembersContainer = ({}: Props) => {
 	return (
 		<ScrollArea type='always'>
 			<CardHeader>
@@ -13,6 +18,6 @@ function DashboardConfigContainer() {
 			<CardContent className='grid gap-6'></CardContent>
 		</ScrollArea>
 	);
-}
+};
 
-export default DashboardConfigContainer;
+export default DashboardMembersContainer;

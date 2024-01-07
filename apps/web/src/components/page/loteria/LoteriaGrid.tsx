@@ -17,7 +17,7 @@ const LoteriaGrid = () => {
 			<LoteriaGridGererateButtons />
 			<LoteriaPlaceBandge />
 
-			<div className='relative mt-3 grid grid-cols-4 gap-2 xs:gap-5'>
+			<div className='relative mt-3 grid grid-cols-4 gap-1 xs:gap-2 sm:gap-5'>
 				<Memo>
 					{() => (
 						<>

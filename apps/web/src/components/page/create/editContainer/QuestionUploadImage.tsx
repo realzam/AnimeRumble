@@ -45,13 +45,17 @@ const QuestionUploadImage = () => {
 		});
 	};
 
-	const { UploadFileAnime, setInitialPreview } = useUploadAnime({
+	const { UploadFileAnime, setInitialPreview, clearState } = useUploadAnime({
 		onClientUploadComplete,
 		initialPreview: ui.question.img.get(),
 	});
 
 	useObserve(ui.question, () => {
-		setInitialPreview(ui.question.img.get() || '');
+		if (ui.question.img.get()) {
+			setInitialPreview(ui.question.img.get());
+		} else {
+			clearState();
+		}
 	});
 
 	return (

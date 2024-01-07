@@ -25,6 +25,8 @@ import {
 } from '@ui/Tooltip';
 import { Card, CardContent, CardTitle } from '@/components/ui/Card';
 
+import QuestionItemActionsList from './QuestionItemActionsList';
+
 interface Props {
 	id: string;
 	item: Observable<QuestionType>;
@@ -33,7 +35,7 @@ interface Props {
 const ReactiveCard = reactive(Card);
 
 const QuestionItemList = ({ id, item }: Props) => {
-	const { ui, props, setQuestionUi } = useQuiz();
+	const { ui, props, setQuestionUi, clearScroll } = useQuiz();
 	const { attributes, setNodeRef, transform, transition } = useSortable({ id });
 	const setModifiedQuestion = trpc.quizz.setModifiedQuestion.useMutation();
 
@@ -47,6 +49,8 @@ const QuestionItemList = ({ id, item }: Props) => {
 	useMount(() => {
 		if (ui.scroll.get() && ui.scrollToQuestion.get() === id) {
 			scollToRef.current?.scrollIntoView();
+			setQuestionUi(id);
+			clearScroll();
 		}
 	});
 
@@ -65,7 +69,6 @@ const QuestionItemList = ({ id, item }: Props) => {
 					</TooltipContent>
 				</Tooltip>
 			</Show>
-
 			<ReactiveCard
 				ref={scollToRef}
 				$className={() =>
@@ -127,6 +130,7 @@ const QuestionItemList = ({ id, item }: Props) => {
 							</Switch>
 						</div>
 					</div>
+					<QuestionItemActionsList id={id} />
 				</CardContent>
 			</ReactiveCard>
 		</div>

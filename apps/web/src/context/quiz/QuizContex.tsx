@@ -15,6 +15,8 @@ export interface UiType {
 	isDragging: boolean;
 	scrollToQuestion: string;
 	scroll: boolean;
+	showDeleteQuestionAlert: boolean;
+	targetDeleteQuestion: string;
 }
 
 interface State {
@@ -23,6 +25,10 @@ interface State {
 	props: ObservableObject<TypeQuizQueryProps>;
 	ui: ObservableObject<UiType>;
 	setQuestionUi: (id: string) => void;
+	setQuestionUiAfterDelete: () => void;
+	openDeleteQuestion: (id: string) => void;
+	closeDeleteQuestion: () => void;
+	clearScroll: () => void;
 }
 
 export const QuizContex = createContext<State | null>(null);

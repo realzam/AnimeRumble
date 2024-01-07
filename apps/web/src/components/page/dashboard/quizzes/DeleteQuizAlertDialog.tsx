@@ -1,8 +1,9 @@
 'use client';
 
 import { trpc } from '@/trpc/client/client';
-import { Trash2 } from 'lucide-react';
+import { Memo } from '@legendapp/state/react';
 
+import useDashboardQuizzes from '@/hooks/useDashboardQuizzes';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,55 +13,55 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from '@ui/AlertDialog';
-import { Button } from '@ui/Button';
 
-interface Props {
-	quizId: string;
-	refetch: () => void;
-}
-const DeleteQuizAlertDialog = ({ quizId, refetch }: Props) => {
+const DeleteQuizAlertDialog = () => {
 	const deleteQuiz = trpc.quizz.deleteQuizz.useMutation();
-
+	const { showDeleteDialog, quizTarget, props, closeDeleteDialog } =
+		useDashboardQuizzes();
 	return (
-		<AlertDialog>
-			<AlertDialogTrigger asChild>
-				<Button size='icon' variant='destructive' className='ml-3'>
-					<Trash2 />
-				</Button>
-			</AlertDialogTrigger>
-			<AlertDialogContent>
-				<AlertDialogHeader>
-					<AlertDialogTitle className='text-destructive'>
-						Are you absolutely sure?
-					</AlertDialogTitle>
-					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete your
-						account and remove your data from our servers.
-					</AlertDialogDescription>
-				</AlertDialogHeader>
-				<AlertDialogFooter>
-					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction
-						onClick={() => {
-							deleteQuiz.mutate(
-								{
-									id: quizId,
-								},
-								{
-									onSuccess: () => {
-										refetch();
-									},
-								},
-							);
-						}}
-					>
-						Continue
-					</AlertDialogAction>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
+		<Memo>
+			{() => (
+				<AlertDialog
+					open={showDeleteDialog.get()}
+					onOpenChange={() => {
+						closeDeleteDialog();
+					}}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle className='text-destructive'>
+								¿Quieres eliminar el quiz?
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								Esta acción es permanente, se borrara toda la infomación del
+								quiz
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancelar</AlertDialogCancel>
+							<AlertDialogAction
+								className='bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'
+								onClick={() => {
+									deleteQuiz.mutate(
+										{
+											id: quizTarget.get().id,
+										},
+										{
+											onSuccess: () => {
+												props.refetch();
+											},
+										},
+									);
+								}}
+							>
+								Eliminar quiz
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			)}
+		</Memo>
 	);
 };
 

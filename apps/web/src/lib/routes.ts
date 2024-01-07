@@ -7,7 +7,7 @@ const animeRumbleRoutes = {
 	dashboardQuizzes: '/dashboard/quizzes',
 	dashboardBingo: '/dashboard/bingo',
 	dashboardLoteria: '/dashboard/loteria',
-	dashboardConfig: '/dashboard/config',
+	dashboardMembers: '/dashboard/members',
 	dashboardRumble: '/dashboard/rumble',
 	activityQuizzes: '/quiz',
 	activityBingo: '/bingo',

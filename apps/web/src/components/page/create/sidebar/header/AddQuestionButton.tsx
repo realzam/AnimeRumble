@@ -15,13 +15,17 @@ import {
 } from '@ui/DropdownMenu';
 
 const AddQuestionButton = () => {
-	const { id, props } = useQuiz();
+	const { id, props, ui } = useQuiz();
 	const addQuestion = trpc.quizz.addQuestion.useMutation();
 
 	const onClick = async (type: QuestionType['questionType']) => {
 		await addQuestion.mutate(
 			{ type, id },
 			{
+				onSuccess: ({ id }) => {
+					ui.scroll.set(true);
+					ui.scrollToQuestion.set(id);
+				},
 				onSettled: () => {
 					props.refetch();
 				},

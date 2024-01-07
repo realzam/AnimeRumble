@@ -6,8 +6,8 @@ import { type Session } from 'next-auth';
 import { type ListQuizzesDataType } from '@/types/quizQuery';
 import { getAuthSession } from '@/lib/nextauth';
 import animeRumbleRoutes from '@/lib/routes';
+import DashBoardAdmin from '@/components/page/dashboard/DashBoardAdmin';
 import DashboardQuizzesContainer from '@/components/page/dashboard/quizzes/DashboardQuizzesContainer';
-import Sidebar from '@/components/page/dashboard/Sidebar';
 
 type TypeGetData =
 	| [undefined, ListQuizzesDataType]
@@ -31,16 +31,9 @@ const DashboardPage = async () => {
 	const [code, data] = res;
 	if (!code) {
 		return (
-			<>
-				<div className='grid lg:grid-cols-5'>
-					<div className='col-span-1 h-[calc(100vh-3.5rem-1px)]'>
-						<Sidebar active='quizz' />
-					</div>
-					<div className='col-span-3 lg:col-span-4 lg:border-l'>
-						<DashboardQuizzesContainer initialQuizzes={data} />
-					</div>
-				</div>
-			</>
+			<DashBoardAdmin active='quizzes'>
+				<DashboardQuizzesContainer initialQuizzes={data} />
+			</DashBoardAdmin>
 		);
 	}
 	redirect(animeRumbleRoutes.home);
