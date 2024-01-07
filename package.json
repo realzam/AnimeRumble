@@ -32,7 +32,7 @@
     "dev:backend": "dotenv -- turbo dev --filter=socket-anime",
     "start:backend": "dotenv -- turbo start --filter=socket-anime",
     "start:web": "dotenv -- turbo start --filter=web",
-    "build:web": "dotenv -- turbo build --filter=web --filter=anime-db",
+    "build:web": "dotenv -- turbo build --filter=web",
     "dev:web": "dotenv -- turbo dev --filter=web",
     "lint": "turbo lint --filter=web",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
