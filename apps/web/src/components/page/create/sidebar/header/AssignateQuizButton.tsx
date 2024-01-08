@@ -47,9 +47,10 @@ import AsignateIncorrectQuestionItem from './AsignateIncorrectQuestionItem';
 import AsignateValidQuestionItem from './AsignateValidQuestionItem';
 
 const AssignateQuizButton = () => {
+	const router = useRouter();
 	const { quiz, ui } = useQuiz();
 	const isLoading = useObservable(false);
-	const router = useRouter();
+	const [openCalendar, setOpenCalendar] = useState(false);
 	const [date, setDate] = useState<Date>();
 	const [hour, setHour] = useState<string>();
 	const [errorDate, setErrorDate] = useState<string>('');
@@ -90,7 +91,12 @@ const AssignateQuizButton = () => {
 							</CardTitle>
 
 							<div>
-								<Popover.Root>
+								<Popover.Root
+									open={openCalendar}
+									onOpenChange={(o) => {
+										setOpenCalendar(o);
+									}}
+								>
 									<Popover.Trigger>
 										<Button
 											variant='outline'
@@ -99,6 +105,9 @@ const AssignateQuizButton = () => {
 												!date && 'text-muted-foreground',
 												errorDate !== '' && 'ring-1 ring-destructive',
 											)}
+											onClick={() => {
+												setOpenCalendar(true);
+											}}
 										>
 											<CalendarIcon className='mr-2 h-4 w-4' />
 											{date ? (
@@ -141,6 +150,7 @@ const AssignateQuizButton = () => {
 															setErrorDate('Es necesario seleccionar un día');
 															setHour(undefined);
 														}
+														setOpenCalendar(false);
 													}}
 													initialFocus
 												/>
