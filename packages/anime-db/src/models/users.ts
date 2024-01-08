@@ -1,4 +1,5 @@
 import { type AdapterAccount } from "@auth/core/adapters";
+import { relations } from "drizzle-orm";
 import {
   int,
   mysqlTable,
@@ -6,6 +7,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { loteriaPlayer } from "./loteria";
+import { quizSessions } from "./quizzes";
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
@@ -67,22 +70,23 @@ export const verificationTokens = mysqlTable(
   })
 );
 
-// export const accountsRelations = relations(accounts, ({ one }) => ({
-//   user: one(users, {
-//     fields: [accounts.userId],
-//     references: [users.id],
-//   }),
-// }));
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
 
-// export const sessionsRelations = relations(sessions, ({ one }) => ({
-//   user: one(users, {
-//     fields: [sessions.userId],
-//     references: [users.id],
-//   }),
-// }));
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
 
-// export const usersRelations = relations(users, ({ many }) => ({
-//   sessions: many(sessions),
-//   accounts: many(accounts),
-//   playerLoteria: many(loteriaPlayer),
-// }));
+export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  accounts: many(accounts),
+  playerLoteria: many(loteriaPlayer),
+  sessionsQuizzes: many(quizSessions),
+}));

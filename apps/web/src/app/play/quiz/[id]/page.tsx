@@ -4,13 +4,13 @@ import { serverClientSession } from '@/trpc/client/serverClient';
 import { TRPCError } from '@trpc/server';
 import { type Session } from 'next-auth';
 
-import { type QuizDataType } from '@/types/quizQuery';
+import { type TypeGetQuizPlay } from '@/types/quizQuery';
 import { getAuthSession } from '@/lib/nextauth';
 import animeRumbleRoutes from '@/lib/routes';
 import PlayQuizContainer from '@/components/page/playQuiz/PlayQuizContainer';
 
 type TypeGetData =
-	| [undefined, QuizDataType]
+	| [undefined, TypeGetQuizPlay]
 	| [TRPCError['code'], undefined]
 	| ['UNKNOWN', undefined];
 
@@ -35,9 +35,7 @@ const PlayQuizPage = async ({ params }: { params: { id: string } }) => {
 	const res = await getData(session, params.id);
 	const [code, data] = res;
 	if (!code) {
-		console.log('PlayQuizPage render', data);
-
-		return <PlayQuizContainer quiz={data} user={session.user.id} />;
+		return <PlayQuizContainer quiz={data} />;
 	}
 	if (code === 'UNAUTHORIZED') {
 		redirect(animeRumbleRoutes.login + '/?callbackUrl=/quiz');

@@ -1,9 +1,12 @@
 import http from 'http';
 import cors from 'cors';
 import express from 'express';
+import moment from 'moment';
+import momentTZ from 'moment-timezone';
 import { Server as ServerIO } from 'socket.io';
 
 import { setOfflineAllUsers } from './controllers/loteria';
+import { getQuizzes, setFinishQuiz } from './controllers/quizzes';
 import { defaultSocket } from './sockets/default';
 import { loteriaSocket } from './sockets/loteria';
 import { waitRoomSocket } from './sockets/waitRoom';
@@ -30,7 +33,29 @@ class Server {
 		this.server.listen(this.port, () => {
 			console.log(`Server correindo en puerto: ${this.port}`);
 		});
+		this.startQuizTimers();
 		this.configSockets();
+	}
+
+	private async startQuizTimers() {
+		const quizzes = await getQuizzes();
+		const now = momentTZ().tz('America/Mexico_City');
+		console.log(now.format());
+
+		quizzes.forEach((quiz) => {
+			const nowQuiz = new Date(
+				momentTZ().tz('America/Mexico_City').format('YYYY-MM-DD HH:mm:ss'),
+			);
+			const end = new Date(moment(quiz.endQuiz).format());
+
+			const res = end.getTime() - nowQuiz.getTime();
+			console.log('start timer for quiz', quiz.title, 'ends:', quiz.endQuiz);
+
+			setTimeout(() => {
+				console.log('finish quiz', quiz.title);
+				setFinishQuiz(quiz.id);
+			}, res);
+		});
 	}
 
 	private middlewares() {

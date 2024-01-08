@@ -2,34 +2,43 @@
 
 import { createContext } from 'react';
 import {
+	type ObservableArray,
 	type ObservableObject,
+	// type ObservableObject,
 	type ObservablePrimitive,
 } from '@legendapp/state';
 
+import {
+	type TypeGetQuestionUser,
+	type TypeGetQuizPlay,
+	type TypeGetSimpleSumaryUser,
+} from '@/types/quizQuery';
+
 // import { type UseBaseQueryResult } from '@tanstack/react-query';
 
-import { type AnserUserDataType, type QuizDataType } from '@/types/quizQuery';
+// import { type AnserUserDataType, type QuizDataType } from '@/types/quizQuery';
 
 export type StatesPlayQuiz =
 	| 'showStart'
 	| 'showQuestion'
 	| 'showFullUI'
-	| 'showPrelude'
+	| 'showLoading'
 	| 'showEnd';
 
 interface State {
-	index: ObservablePrimitive<number>;
+	stateQuiz: ObservablePrimitive<StatesPlayQuiz>;
+	quiz: TypeGetQuizPlay;
+	questionUser: ObservableObject<TypeGetQuestionUser>;
+	time: ObservablePrimitive<number>;
 	showCorrectAnswer: ObservablePrimitive<boolean>;
 	isCorrectAnswer: ObservablePrimitive<boolean>;
-	stateQuiz: ObservablePrimitive<StatesPlayQuiz>;
-	questions: QuizDataType['questions'];
-	question: QuizDataType['questions'][0];
-	time: ObservablePrimitive<number>;
+	cancelTimer: ObservablePrimitive<boolean>;
 	points: ObservablePrimitive<number>;
-	timeInt: number;
-	answersUser: ObservableObject<AnserUserDataType>;
-	nextQuestion: () => void;
-	startQuiz: () => void;
+	finishTime: ObservablePrimitive<number>;
+	correctAns: ObservableArray<number[]>;
+	isLoadingAnswer: ObservablePrimitive<boolean>;
+	simpleSumary: ObservableObject<TypeGetSimpleSumaryUser>;
+	joinToQuiz: () => void;
 	answer: (index: number) => Promise<void>;
 }
 

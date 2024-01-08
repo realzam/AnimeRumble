@@ -9,7 +9,9 @@ import {
 	CreateQuizSchemaAI,
 	DeleteQuestionSchema,
 	GetAsnwersUser,
+	GetNextQuestionSchema,
 	GetQuizSchema,
+	JoinToQuizSchema,
 	ModifiedQuestionSchema,
 	ShortQuestionsSchema,
 	UpdateQuestionSchema,
@@ -23,8 +25,9 @@ import {
 } from '@/trpc/server/trpc';
 import { TRPCError } from '@trpc/server';
 import * as schema from 'anime-db';
-import { and, asc, eq, inArray, sql, type SQL } from 'drizzle-orm';
-import { customAlphabet, urlAlphabet } from 'nanoid';
+import { and, asc, desc, eq, inArray, sql, type SQL } from 'drizzle-orm';
+import moment from 'moment';
+import { customAlphabet, nanoid, urlAlphabet } from 'nanoid';
 import { UTApi } from 'uploadthing/server';
 import { z } from 'zod';
 
@@ -228,26 +231,34 @@ export const quizRouter = router({
 		return quiz[0];
 	}),
 	getQuizPlay: userProcedure.input(GetQuizSchema).query(async (opts) => {
-		const { input } = opts;
-		const quiz = await db.query.quizzes.findMany({
+		const { id: quizId } = opts.input;
+		const { user } = opts.ctx.session;
+		const quiz = await db.query.quizzes.findFirst({
 			with: {
+				sessions: {
+					where: (sessions, { eq }) => eq(sessions.userId, user.id),
+				},
 				questions: {
 					columns: {
-						quizId: false,
+						id: true,
 					},
-					orderBy: [asc(schema.questions.position)],
 				},
 			},
-			where: eq(schema.quizzes.id, input.id),
+			where: eq(schema.quizzes.id, quizId),
 		});
-		if (quiz.length === 0) {
+		if (!quiz) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
 				message: 'No existe el quiz',
 			});
 		}
-
-		return quiz[0];
+		if (quiz.state !== 'active') {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'El quiz no esta disponible',
+			});
+		}
+		return quiz;
 	}),
 	deleteQuizz: adminProcedure.input(GetQuizSchema).mutation(async (opts) => {
 		const { input } = opts;
@@ -528,7 +539,7 @@ export const quizRouter = router({
 				.where(eq(schema.quizzes.id, quizId));
 		}),
 	getListQuizzesPlayer: publicProcedure.query(async () => {
-		return await db.query.quizzes.findMany({
+		const res = await db.query.quizzes.findMany({
 			where: eq(schema.quizzes.state, 'active'),
 			with: {
 				questions: {
@@ -536,85 +547,252 @@ export const quizRouter = router({
 						id: true,
 					},
 				},
+				sessions: {
+					columns: {
+						id: true,
+					},
+				},
 			},
 		});
+		return res;
 	}),
-	answerQuiz: userProcedure.input(AsnwerQuizSchema).mutation(async (opts) => {
-		const { questionId, quizId, time, answer } = opts.input;
-		const userID = opts.ctx.session.user.id;
-		const nanoid = customAlphabet(urlAlphabet, 15);
-		const idAns = nanoid();
+	joinQuiz: userProcedure.input(JoinToQuizSchema).mutation(async (opts) => {
+		const { quizId } = opts.input;
+		const {
+			session: { user },
+		} = opts.ctx;
 
 		const quiz = await db.query.quizzes.findFirst({
 			where: eq(schema.quizzes.id, quizId),
-			with: {
-				questions: true,
-			},
 		});
-
 		if (!quiz) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
 				message: 'No existe el quiz',
 			});
 		}
+		if (quiz.state !== 'active') {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'El quiz no esta disponible',
+			});
+		}
+		const idSession = nanoid(30);
+		const quizSesion = await db.query.quizSessions.findFirst({
+			where: and(
+				eq(schema.quizSessions.quizId, quizId),
+				eq(schema.quizSessions.userId, user.id),
+			),
+		});
+		if (!quizSesion) {
+			await db.insert(schema.quizSessions).values({
+				id: idSession,
+				maxEnd: moment().add(15, 'minutes').toDate(),
+				quizId,
+				userId: user.id,
+			});
+			return idSession;
+		}
+		return quizSesion.id;
+	}),
+	answerQuiz: userProcedure.input(AsnwerQuizSchema).mutation(async (opts) => {
+		const { time, answer, sessionId } = opts.input;
+		const userID = opts.ctx.session.user.id;
+		const nanoid = customAlphabet(urlAlphabet, 15);
+		const idAns = nanoid();
 
-		const question = await db.query.questions.findFirst({
-			where: eq(schema.questions.id, questionId),
+		const session = await db.query.quizSessions.findFirst({
+			where: eq(schema.quizSessions.id, sessionId),
+			with: {
+				quiz: {
+					with: {
+						questions: {
+							orderBy: (questions, { asc }) => asc(questions.position),
+						},
+					},
+				},
+			},
 		});
 
+		if (!session) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'El usuario no a ingresado al quiz',
+			});
+		}
+
+		if (session.quiz.state !== 'active') {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'El quiz no esta disponible',
+			});
+		}
+
+		const question = session.quiz.questions[session.index];
 		if (!question) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
-				message: 'No existe el quiz',
+				message: 'No existe la pregunta',
 			});
 		}
-		const order = quiz.questions.findIndex((q) => q.id === questionId);
+
+		const existAns = await db.query.answers.findFirst({
+			where: and(
+				eq(schema.answers.quizId, session.quizId),
+				eq(schema.answers.user, userID),
+				eq(schema.answers.questionId, question.id),
+			),
+		});
+		if (existAns) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'No se puede volver a responder a la pregunta',
+			});
+		}
 		let isCorrect = false;
+		const correct = [];
+		let answerDB = undefined;
+		let answerTFDB = undefined;
+		let points = 0;
 		if (answer !== -1) {
 			if (question.questionType === 'Multiple') {
+				answerDB = answer;
 				isCorrect = question.correctAnswers[answer];
+				question.correctAnswers.forEach((res, i) => {
+					if (res) {
+						correct.push(i);
+					}
+				});
 			} else {
-				isCorrect =
-					(answer === 1 && !!question.correctAnswerTF) ||
-					(answer === 0 && !question.correctAnswerTF);
+				const isTrue = question.correctAnswerTF!;
+				isCorrect = (answer === 1 && isTrue) || (answer === 0 && !isTrue);
+				correct.push(isTrue ? 1 : 0);
+				answerTFDB = answer === 1;
+			}
+			const timeInt = parseInt(question.time) * 1000;
+			const timeTrunc = Math.min(Math.ceil(time), timeInt);
+			if (isCorrect && question.points !== 'none') {
+				const m = -900 * (timeTrunc / timeInt);
+				points = Math.max(100, Math.ceil(m + 1000));
+				if (question.points === 'double') {
+					points *= 2;
+				}
 			}
 		}
-		const timeInt = parseInt(question.time) * 100;
-		const m = -900 * (time / timeInt);
-		let points = Math.max(100, Math.ceil(m + 1000));
 
-		if (question.points === 'double') {
-			points *= 2;
-		} else if (question.points === 'none') {
-			points = 0;
-		}
-		if (answer !== -1) {
-			points = 0;
-		}
+		await db.update(schema.quizSessions).set({
+			index: session.index + 1,
+			summaryPoints: session.summaryPoints + points,
+		});
 
 		await db.insert(schema.answers).values({
 			id: idAns,
-			quizId,
-			questionId,
+			quizId: session.quizId,
+			questionId: question.id,
 			user: userID,
-			time: `${(time / 100).toFixed(2)}s`,
+			time: `${(time / 1000).toFixed(2)}s`,
 			points,
 			isCorrect,
-			order,
+			order: session.index,
+			sessionId: session.id,
+			answer: answerDB,
+			answerTF: answerTFDB,
 		});
-		return { ok: true };
+		return { isCorrect, points, correct };
 	}),
+	getQuestionUser: userProcedure
+		.input(GetNextQuestionSchema)
+		.mutation(async (opts) => {
+			// const question=db.query.questions.findMany({
+			// 	where:
+			// })
+			const { sessionId } = opts.input;
+			const quizSesion = await db.query.quizSessions.findFirst({
+				where: eq(schema.quizSessions.id, sessionId),
+				with: {
+					quiz: true,
+				},
+			});
+			if (!quizSesion) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'El usuario no a ingresado al quiz',
+				});
+			}
+			if (quizSesion.quiz.state !== 'active') {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'El quiz no esta disponible',
+				});
+			}
+			const questions = await db.query.questions.findMany({
+				columns: {
+					question: true,
+					questionType: true,
+					time: true,
+					img: true,
+					points: true,
+					position: true,
+					answers: true,
+				},
+				where: eq(schema.questions.quizId, quizSesion.quizId),
+				orderBy: asc(schema.questions.position),
+			});
 
-	getAnswerUser: adminProcedure.input(GetAsnwersUser).query(async (opts) => {
-		const { quizId, user } = opts.input;
-		return db.query.answers.findMany({
-			where: and(
-				eq(schema.answers.user, user),
-				eq(schema.answers.quizId, quizId),
-			),
-			orderBy: [asc(schema.answers.order)],
+			if (quizSesion.index >= questions.length) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'No hay pregunta no esta disponible',
+				});
+			}
+			const question = questions[quizSesion.index];
+			return question;
+		}),
+	getSimpleSumary: userProcedure.input(GetAsnwersUser).query(async (opts) => {
+		const { sessionId } = opts.input;
+		const session = await db.query.quizSessions.findFirst({
+			where: eq(schema.quizSessions.id, sessionId),
+			with: {
+				quiz: {
+					with: {
+						questions: true,
+					},
+				},
+			},
 		});
+		if (!session) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'El usuario no a ingresado al quiz',
+			});
+		}
+
+		const rivals = await db.query.quizSessions.findMany({
+			where: eq(schema.quizSessions.quizId, session.quizId),
+			orderBy: desc(schema.quizSessions.summaryPoints),
+		});
+
+		const place = rivals.findIndex((r) => r.userId === session.userId) + 1;
+
+		const answers = await db.query.answers.findMany({
+			where: and(
+				eq(schema.answers.quizId, session.quizId),
+				eq(schema.answers.user, session.userId),
+			),
+			with: {
+				questions: true,
+			},
+			orderBy: asc(schema.answers.order),
+		});
+		const totalQuestions = session.quiz.questions.length;
+		const corrects = answers.filter((a) => a.isCorrect).length;
+		const wrong = totalQuestions - corrects;
+		const accuracy = parseFloat(((corrects * 100) / 100).toFixed(1));
+		let score = 0;
+		answers.forEach((a) => {
+			score += a.points;
+		});
+		return { corrects, wrong, score, accuracy, place };
 	}),
 });
 
@@ -668,6 +846,11 @@ const validateQuestion = (
 		if (!hasCorrectAnswer) {
 			hasError = true;
 			errors[2] = 'Es necesaria al menos una respuesta correcta';
+		}
+		const allCorrect = q.correctAnswers.every((ans) => ans);
+		if (allCorrect) {
+			hasError = true;
+			errors[2] = 'Al menos una respuesta no debe ser correcta';
 		}
 	}
 

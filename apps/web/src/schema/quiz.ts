@@ -99,19 +99,26 @@ const AsignateQuizSchema = z.object({
 });
 
 const AsnwerQuizSchema = z.object({
-	quizId: z.string().min(1),
-	questionId: z.string().min(1),
-	time: z.number().positive(),
+	sessionId: z.string().min(1),
+	time: z.number().nonnegative(),
 	answer: z.number().min(-1).max(4),
 });
 
 const GetAsnwersUser = z.object({
+	sessionId: z.string().min(1),
+});
+
+const JoinToQuizSchema = z.object({
 	quizId: z.string().min(1),
-	user: z.string().min(1),
+});
+
+const GetNextQuestionSchema = z.object({
+	sessionId: z.string().min(1),
 });
 
 export {
 	CreateQuizSchema,
+	GetNextQuestionSchema,
 	GetQuizSchema,
 	UpdateQuizSchema,
 	DeleteQuestionSchema,
@@ -123,4 +130,5 @@ export {
 	CreateQuizSchemaAI,
 	AddQuestionSchema,
 	UpdateQuestionSchema,
+	JoinToQuizSchema,
 };

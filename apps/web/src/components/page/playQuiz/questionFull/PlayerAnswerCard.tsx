@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { reactive, Show, useSelector } from '@legendapp/state/react';
+import { reactive, Show, useComputed } from '@legendapp/state/react';
 import { cva } from 'class-variance-authority';
 import { Check, X } from 'lucide-react';
 
@@ -30,7 +30,8 @@ interface Props {
 }
 
 const PlayerAnswerCard = ({ index = 0, question }: Props) => {
-	const { answer, showCorrectAnswer, question: qobj } = usePlayQuiz();
+	const { answer, showCorrectAnswer, correctAns, isLoadingAnswer } =
+		usePlayQuiz();
 	const color = useMemo(() => {
 		switch (index) {
 			case 0:
@@ -46,26 +47,30 @@ const PlayerAnswerCard = ({ index = 0, question }: Props) => {
 		}
 	}, [index]);
 
-	const chooseCorrect = useSelector(() => qobj.correctAnswers[index]);
+	const chooseCorrect = useComputed(() => correctAns.get().includes(index));
+	const disable = useComputed(
+		() => showCorrectAnswer.get() || isLoadingAnswer.get(),
+	);
 	return (
 		<ReactiveCard
 			$className={() =>
 				cn(
-					'col-span-1 flex h-28 items-center overflow-hidden border-none p-2 shadow-lg transition-all duration-300 ease-in-out',
-					!showCorrectAnswer.get() && 'cursor-pointer hover:scale-105 ' + color,
+					'col-span-1 flex h-20 items-center overflow-hidden border-none p-2 shadow-lg transition-all duration-300 ease-in-out md:h-28',
+					!disable.get() && 'cursor-pointer hover:scale-105 ',
+					color,
 					showCorrectAnswer.get() &&
-						(chooseCorrect ? 'bg-green-500' : 'bg-red-500'),
+						(chooseCorrect.get() ? 'bg-green-500' : 'bg-red-500'),
 				)
 			}
 			onClick={() => {
-				if (!showCorrectAnswer.get()) {
+				if (!disable.get()) {
 					answer(index);
 				}
 			}}
 		>
-			<div className='h-full w-12' />
+			<div className='hidden h-full w-12 sm:block' />
 			<div className='flex h-full w-full items-center justify-between'>
-				<h3 className='text-xl font-semibold leading-none text-slate-100'>
+				<h3 className='text-sm font-semibold leading-none text-slate-100 md:text-xl'>
 					{question}
 				</h3>
 				<Show if={showCorrectAnswer}>
@@ -81,29 +86,4 @@ const PlayerAnswerCard = ({ index = 0, question }: Props) => {
 	);
 };
 
-const PlayerAnswerTFCard = ({
-	variantTrue = true,
-}: {
-	variantTrue?: boolean;
-}) => {
-	const { answer } = usePlayQuiz();
-	return (
-		<Card
-			className={cn(
-				'flex h-24 cursor-pointer items-center overflow-hidden transition-all duration-300 ease-in-out hover:scale-105',
-				variantTrue ? 'bg-blue-500' : 'bg-red-500',
-			)}
-			onClick={() => {
-				answer(variantTrue ? 1 : 0);
-			}}
-		>
-			<div className='h-full w-24' />
-			<div className='flex h-full w-full items-center justify-between'>
-				<h3 className='text-xl font-semibold leading-none text-slate-100'>
-					{variantTrue ? 'Verdadero' : 'Falso'}
-				</h3>
-			</div>
-		</Card>
-	);
-};
-export { PlayerAnswerCard, PlayerAnswerTFCard };
+export default PlayerAnswerCard;

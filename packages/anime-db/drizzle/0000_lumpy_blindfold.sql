@@ -74,6 +74,7 @@ CREATE TABLE `answers` (
 	`answer` tinyint,
 	`answerTF` boolean,
 	`order` tinyint NOT NULL,
+	`sessionId` varchar(50) NOT NULL,
 	CONSTRAINT `answers_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -94,6 +95,16 @@ CREATE TABLE `questions` (
 	`img` varchar(255),
 	`imgKey` varchar(100),
 	CONSTRAINT `questions_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `quizSessions` (
+	`id` varchar(50) NOT NULL,
+	`userId` varchar(255) NOT NULL,
+	`quizId` varchar(50) NOT NULL,
+	`index` tinyint NOT NULL DEFAULT 0,
+	`maxEnd` timestamp NOT NULL,
+	`summaryPoints` int NOT NULL DEFAULT 0,
+	CONSTRAINT `quizSessions_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `quizzes` (

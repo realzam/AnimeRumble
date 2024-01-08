@@ -1,17 +1,17 @@
 import PlayQuizProvider from '@/context/playQuiz/PlayQuizProvider';
 
-import { type QuizDataType } from '@/types/quizQuery';
+import { type TypeGetQuizPlay } from '@/types/quizQuery';
 
-import PlayQuizStateSwitch from './PlayQuizStateSwitch';
+import PlayQuizScreenSelector from './PlayQuizScreenSelector';
 
 interface Props {
-	quiz: QuizDataType;
-	user: string;
+	quiz: TypeGetQuizPlay;
 }
-const PlayQuizContainer = ({ quiz, user }: Props) => {
+
+const PlayQuizContainer = ({ quiz }: Props) => {
 	return (
-		<PlayQuizProvider initialQuiz={quiz} user={user}>
-			<PlayQuizStateSwitch />
+		<PlayQuizProvider quiz={quiz}>
+			<PlayQuizScreenSelector />
 		</PlayQuizProvider>
 	);
 };

@@ -1,13 +1,16 @@
-import { serverClient } from '@/trpc/client/serverClient';
+import moment from 'moment';
 
 import DevContainer from '@/components/page/dev/DevContainer';
 
 const page = async () => {
-	const list = await serverClient.loteria.getCards();
-
+	const time = moment()
+		.add(1, 'day')
+		.add(55, 'minutes')
+		.add(8, 'hours')
+		.diff(0);
 	return (
 		<div>
-			<DevContainer list={list} />
+			<DevContainer time={time} />
 		</div>
 	);
 };

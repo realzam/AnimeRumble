@@ -78,6 +78,7 @@
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.48.2",
 		"react-player": "^2.13.0",
+		"react-scale-text": "^1.2.2",
 		"react-use-audio-player": "workspace:*",
 		"server-only": "^0.0.1",
 		"sharp": "^0.33.0",

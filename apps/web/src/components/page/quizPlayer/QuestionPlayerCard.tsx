@@ -3,9 +3,11 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
+import moment from 'moment';
 
 import { type QuizzesPlayerDataType } from '@/types/quizQuery';
 import animeRumbleRoutes from '@/lib/routes';
+import useCountdown from '@/hooks/useCountdown';
 import { Button } from '@ui/Button';
 import {
 	Card,
@@ -20,6 +22,7 @@ interface Props {
 }
 const QuestionPlayerCard = ({ quiz }: Props) => {
 	const router = useRouter();
+	const Time = useCountdown(moment(quiz.endQuiz).diff(0));
 	return (
 		<Card className='overflow-hidden shadow-lg'>
 			<div className='w-full'>
@@ -36,12 +39,14 @@ const QuestionPlayerCard = ({ quiz }: Props) => {
 					<p className='text-primary dark:text-primary-light'>Preguntas</p>
 				</div>
 				<div className='flex flex-col items-center'>
-					<p className='font-semibold'>0d 59m 60s</p>
+					<span className='font-semibold'>
+						<Time />
+					</span>
 					<p className='text-primary dark:text-primary-light'>Tiempo</p>
 					<p className='text-primary dark:text-primary-light'>restante</p>
 				</div>
 				<div className='flex flex-col items-center'>
-					<p className='font-semibold'>{quiz.questions.length}</p>
+					<p className='font-semibold'>{quiz.sessions.length}</p>
 					<p className='text-primary dark:text-primary-light'>Repuestas</p>
 					<p className='text-primary dark:text-primary-light'>enviadas</p>
 				</div>
