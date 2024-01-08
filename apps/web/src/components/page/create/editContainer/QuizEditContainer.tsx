@@ -1,9 +1,9 @@
 import { Card } from '@/components/ui/Card';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
-import QuestionAnswersTypeContainer from './QuestionAnswersTypeContainer';
 import QuestionInput from './QuestionInput';
 import QuestionPointsSelect from './QuestionPointsSelect';
+import QuestionsAnswersContainer from './QuestionsAnswersContainer';
 import QuestionTimeSelect from './QuestionTimeSelect';
 import QuestionTypeSelect from './QuestionTypeSelect';
 import QuestionUploadImage from './QuestionUploadImage';
@@ -25,7 +25,7 @@ const QuizEditContainer = () => {
 							<QuestionTimeSelect />
 							<QuestionPointsSelect />
 						</div>
-						<QuestionAnswersTypeContainer />
+						<QuestionsAnswersContainer />
 					</div>
 				</ScrollArea>
 			</Card>

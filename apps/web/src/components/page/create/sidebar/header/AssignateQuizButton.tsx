@@ -16,17 +16,19 @@ import {
 	getTimestampFormDate,
 	horasFaltantesHastaFinDelDia,
 } from '@/lib/utils';
-import useDashboardQuizzes from '@/hooks/useDashboardQuizzes';
+import useQuiz from '@/hooks/useQuiz';
 import { Accordion } from '@ui/Accordion';
 import { Button } from '@ui/Button';
 import { Calendar } from '@ui/Calendar';
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
+	DialogTrigger,
 } from '@ui/Dialog';
 import { CardTitle } from '@/components/ui/Card';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -44,16 +46,10 @@ import ButtonGradientLoading from '@/components/web/ButtonGradientLoading';
 import AsignateIncorrectQuestionItem from './AsignateIncorrectQuestionItem';
 import AsignateValidQuestionItem from './AsignateValidQuestionItem';
 
-const AssignateQuiz = () => {
-	const router = useRouter();
-	const {
-		closeAsignateDialog,
-		quizTarget,
-		showAsignateDialog,
-		tabsValue,
-		props,
-	} = useDashboardQuizzes();
+const AssignateQuizButton = () => {
+	const { quiz, ui } = useQuiz();
 	const isLoading = useObservable(false);
+	const router = useRouter();
 	const [date, setDate] = useState<Date>();
 	const [hour, setHour] = useState<string>();
 	const [errorDate, setErrorDate] = useState<string>('');
@@ -71,12 +67,13 @@ const AssignateQuiz = () => {
 		<Computed>
 			{() => (
 				<Dialog
-					open={showAsignateDialog.get()}
 					onOpenChange={() => {
 						isLoading.set(false);
-						closeAsignateDialog();
 					}}
 				>
+					<DialogTrigger asChild>
+						<Button variant='gradient'>Asignar</Button>
+					</DialogTrigger>
 					<DialogContent className='sm:max-w-[425px]'>
 						<DialogHeader>
 							<DialogTitle>Resumen</DialogTitle>
@@ -200,43 +197,42 @@ const AssignateQuiz = () => {
 						</div>
 						<ScrollArea className='h-[400px] pr-2'>
 							<Accordion type='single' collapsible>
-								{quizTarget
+								{quiz.questions
 									.get()
-									.questions.map((q, index) =>
+									.map((q, index) =>
 										q.hasError ? (
 											<AsignateIncorrectQuestionItem
 												key={q.id}
 												question={q}
 												index={index}
-												quizID={quizTarget.get().id}
 											/>
 										) : (
 											<AsignateValidQuestionItem
 												key={q.id}
 												question={q}
 												index={index}
-												quizID={quizTarget.get().id}
 											/>
 										),
 									)}
 							</Accordion>
 						</ScrollArea>
 						<DialogFooter>
-							{quizTarget.get().questions.some((q) => q.hasError) ? (
-								<Button
-									variant='destructive'
-									type='submit'
-									onClick={() => {
-										router.push(
-											animeRumbleRoutes.createQuiz +
-												quizTarget.get().id +
-												'?index=' +
-												quizTarget.get().questions.findIndex((q) => q.hasError),
-										);
-									}}
-								>
-									Arreglar
-								</Button>
+							{quiz.questions.get().some((q) => q.hasError) ? (
+								<DialogClose asChild>
+									<Button
+										variant='destructive'
+										type='submit'
+										onClick={() => {
+											const quizT = quiz.questions
+												.get()
+												.find((q) => q.hasError);
+											ui.scrollForce.set(true);
+											ui.scrollToQuestion.set(quizT!.id);
+										}}
+									>
+										Arreglar
+									</Button>
+								</DialogClose>
 							) : (
 								<ButtonGradientLoading
 									isLoading={isLoading}
@@ -257,17 +253,16 @@ const AssignateQuiz = () => {
 										isLoading.set(true);
 										await asignate.mutate(
 											{
-												quizId: quizTarget.get().id,
+												quizId: quiz.id.get(),
 												date: getTimestampFormDate(actualizarHora(date, hour)),
 											},
 											{
-												onSuccess: async () => {
-													isLoading.set(false);
-													await props.refetch();
-													tabsValue.set('active');
-													closeAsignateDialog();
+												onSuccess: () => {
+													router.replace(
+														animeRumbleRoutes.dashboardQuizzes + '?tabs=active',
+													);
 												},
-												onError: () => {
+												onSettled: () => {
 													isLoading.set(false);
 												},
 											},
@@ -285,4 +280,4 @@ const AssignateQuiz = () => {
 	);
 };
 
-export default AssignateQuiz;
+export default AssignateQuizButton;

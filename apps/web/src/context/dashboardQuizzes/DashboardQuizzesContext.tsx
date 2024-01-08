@@ -21,6 +21,7 @@ interface State {
 	props: ObservableObject<TypeQuizQueryProps>;
 	showAsignateDialog: ObservablePrimitive<boolean>;
 	showDeleteDialog: ObservablePrimitive<boolean>;
+	tabsValue: ObservablePrimitive<string>;
 	quizTarget: ObservablePrimitive<QuizDataType>;
 	openAsignateDialog: (quiz: QuizDataType) => void;
 	openDeleteDialog: (quiz: QuizDataType) => void;

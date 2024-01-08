@@ -15,8 +15,10 @@ export interface UiType {
 	isDragging: boolean;
 	scrollToQuestion: string;
 	scroll: boolean;
+	scrollForce: boolean;
 	showDeleteQuestionAlert: boolean;
 	targetDeleteQuestion: string;
+	questionVolatile: QuestionType;
 }
 
 interface State {
@@ -29,6 +31,7 @@ interface State {
 	openDeleteQuestion: (id: string) => void;
 	closeDeleteQuestion: () => void;
 	clearScroll: () => void;
+	validateVolatileQuestion: () => void;
 }
 
 export const QuizContex = createContext<State | null>(null);

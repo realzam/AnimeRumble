@@ -28,9 +28,11 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 		question: initialQuiz.questions[n],
 		isDragging: false,
 		scroll: n > 0,
+		scrollForce: false,
 		scrollToQuestion: initialQuiz.questions[n].id,
 		showDeleteQuestionAlert: false,
 		targetDeleteQuestion: '',
+		questionVolatile: initialQuiz.questions[n],
 	});
 
 	const quiz = useObservable<QuizDataType>(initialQuiz);
@@ -58,11 +60,53 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 		props.set(opt);
 	});
 
+	useObserve(ui.question, () => {
+		ui.questionVolatile.set({ ...ui.question.get() });
+	});
+
 	const setQuestionUi = (id: string) => {
 		const question = quiz.questions.get().find((q) => q.id === id);
 		if (question) {
 			ui.question.set(question);
 			ui.questionId.set(question.id);
+		}
+	};
+
+	const validateVolatileQuestion = () => {
+		const q = ui.questionVolatile.get();
+		if (q.question.length === 0) {
+			ui.questionVolatile.errors[0].set('Es necesaria una pregunta');
+		}
+
+		let hasCorrectAnswer = false;
+
+		if (q.questionType === 'TF') {
+			hasCorrectAnswer =
+				q.correctAnswerTF !== null && q.correctAnswerTF !== undefined;
+			if (!hasCorrectAnswer) {
+				ui.questionVolatile.errors[2].set(
+					'Es necesaria seleccionar la respuesta correcta',
+				);
+			} else {
+				ui.questionVolatile.errors[2].set('');
+			}
+		} else {
+			if (q.answers.filter((ans) => ans.length > 0).length < 2) {
+				ui.questionVolatile.errors[1].set(
+					'Es necesario al menos dos respuestas',
+				);
+			} else {
+				ui.questionVolatile.errors[1].set('');
+			}
+
+			hasCorrectAnswer = q.correctAnswers.some((ans) => ans);
+			if (!hasCorrectAnswer) {
+				ui.questionVolatile.errors[2].set(
+					'Es necesaria al menos una respuesta correcta',
+				);
+			} else {
+				ui.questionVolatile.errors[2].set('');
+			}
 		}
 	};
 
@@ -89,6 +133,7 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 
 	const clearScroll = () => {
 		ui.scroll.set(false);
+		ui.scrollForce.set(false);
 		ui.scrollToQuestion.set('');
 	};
 
@@ -105,6 +150,7 @@ const QuizProvider = ({ children, initialQuiz, index }: Props) => {
 				openDeleteQuestion,
 				closeDeleteQuestion,
 				clearScroll,
+				validateVolatileQuestion,
 			}}
 		>
 			{children}

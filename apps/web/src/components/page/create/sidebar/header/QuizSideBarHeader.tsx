@@ -1,6 +1,7 @@
 import { CardDescription, CardHeader, CardTitle } from '@ui/Card';
 
 import AddQuestionButton from './AddQuestionButton';
+import AssignateQuizButton from './AssignateQuizButton';
 import QuestionsSeparator from './QuestionsSeparator';
 import QuizDescription from './QuizDescription';
 import QuizTitle from './QuizTitle';
@@ -21,6 +22,7 @@ const QuizSideBarHeader = () => {
 				<QuizDescription />
 			</CardDescription>
 			<AddQuestionButton />
+			<AssignateQuizButton />
 			<QuestionsSeparator />
 		</CardHeader>
 	);

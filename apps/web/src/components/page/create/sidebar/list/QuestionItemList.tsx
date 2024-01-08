@@ -11,6 +11,7 @@ import {
 	Show,
 	Switch,
 	useMount,
+	useObserve,
 } from '@legendapp/state/react';
 import { AlertCircle } from 'lucide-react';
 
@@ -48,6 +49,13 @@ const QuestionItemList = ({ id, item }: Props) => {
 
 	useMount(() => {
 		if (ui.scroll.get() && ui.scrollToQuestion.get() === id) {
+			scollToRef.current?.scrollIntoView();
+			setQuestionUi(id);
+			clearScroll();
+		}
+	});
+	useObserve(ui.scrollToQuestion, () => {
+		if (ui.scrollForce.get() && ui.scrollToQuestion.get() === id) {
 			scollToRef.current?.scrollIntoView();
 			setQuestionUi(id);
 			clearScroll();

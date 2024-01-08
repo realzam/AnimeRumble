@@ -17,14 +17,20 @@ type IQuizzes = Awaited<
 
 interface Props {
 	initialQuizzes: IQuizzes;
+	initTab: string;
 	children: React.ReactNode;
 }
 
-const DashboardQuizzesProvider = ({ initialQuizzes, children }: Props) => {
+const DashboardQuizzesProvider = ({
+	initialQuizzes,
+	children,
+	initTab,
+}: Props) => {
 	const utils = trpc.useUtils();
 
 	const showAsignateDialog = useObservable(false);
 	const showDeleteDialog = useObservable(false);
+	const tabsValue = useObservable(initTab);
 	const quizTarget = useObservable<QuizDataType>(initialQuizzes[0]);
 	const quizzes = useObservable<IQuizzes>(initialQuizzes);
 	const query$ = useObservableQuery({
@@ -73,6 +79,7 @@ const DashboardQuizzesProvider = ({ initialQuizzes, children }: Props) => {
 				closeAsignateDialog,
 				openDeleteDialog,
 				closeDeleteDialog,
+				tabsValue,
 			}}
 		>
 			{children}

@@ -66,7 +66,7 @@ const QuestionsList = () => {
 
 	return (
 		<ScrollArea type='always' className='ml-3 h-full pr-1'>
-			<div className='h-full w-[calc((100vw-16px)*0.286-38px)] max-w-[360px] p-1'>
+			<div className='mb-3 h-full w-[calc((100vw-16px)*0.286-38px)] max-w-[360px] p-1'>
 				<Computed>
 					{() => (
 						<DndContext

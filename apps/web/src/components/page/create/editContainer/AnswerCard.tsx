@@ -41,7 +41,7 @@ const ReactiveCard = reactive(Card);
 const ReactiveCheckbox = reactive(Checkbox);
 
 const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
-	const { ui, id } = useQuiz();
+	const { ui, id, validateVolatileQuestion } = useQuiz();
 	const updateQuestion = trpc.quizz.updateQuestion.useMutation();
 	const asnwer = useObservable(() => ui.question.get().answers[index]);
 	const checked = useObservable(() => ui.question.get().correctAnswers[index]);
@@ -99,6 +99,8 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 					onChange={(e) => {
 						const value = e.target.value;
 						asnwer.set(value);
+						ui.questionVolatile.answers[index].set(value);
+						validateVolatileQuestion();
 						debounced();
 					}}
 				/>
@@ -109,6 +111,8 @@ const AnswerCard = ({ color, index = 0 }: ActivityCardProps) => {
 						showRippleAwait={animateCheck}
 						onCheckedChange={(v) => {
 							checked.set(v as boolean);
+							ui.questionVolatile.correctAnswers[index].set(v as boolean);
+							validateVolatileQuestion();
 							updateQuestion.mutate({
 								questionId: ui.question.id.get(),
 								quizId: id,

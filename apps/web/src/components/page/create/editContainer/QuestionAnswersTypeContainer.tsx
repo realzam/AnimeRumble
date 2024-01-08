@@ -15,7 +15,7 @@ import { AnswerCard, AnswerTFCard } from './AnswerCard';
 
 const QuestionAnswersTypeContainer = () => {
 	const updateQuestion = trpc.quizz.updateQuestion.useMutation();
-	const { ui, quiz, props } = useQuiz();
+	const { ui, quiz, props, validateVolatileQuestion } = useQuiz();
 	const correctAnswerTF = useObservable(() => {
 		if (ui.question.correctAnswerTF.get() !== null) {
 			return ui.question.correctAnswerTF.get() ? 'True' : 'False';
@@ -33,6 +33,8 @@ const QuestionAnswersTypeContainer = () => {
 
 	const onChange = (v: string) => {
 		correctAnswerTF.set(v);
+		ui.questionVolatile.correctAnswerTF.set(v === 'True');
+		validateVolatileQuestion();
 		updateQuestion.mutate(
 			{
 				questionId: ui.question.id.get(),
@@ -79,12 +81,3 @@ const QuestionAnswersTypeContainer = () => {
 };
 
 export default QuestionAnswersTypeContainer;
-/*
-<div className='mt-2 grid w-full grid-cols-2 gap-4'>
-								<AnswerCard index={0} />
-								<AnswerCard color='blue' index={1} />
-								<AnswerCard color='yellow' index={2} />
-								<AnswerCard color='green' index={3} />
-							</div>
-							
-*/
