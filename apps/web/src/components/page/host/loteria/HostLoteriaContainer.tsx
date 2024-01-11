@@ -21,7 +21,11 @@ const HostLoteriaContainer = () => {
 				>
 					Iniciar partida
 				</Button>
-				<Button variant='destructive' onClick={() => goToLobbyGame()}>
+				<Button
+					variant='destructive'
+					className={stateGame.get() === 'play' ? 'block' : 'hidden'}
+					onClick={() => goToLobbyGame()}
+				>
 					Detener actividad
 				</Button>
 			</div>

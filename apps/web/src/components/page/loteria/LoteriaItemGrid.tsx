@@ -31,7 +31,7 @@ const LoteriaItemGrid = (card: Props) => {
 			{() => (
 				<Card
 					className={cn(
-						'flex select-none overflow-hidden rounded-none border-none shadow-lg transition-all duration-300 xs:rounded-sm xs:border xs:p-2',
+						'flex select-none rounded-none border-none shadow-lg transition-all duration-300 xs:rounded-sm xs:border xs:p-2',
 						isClickable.get() &&
 							'cursor-pointer xs:hover:scale-[1.05] xs:hover:ring xs:hover:ring-primary',
 					)}
